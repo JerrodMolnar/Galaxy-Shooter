@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Helper : MonoBehaviour
+public class Helper
 {
-    public float yUpperScreenBoundary = 8f;
+    public float yUpperScreenBoundary = 8.0f;    
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
-    private Helper _helper;
-    [SerializeField] private int _moveSpeed = 5;
+    private Helper _helper = new Helper();
+    [SerializeField] private float _moveSpeed = 8.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,10 +21,15 @@ public class Laser : MonoBehaviour
     private void LaserMovement()
     {
         //make laser move straight up screen from point of instantiation
-        transform.Translate(Vector3.up * _moveSpeed * Time.deltaTime);
+        
         if (transform.position.y > _helper.yUpperScreenBoundary)
         {
-            gameObject.SetActive(false);
+            transform.position = Vector3.zero;
+            gameObject.SetActive(false);            
+        }
+        else
+        {
+            transform.Translate(Vector3.up * _moveSpeed * Time.deltaTime);
         }
     }
 }

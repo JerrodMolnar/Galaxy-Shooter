@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
 
-    [SerializeField] private int _moveSpeed = 4; //used as player movement speed
+    [SerializeField] private float _moveSpeed = 4.0f; //used as player movement speed
     [SerializeField] private float _xScreenBounds = 11.3f; //used for player x position bounds
     [SerializeField] private float _yScreenBounds = -4f; //used for player y position bounds
 
 
     [SerializeField] private GameObject _laserObject;
     [SerializeField] private float _laserWaitTime = 0.5f;
-    private bool _fired = false; //projectile fired boolean;
+    private float _nextFire = 0.0f; //timer for next fire
     private List<GameObject> _projectiles = new List<GameObject>(); //projectiles object pool
     [SerializeField] private int _maxProjectilesForPool = 10; //max lasers in object pool
     private GameObject _laserPool;
@@ -29,6 +30,7 @@ public class Player : MonoBehaviour
     {
         Movement();
         FireLaser();
+
     }
 
     private void Movement()
@@ -64,36 +66,35 @@ public class Player : MonoBehaviour
              transform.position = new Vector3(transform.position.x, _yScreenBounds, 0);
          }*/
 
-        //could use Mathf.clamp for y position
+        //could use Mathf.clamp for y position to keep player on screen
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, _yScreenBounds, 0), 0);
     }
 
     private void FireLaser()
     {
         //if space key hit fire laser
-        if (Input.GetAxis("Fire1") > 0 && !_fired)
+        if (Input.GetAxis("FireLasers") > 0 && Time.time > _nextFire)
         {
-            _fired = true;
-
+            _nextFire = Time.time + _laserWaitTime;
             if (_laserPool == null)
             {
                 _laserPool = new GameObject("Laser Object Pool");
             }
-            //shoot limited lasers
-            StartCoroutine(LimitProjectiles(_laserObject, _laserWaitTime, _laserPool));
+            //shoot lasers
+            ShootProjectile(_laserObject, _laserWaitTime, _laserPool);
         }
     }
 
-    private IEnumerator LimitProjectiles(GameObject projectile, float waitTime, GameObject pool)
+    private void ShootProjectile(GameObject projectile, float waitTime, GameObject pool)
     {
         Vector3 shootPosition = new Vector3(transform.position.x, transform.position.y + 1f, 0);
-        // add projectile to pool
+        // if projectiles are not at max amount then add projectile to pool
         if (_projectiles.Count < _maxProjectilesForPool)
         {
             GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, pool.transform);
             _projectiles.Add(newProjectile);
         }
-        //use projectile from pool
+        //else use inactive projectile from pool
         else
         {
             foreach (GameObject itemInPool in _projectiles)
@@ -106,8 +107,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-
-        yield return new WaitForSeconds(waitTime);
-        _fired = false;
     }
+
+
 }
