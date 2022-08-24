@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,11 +11,12 @@ public class Player : MonoBehaviour
 
 
     [SerializeField] private GameObject _laserObject;
-    [SerializeField] private float _laserWaitTime = 0.5f;
+    private List<GameObject> _lasers = new List<GameObject>(); //laser object pool
+    private const float _LASER_WAIT_TIME = 0.5f;
+    private GameObject _laserPoolParent; //parent object for lasers for hierarchy organization
+
     private float _nextFire = 0.0f; //timer for next fire
-    private List<GameObject> _projectiles = new List<GameObject>(); //projectiles object pool
-    [SerializeField] private int _maxProjectilesForPool = 10; //max lasers in object pool
-    private GameObject _laserPool;
+    private const int _maxProjectilesForPool = 10; //max objects in object pool
 
     // Start is called before the first frame update
     void Start()
@@ -75,29 +75,29 @@ public class Player : MonoBehaviour
         //if space key hit fire laser
         if (Input.GetAxis("FireLasers") > 0 && Time.time > _nextFire)
         {
-            _nextFire = Time.time + _laserWaitTime;
-            if (_laserPool == null)
+            _nextFire = Time.time + _LASER_WAIT_TIME;
+            if (_laserPoolParent == null)
             {
-                _laserPool = new GameObject("Laser Object Pool");
+                _laserPoolParent = new GameObject("Laser Object Pool");
             }
             //shoot lasers
-            ShootProjectile(_laserObject, _laserWaitTime, _laserPool);
+            ShootProjectile(_laserObject, _lasers, _laserPoolParent);
         }
     }
 
-    private void ShootProjectile(GameObject projectile, float waitTime, GameObject pool)
+    private void ShootProjectile(GameObject projectile, List<GameObject> projectiles, GameObject poolParent)
     {
         Vector3 shootPosition = new Vector3(transform.position.x, transform.position.y + 1f, 0);
         // if projectiles are not at max amount then add projectile to pool
-        if (_projectiles.Count < _maxProjectilesForPool)
+        if (projectiles.Count < _maxProjectilesForPool)
         {
-            GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, pool.transform);
-            _projectiles.Add(newProjectile);
+            GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, poolParent.transform);
+            projectiles.Add(newProjectile);
         }
         //else use inactive projectile from pool
         else
         {
-            foreach (GameObject itemInPool in _projectiles)
+            foreach (GameObject itemInPool in projectiles)
             {
                 if (!itemInPool.activeSelf)
                 {

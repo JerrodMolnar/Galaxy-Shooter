@@ -415,5 +415,3 @@ MonoBehaviour:
   _xScreenBounds: 11.3
   _yScreenBounds: -4.5
   _laserObject: {fileID: 6800894674834856854, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
-  _laserWaitTime: 0.5
-  _maxProjectilesForPool: 10
