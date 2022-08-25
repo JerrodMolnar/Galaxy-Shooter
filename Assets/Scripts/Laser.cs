@@ -22,7 +22,7 @@ public class Laser : MonoBehaviour
     {
         //make laser move straight up screen from point of instantiation
         
-        if (transform.position.y > _helper.yUpperScreenBoundary)
+        if (transform.position.y > _helper.yUpperScreenBounds + 2.5f)
         {
             transform.position = Vector3.zero;
             gameObject.SetActive(false);            

@@ -1,4 +1,6 @@
 public class Helper
 {
-    public float yUpperScreenBoundary = 8.0f;    
+    public float yUpperScreenBounds = 5.5f;
+    public float xPositionBounds = 8.0f;
+    public float yLowerBounds = -3.5f;
 }
