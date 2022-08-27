@@ -1,6 +1,28 @@
-public class Helper
+using UnityEngine;
+
+namespace Utility
 {
-    public float yUpperScreenBounds = 5.5f;
-    public float xPositionBounds = 8.0f;
-    public float yLowerBounds = -3.5f;
+    public class Helper
+    {
+        private const float yUpperScreenBounds = 5.5f;
+        private const float xPositionBounds = 9.5f;
+        private const float yLowerBounds = -3.5f;
+
+        public static float GetXPositionBounds()
+        {
+            return xPositionBounds;
+        }
+
+        public static float GetYUpperScreenBounds()
+        {
+            return yUpperScreenBounds;
+        }
+
+        public static float GetYLowerBounds()
+        {
+            return yLowerBounds;
+        }
+    }
 }
+
+
