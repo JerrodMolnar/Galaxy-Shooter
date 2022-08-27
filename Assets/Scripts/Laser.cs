@@ -59,6 +59,6 @@ public class Laser : MonoBehaviour
     {
         //Laser hit another collider
         other.GetComponent<Health>().DamageTaken(15);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
     }

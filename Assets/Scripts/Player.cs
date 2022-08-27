@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float _moveSpeed = 4.0f; //used as player movement speed
 
-    private const float _LASER_WAIT_TIME = 0.5f;
+    private const float _LASER_WAIT_TIME = 0.25f;
 
     private float _nextFire = 0.0f; //timer for next fire
 

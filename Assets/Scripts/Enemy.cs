@@ -82,9 +82,8 @@ public class Enemy : MonoBehaviour
     {        
         if (other.CompareTag("Player"))
         {
-            GetComponent<BoxCollider>().isTrigger = false;
             other.GetComponent<Health>().TakeLife();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 

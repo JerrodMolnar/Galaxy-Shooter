@@ -9,18 +9,12 @@ public class FireProjectiles : MonoBehaviour
     private static List<GameObject> _laserList = new List<GameObject>();
     [SerializeField] GameObject _laser;
 
-    private enum ProjectileType
-    {
-        Laser, //0
-        Rocket //1
-    };
-
     // Start is called before the first frame update
     void Start()
     {
         if (_laserPoolParent == null)
         {
-        _laserPoolParent = new GameObject("Laser Object Pool");
+            _laserPoolParent = new GameObject("Laser Object Pool");
         }
 
         if (_laser == null)
@@ -39,10 +33,11 @@ public class FireProjectiles : MonoBehaviour
     {
         switch (projectileType)
         {
-            case (int)ProjectileType.Laser:
+            case 0: //laser
                 ProjectileChoice(_laser, _laserList, _laserPoolParent);
                 break;
-                
+            default:
+                break;
         }
     }
 
@@ -59,12 +54,12 @@ public class FireProjectiles : MonoBehaviour
         {
             shootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
         }
-        
-        
-        // if projectiles are not at max amount then add projectile to pool
+
+
+        // if projectiles are not at max amount then add projectile to pool as needed
         if (poolParent != null)
         {
-            if (projectiles.Count < _maxProjectilesForPool)
+            if (projectiles.Count < 1)
             {
                 GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, poolParent.transform);
                 projectiles.Add(newProjectile);
@@ -73,24 +68,28 @@ public class FireProjectiles : MonoBehaviour
                     newProjectile.GetComponent<Laser>().isPlayerLaser(true);
                 }
             }
-            //else use inactive projectile from pool
-            else
+            foreach (GameObject itemInPool in projectiles)
             {
-                foreach (GameObject itemInPool in projectiles)
+                if (!itemInPool.activeSelf)
                 {
-                    if (!itemInPool.activeSelf)
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = shootPosition;
+                    if (playerLaser)
                     {
-                        itemInPool.transform.position = shootPosition;
-                        if (playerLaser)
-                        {
-                            itemInPool.GetComponent<Laser>().isPlayerLaser(true);
-                        }
-                        itemInPool.SetActive(true);
-                        break;
+                        itemInPool.GetComponent<Laser>().isPlayerLaser(true);
+                    }
+                    break;
+                }
+                else if (projectiles.Count < _maxProjectilesForPool)
+                {
+                    GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, poolParent.transform);
+                    projectiles.Add(newProjectile);
+                    if (playerLaser)
+                    {
+                        newProjectile.GetComponent<Laser>().isPlayerLaser(true);
                     }
                 }
             }
         }
-        
     }
 }
