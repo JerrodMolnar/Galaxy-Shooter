@@ -77,6 +77,10 @@ namespace ProjectileType
                     other.GetComponent<Health>()?.DamageTaken(15);
                 }                
             }
+            if (other.tag == "Laser")
+            {
+                other.gameObject.SetActive(false);
+            }
             gameObject.SetActive(false);
         }
     }
