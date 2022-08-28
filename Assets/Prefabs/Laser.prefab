@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 8
-  playerLaser: 0
+  _playerLaser: 0
 --- !u!54 &1303083049788720451
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
     {        
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<Health>().TakeLife();
+            other.GetComponent<Health>().DamageTaken(100);
             gameObject.SetActive(false);
         }
     }
@@ -90,6 +90,6 @@ public class Enemy : MonoBehaviour
     private void ShootLasers()
     {
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
-        GetComponent<FireProjectiles>().ShootProjectile(0);
+        GetComponent<Projectile.FireProjectiles>().ShootProjectile(0);
     }
 }

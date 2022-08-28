@@ -24,8 +24,8 @@ public class Player : MonoBehaviour
     {
         Movement();
         FireLaser();
-
     }
+
 
     private void Movement()
     {
@@ -49,18 +49,7 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(Helper.GetXPositionBounds() + 2f, transform.position.y, 0);
         }
 
-        //if player y position is greater than 0 then keep y position at 0
-        //else if y position is less than bottom of screen keep y position on screen
-        /* if (transform.position.y > 0)
-         {
-             transform.position = new Vector3(transform.position.x, 0, 0);
-         }
-         else if (transform.position.y < _yScreenBounds)
-         {
-             transform.position = new Vector3(transform.position.x, _yScreenBounds, 0);
-         }*/
-
-        //could use Mathf.clamp for y position to keep player on screen
+        //use Mathf.clamp for y position to keep player on screen
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, Helper.GetYLowerBounds(), 0), 0);
     }
 
@@ -71,7 +60,7 @@ public class Player : MonoBehaviour
         {
             _nextFire = Time.time + _LASER_WAIT_TIME;            
             //shoot lasers
-            GetComponent<FireProjectiles>().ShootProjectile(0);
+            GetComponent<Projectile.FireProjectiles>().ShootProjectile(0);
         }
     }
 

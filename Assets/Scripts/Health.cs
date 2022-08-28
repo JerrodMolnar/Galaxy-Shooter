@@ -12,6 +12,8 @@ public class Health : MonoBehaviour
     [SerializeField] private const int _maxLives = 5;
     private GameObject _livesText;
     private GameObject _healthText;
+    private float _reappearWaitTime = 2f;
+    private bool _isInvincible = false;
     
 
     private void Start()
@@ -41,7 +43,10 @@ public class Health : MonoBehaviour
 
     public void DamageTaken(int damageAmount)
     {
-        _health -= damageAmount;
+        if (!_isInvincible)
+        {
+            _health -= damageAmount;
+        }
         if (_health <= 0)
         {
             TakeLife();
@@ -70,13 +75,30 @@ public class Health : MonoBehaviour
     public void TakeLife()
     {
         _lives -= 1;
+
+        if (tag == "Player")
+        {
+            GetComponent<Player>().enabled = false;
+        }
+        else
+        {
+            GetComponent<Enemy>().enabled = false;
+        }
         GetComponent<MeshRenderer>().enabled = false;
-        GetComponent<BoxCollider>().enabled = false;
+        GetComponent<BoxCollider>().enabled = false;        
+        StartCoroutine(Reappear());
+    }
+
+    public IEnumerator Reappear()
+    {
+        float invincibleTime = 3f;
+        yield return new WaitForSeconds(_reappearWaitTime);
         if (tag == "Player" && _lives > 0)
         {
             transform.position = new Vector3(0, -2.5f, 0);
             GetComponent<MeshRenderer>().enabled = true;
             GetComponent<BoxCollider>().enabled = true;
+            GetComponent<Player>().enabled = true;
             _health = _maxHealth;
             if (_healthText != null)
             {
@@ -86,18 +108,41 @@ public class Health : MonoBehaviour
             {
                 _livesText.GetComponent<Text>().text = "Lives: " + _lives;
             }
+            StartCoroutine(Invincible(invincibleTime));
         }
         else if (_lives > 0)
         {
             transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
             GetComponent<MeshRenderer>().enabled = true;
             GetComponent<BoxCollider>().enabled = true;
+            GetComponent<Enemy>().enabled = true;
+            StartCoroutine(Invincible(invincibleTime));
+        }
+        else if (tag == "Player")
+        {
+            if (_healthText != null)
+            {
+                _healthText.GetComponent<Text>().text = "Health: " + _health;
+            }
+            if (_livesText != null)
+            {
+                _livesText.GetComponent<Text>().text = "Lives: " + _lives;
+            }
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (GameObject enemy in enemies)
+                Destroy(enemy);
+            gameObject.SetActive(false);
         }
         else
         {
             Destroy(gameObject);
         }
     }
-
     
+    private IEnumerator Invincible(float timeInvincible)
+    {
+        _isInvincible = true;
+        yield return new WaitForSeconds(timeInvincible);
+        _isInvincible = false;
+    }
 }

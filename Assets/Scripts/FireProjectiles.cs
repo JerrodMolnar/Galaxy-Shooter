@@ -1,92 +1,90 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using ProjectileType;
 
-public class FireProjectiles : MonoBehaviour
+namespace Projectile
 {
-    private int _maxProjectilesForPool = 30;
-    private static GameObject _laserPoolParent;
-    private static List<GameObject> _laserList = new List<GameObject>();
-    [SerializeField] GameObject _laser;
 
-    // Start is called before the first frame update
-    void Start()
+    public class FireProjectiles : MonoBehaviour
     {
-        if (_laserPoolParent == null)
+        private int _maxProjectilesForPool = 30;
+        private static GameObject _laserPoolParent;
+        private static List<GameObject> _laserList = new List<GameObject>();
+        [SerializeField] private GameObject _laser;
+        private Vector3 _laserShootPosition;
+        private bool _isPlayerShot = false;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            _laserPoolParent = new GameObject("Laser Object Pool");
-        }
-
-        if (_laser == null)
-        {
-            Debug.LogError("Laser Prefab not found");
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void ShootProjectile(int projectileType)
-    {
-        switch (projectileType)
-        {
-            case 0: //laser
-                ProjectileChoice(_laser, _laserList, _laserPoolParent);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void ProjectileChoice(GameObject projectile, List<GameObject> projectiles, GameObject poolParent)
-    {
-        bool playerLaser = false;
-        Vector3 shootPosition;
-        if (tag == "Player")
-        {
-            playerLaser = true;
-            shootPosition = new Vector3(transform.position.x, transform.position.y + 1f, 0);
-        }
-        else
-        {
-            shootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
-        }
-
-
-        // if projectiles are not at max amount then add projectile to pool as needed
-        if (poolParent != null)
-        {
-            if (projectiles.Count < 1)
+            if (_laserPoolParent == null)
             {
-                GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, poolParent.transform);
-                projectiles.Add(newProjectile);
-                if (playerLaser)
-                {
-                    newProjectile.GetComponent<Laser>().isPlayerLaser(true);
-                }
+                _laserPoolParent = new GameObject("Laser Object Pool");
             }
-            foreach (GameObject itemInPool in projectiles)
+
+            if (_laser == null)
             {
-                if (!itemInPool.activeSelf)
+                Debug.LogError("Laser Prefab not found");
+            }
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void ShootProjectile(int projectileType)
+        {
+            switch (projectileType)
+            {
+                case 0: //laser
+                    FireLaser();
+                    break;                
+            }
+        }
+
+        private void FireLaser()
+        {
+            if (tag == "Player")
+            {
+                _isPlayerShot = true;
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+            }
+            else
+            {
+                _isPlayerShot = false;
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
+            }
+
+            if (_laser != null)
+            {
+                if (_laserList.Count < 1)
                 {
-                    itemInPool.SetActive(true);
-                    itemInPool.transform.position = shootPosition;
-                    if (playerLaser)
-                    {
-                        itemInPool.GetComponent<Laser>().isPlayerLaser(true);
-                    }
-                    break;
+                    GameObject newProjectile = Instantiate(_laser, _laserShootPosition, Quaternion.identity, _laserPoolParent.transform);
+                    _laserList.Add(newProjectile);
+                    newProjectile.GetComponent<Laser>().SetShooter(_isPlayerShot);
                 }
-                else if (projectiles.Count < _maxProjectilesForPool)
+                else
                 {
-                    GameObject newProjectile = Instantiate(projectile, shootPosition, Quaternion.identity, poolParent.transform);
-                    projectiles.Add(newProjectile);
-                    if (playerLaser)
+                    foreach (GameObject itemInPool in _laserList)
                     {
-                        newProjectile.GetComponent<Laser>().isPlayerLaser(true);
+                        if (!itemInPool.activeSelf)
+                        {
+                            itemInPool.SetActive(true);
+                            itemInPool.transform.position = _laserShootPosition;
+                            itemInPool.GetComponent<Laser>().SetShooter(_isPlayerShot);
+                            break;
+                        }
+                        else if (_laserList.Count < _maxProjectilesForPool)
+                        {
+                            GameObject newProjectile = Instantiate(_laser, _laserShootPosition, Quaternion.identity, _laserPoolParent.transform);
+                            _laserList.Add(newProjectile);
+                            newProjectile.GetComponent<Laser>().SetShooter(_isPlayerShot);
+                            break;
+                        }
                     }
                 }
             }
