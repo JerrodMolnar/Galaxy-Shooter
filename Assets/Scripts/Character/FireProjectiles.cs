@@ -50,7 +50,7 @@ namespace Projectile
             if (tag == "Player")
             {
                 _isPlayerShot = true;
-                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.25f, 0);
             }
             else
             {

@@ -5,11 +5,11 @@ using UnityEngine.UI;
 using Utility;
 
 public class Health : MonoBehaviour
-{
-    [SerializeField] private int _health;
+{    
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private int _lives = 3;
     [SerializeField] private const int _maxLives = 5;
+    private int _health;
     private GameObject _livesText;
     private GameObject _healthText;
     private SpawnManager _spawnManager;
@@ -94,8 +94,8 @@ public class Health : MonoBehaviour
         {
             GetComponent<Enemy>().enabled = false;
         }
-        GetComponent<MeshRenderer>().enabled = false;
-        GetComponent<BoxCollider>().enabled = false;        
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<PolygonCollider2D>().enabled = false;        
         StartCoroutine(Reappear());
     }
 
@@ -106,8 +106,8 @@ public class Health : MonoBehaviour
         if (tag == "Player" && _lives > 0)
         {
             transform.position = new Vector3(0, -2.5f, 0);
-            GetComponent<MeshRenderer>().enabled = true;
-            GetComponent<BoxCollider>().enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
+            GetComponent<PolygonCollider2D>().enabled = true;
             GetComponent<Player>().enabled = true;
             _health = _maxHealth;
             if (_healthText != null)
@@ -123,8 +123,8 @@ public class Health : MonoBehaviour
         else if (_lives > 0)
         {
             transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
-            GetComponent<MeshRenderer>().enabled = true;
-            GetComponent<BoxCollider>().enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
+            GetComponent<PolygonCollider2D>().enabled = true;
             GetComponent<Enemy>().enabled = true;
             StartCoroutine(Invincible(invincibleTime));
         }

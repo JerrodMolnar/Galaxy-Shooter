@@ -74,7 +74,7 @@ namespace ProjectileType
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             //Laser hit another collider
             if (other.gameObject.activeSelf)
