@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Utility;
 
 namespace ProjectileType
@@ -10,11 +11,22 @@ namespace ProjectileType
     {
         [SerializeField] private float _moveSpeed = 8.0f;
         [SerializeField] private bool _playerLaser = false;
+        private GameObject _scoreText;
+        private static int _score = 0;
 
         // Start is called before the first frame update
         void Start()
         {
+            _scoreText = GameObject.Find("Score");
 
+            if (_scoreText == null)
+            {
+                Debug.LogError("Score text on Laser not found");
+            }
+            else
+            {
+                _scoreText.GetComponent<Text>().text = "Score: " + _score;
+            }
         }
 
         // Update is called once per frame
@@ -70,11 +82,13 @@ namespace ProjectileType
                 //Enemy hit by player shot 
                 if (other.CompareTag("Enemy") && _playerLaser)
                 {
-                    other.GetComponent<Health>()?.DamageTaken(15);
+                    _score += 5;
+                    _scoreText.GetComponent<Text>().text = "Score: " + _score;
+                    other.GetComponent<Health>()?.DamageTaken(5);
                 }
                 else if (other.CompareTag("Player") && !_playerLaser)
                 {
-                    other.GetComponent<Health>()?.DamageTaken(15);
+                    other.GetComponent<Health>()?.DamageTaken(5);
                 }                
             }
             if (other.tag == "Laser")

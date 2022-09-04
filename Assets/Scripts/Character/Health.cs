@@ -12,6 +12,7 @@ public class Health : MonoBehaviour
     [SerializeField] private const int _maxLives = 5;
     private GameObject _livesText;
     private GameObject _healthText;
+    private SpawnManager _spawnManager;
     private float _reappearWaitTime = 2f;
     private bool _isInvincible = false;
     
@@ -19,9 +20,10 @@ public class Health : MonoBehaviour
     private void Start()
     {
         _health = _maxHealth;
-
         _livesText = GameObject.Find("Lives");
         _healthText = GameObject.Find("Health");
+        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+
         if (_livesText == null)
         {
             Debug.LogError("Lives text not found");
@@ -39,6 +41,11 @@ public class Health : MonoBehaviour
         {
             _healthText.GetComponent<Text>().text = "Health: " + _health;
         }        
+
+        if (_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager not found on Health script");
+        }
     }
 
     public void DamageTaken(int damageAmount)
@@ -131,6 +138,7 @@ public class Health : MonoBehaviour
             {
                 _livesText.GetComponent<Text>().text = "Lives: " + _lives;
             }
+            _spawnManager.Spawn(false);
             GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
             foreach (GameObject enemy in enemies)
                 Destroy(enemy);

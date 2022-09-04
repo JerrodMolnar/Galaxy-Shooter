@@ -9,7 +9,6 @@ namespace Projectile
 
     public class FireProjectiles : MonoBehaviour
     {
-        private int _maxProjectilesForPool = 30;
         private static GameObject _laserPoolParent;
         private static List<GameObject> _laserList = new List<GameObject>();
         [SerializeField] private GameObject _laser;
@@ -42,7 +41,7 @@ namespace Projectile
             {
                 case 0: //laser
                     FireLaser();
-                    break;                
+                    break;
             }
         }
 
@@ -61,33 +60,24 @@ namespace Projectile
 
             if (_laser != null)
             {
-                void NewLaser()
+                bool isNoActiveLaser = true;
+
+                foreach (GameObject itemInPool in _laserList)
+                {
+                    if (itemInPool.activeSelf == false)
+                    {
+                        itemInPool.SetActive(true);
+                        itemInPool.transform.position = _laserShootPosition;
+                        itemInPool.GetComponent<Laser>().SetShooter(_isPlayerShot);
+                        isNoActiveLaser = false;
+                        break;
+                    }
+                }
+                if (isNoActiveLaser)
                 {
                     GameObject newProjectile = Instantiate(_laser, _laserShootPosition, Quaternion.identity, _laserPoolParent.transform);
                     _laserList.Add(newProjectile);
                     newProjectile.GetComponent<Laser>().SetShooter(_isPlayerShot);
-                }
-                if (_laserList.Count < 1)
-                {
-                    NewLaser();
-                }
-                else
-                {
-                    foreach (GameObject itemInPool in _laserList)
-                    {
-                        if (!itemInPool.activeSelf)
-                        {
-                            itemInPool.SetActive(true);
-                            itemInPool.transform.position = _laserShootPosition;
-                            itemInPool.GetComponent<Laser>().SetShooter(_isPlayerShot);
-                            break;
-                        }
-                        else if (_laserList.Count < _maxProjectilesForPool)
-                        {
-                            NewLaser();
-                            break;
-                        }
-                    }
                 }
             }
         }

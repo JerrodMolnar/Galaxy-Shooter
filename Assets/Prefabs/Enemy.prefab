@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _health: 0
-  _maxHealth: 15
+  _maxHealth: 5
   _lives: 1
 --- !u!114 &1755524954
 MonoBehaviour:
