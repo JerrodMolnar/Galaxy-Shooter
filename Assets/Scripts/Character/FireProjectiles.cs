@@ -61,11 +61,15 @@ namespace Projectile
 
             if (_laser != null)
             {
-                if (_laserList.Count < 1)
+                void NewLaser()
                 {
                     GameObject newProjectile = Instantiate(_laser, _laserShootPosition, Quaternion.identity, _laserPoolParent.transform);
                     _laserList.Add(newProjectile);
                     newProjectile.GetComponent<Laser>().SetShooter(_isPlayerShot);
+                }
+                if (_laserList.Count < 1)
+                {
+                    NewLaser();
                 }
                 else
                 {
@@ -80,14 +84,13 @@ namespace Projectile
                         }
                         else if (_laserList.Count < _maxProjectilesForPool)
                         {
-                            GameObject newProjectile = Instantiate(_laser, _laserShootPosition, Quaternion.identity, _laserPoolParent.transform);
-                            _laserList.Add(newProjectile);
-                            newProjectile.GetComponent<Laser>().SetShooter(_isPlayerShot);
+                            NewLaser();
                             break;
                         }
                     }
                 }
             }
         }
+
     }
 }

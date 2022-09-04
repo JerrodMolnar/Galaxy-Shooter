@@ -47,11 +47,12 @@ public class Health : MonoBehaviour
         {
             _health -= damageAmount;
         }
+
         if (_health <= 0)
         {
             TakeLife();
         }
-        if (tag == "Player")
+        else if (tag == "Player")
         {
             if (_healthText != null)
             {
@@ -75,10 +76,12 @@ public class Health : MonoBehaviour
     public void TakeLife()
     {
         _lives -= 1;
+        _health = 0;
 
         if (tag == "Player")
         {
             GetComponent<Player>().enabled = false;
+            _healthText.GetComponent<Text>().text = "Health: " + _health;
         }
         else
         {

@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 967176040}
   m_Layer: 0
   m_Name: SpawnManager
-  m_TagString: Untagged
+  m_TagString: Respawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -425,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ddfc349d4492f4eba6501ab5ae93bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smallEnemey: {fileID: 3346782164936283795, guid: c88b8dd6b346ed24c80aaf3ac61c5897, type: 3}
 --- !u!1 &1131333081
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,24 +608,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &1755524947 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3346782164936283795, guid: c88b8dd6b346ed24c80aaf3ac61c5897, type: 3}
-  m_PrefabInstance: {fileID: 3346782165596699072}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1755524954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1755524947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cd71ca4f8cf24f439536eac8f6dad37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _laser: {fileID: 6800894674834856854, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
 --- !u!1 &1997555722
 GameObject:
   m_ObjectHideFlags: 0

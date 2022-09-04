@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4535810404081519005}
   - component: {fileID: 3346782164936283800}
   - component: {fileID: 7736860834542667718}
+  - component: {fileID: 1755524954}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -130,24 +131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _laser: {fileID: 6800894674834856854, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
-  _setPlayerShooter:
-    m_PersistentCalls:
-      m_Calls: []
-  _setEnemyShooter:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -8722139475093739548, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
-        m_TargetAssemblyTypeName: ProjectileType.Laser, Assembly-CSharp
-        m_MethodName: SetShooter
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &3346782164936283800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,3 +160,16 @@ MonoBehaviour:
   _health: 0
   _maxHealth: 15
   _lives: 1
+--- !u!114 &1755524954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3346782164936283795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cd71ca4f8cf24f439536eac8f6dad37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _laser: {fileID: 6800894674834856854, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
