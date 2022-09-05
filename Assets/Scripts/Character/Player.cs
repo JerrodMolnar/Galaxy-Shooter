@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
         {
             _nextFire = Time.time + _LASER_WAIT_TIME;            
             //shoot lasers
-            GetComponent<Projectile.FireProjectiles>().ShootProjectile(0);
+            GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile(0);
         }
     }
 

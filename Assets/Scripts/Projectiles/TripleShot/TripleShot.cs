@@ -3,38 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
-public class TripleShot : MonoBehaviour
+namespace ProjectileType
 {
-    [SerializeField] private float _moveSpeed = 8.0f;
-
-    // Start is called before the first frame update
-    void Start()
+    public class TripleShot : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private float _moveSpeed = 8.0f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        TripleShotMovement();
-    }
+        // Update is called once per frame
+        void Update()
+        {
+            TripleShotMovement();
+        }
 
-    private void TripleShotMovement()
-    {
-        //if laser was fired from player make lase go up else make laser go down
-        
+        private void TripleShotMovement()
+        {
             if (transform.position.y > Helper.GetYUpperScreenBounds() + 5f)
             {
-            gameObject.GetComponentInChildren<Transform>().gameObject.SetActive(false);
-
-                
-                    gameObject.SetActive(false);
+                gameObject.GetComponentInChildren<Transform>().gameObject.SetActive(false);
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(false);
+                }
+                gameObject.SetActive(false);
                 transform.position = Vector3.zero;
             }
             else
             {
                 transform.Translate(Vector3.up * _moveSpeed * Time.deltaTime);
             }
-        
+        }
     }
 }
+
+

@@ -221,12 +221,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1181681802453169286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cd71ca4f8cf24f439536eac8f6dad37, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c6cd9fc740a2f64d990ce06197c56f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _laserPrefab: {fileID: 6800894674834856854, guid: c4076d8d755b6d8458ff1482fc9ebf42, type: 3}
-  _tripleShotPrefab: {fileID: 6745475052380766747, guid: 32078d70c4a176a4eba64144ae4496ac, type: 3}
-  _isTripleShotActive: 1
+  _isTripleShotActive: 0
 --- !u!114 &1181681802453169285
 MonoBehaviour:
   m_ObjectHideFlags: 0

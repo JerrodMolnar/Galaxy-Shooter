@@ -38,7 +38,6 @@ public class Enemy : MonoBehaviour
         {
             ShootLasers();
         }
-
     }
 
     private void Movement()
@@ -82,7 +81,7 @@ public class Enemy : MonoBehaviour
     {        
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<Health>().DamageTaken(100);
+            other.GetComponent < Health.Health>().DamageTaken(100);
             gameObject.SetActive(false);
         }
     }
@@ -90,6 +89,6 @@ public class Enemy : MonoBehaviour
     private void ShootLasers()
     {
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
-        GetComponent<Projectile.FireProjectiles>().ShootProjectile(0);
+        GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile(0);
     }
 }

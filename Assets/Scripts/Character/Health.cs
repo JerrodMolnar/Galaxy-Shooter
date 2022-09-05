@@ -1,159 +1,139 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Utility;
+using GameCanvas;
 
-public class Health : MonoBehaviour
-{    
-    [SerializeField] private int _maxHealth = 100;
-    [SerializeField] private int _lives = 3;
-    [SerializeField] private const int _maxLives = 5;
-    private int _health;
-    private GameObject _livesText;
-    private GameObject _healthText;
-    private SpawnManager _spawnManager;
-    private float _reappearWaitTime = 2f;
-    private bool _isInvincible = false;
-    
-
-    private void Start()
+namespace Health
+{
+    public class Health : MonoBehaviour
     {
-        _health = _maxHealth;
-        _livesText = GameObject.Find("Lives");
-        _healthText = GameObject.Find("Health");
-        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        [SerializeField] private int _maxHealth = 100;
+        [SerializeField] private int _lives = 3;
+        [SerializeField] private const int _maxLives = 5;
+        private int _health;
+        private SpawnManager.SpawnManager _spawnManager;
+        private float _reappearWaitTime = 2f;
+        private bool _isInvincible = false;
 
-        if (_livesText == null)
-        {
-            Debug.LogError("Lives text not found");
-        }
-        else if (tag == "Player")
-        {
-            _livesText.GetComponent<Text>().text = "Lives: " + _lives;
-        }
-
-        if ( _healthText == null)
-        {
-            Debug.LogError("Health Text not found");
-        }
-        else if (tag == "Player")
-        {
-            _healthText.GetComponent<Text>().text = "Health: " + _health;
-        }        
-
-        if (_spawnManager == null)
-        {
-            Debug.LogError("Spawn Manager not found on Health script");
-        }
-    }
-
-    public void DamageTaken(int damageAmount)
-    {
-        if (!_isInvincible)
-        {
-            _health -= damageAmount;
-        }
-
-        if (_health <= 0)
-        {
-            TakeLife();
-        }
-        else if (tag == "Player")
-        {
-            if (_healthText != null)
-            {
-                _healthText.GetComponent<Text>().text = "Health: " + _health;
-            }
-        }
-    }
-
-    public void DamageHealed(int healAmount)
-    {
-        if (_health + healAmount > _maxHealth)
+        private void Start()
         {
             _health = _maxHealth;
-        }
-        else
-        {
-            _health += healAmount;
-        }
-    }
+            if (tag == "Player")
+            {
+                GameCanvasManager.health = _health;
+                GameCanvasManager.lives = _lives;
+            }
 
-    public void TakeLife()
-    {
-        _lives -= 1;
-        _health = 0;
+            _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager.SpawnManager>();
 
-        if (tag == "Player")
-        {
-            GetComponent<Player>().enabled = false;
-            _healthText.GetComponent<Text>().text = "Health: " + _health;
+            if (_spawnManager == null)
+            {
+                Debug.LogError("Spawn Manager not found on Health script");
+            }
         }
-        else
-        {
-            GetComponent<Enemy>().enabled = false;
-        }
-        GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<PolygonCollider2D>().enabled = false;        
-        StartCoroutine(Reappear());
-    }
 
-    public IEnumerator Reappear()
-    {
-        float invincibleTime = 3f;
-        yield return new WaitForSeconds(_reappearWaitTime);
-        if (tag == "Player" && _lives > 0)
+        public void DamageTaken(int damageAmount)
         {
-            transform.position = new Vector3(0, -2.5f, 0);
-            GetComponent<SpriteRenderer>().enabled = true;
-            GetComponent<PolygonCollider2D>().enabled = true;
-            GetComponent<Player>().enabled = true;
-            _health = _maxHealth;
-            if (_healthText != null)
+            if (!_isInvincible)
             {
-                _healthText.GetComponent<Text>().text = "Health: " + _health;
+                _health -= damageAmount;
+                if (tag == "Enemy")
+                {
+                    GameCanvasManager.score += damageAmount;
+                }
             }
-            if (_livesText != null)
+
+            if (_health <= 0)
             {
-                _livesText.GetComponent<Text>().text = "Lives: " + _lives;
+                TakeLife();
             }
-            StartCoroutine(Invincible(invincibleTime));
+            else if (tag == "Player")
+            {
+                GameCanvasManager.health = _health;
+            }
         }
-        else if (_lives > 0)
+
+        public void DamageHealed(int healAmount)
         {
-            transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
-            GetComponent<SpriteRenderer>().enabled = true;
-            GetComponent<PolygonCollider2D>().enabled = true;
-            GetComponent<Enemy>().enabled = true;
-            StartCoroutine(Invincible(invincibleTime));
-        }
-        else if (tag == "Player")
-        {
-            if (_healthText != null)
+            if (_health + healAmount > _maxHealth)
             {
-                _healthText.GetComponent<Text>().text = "Health: " + _health;
+                _health = _maxHealth;
             }
-            if (_livesText != null)
+            else
             {
-                _livesText.GetComponent<Text>().text = "Lives: " + _lives;
+                _health += healAmount;
             }
-            _spawnManager.Spawn(false);
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-            foreach (GameObject enemy in enemies)
-                Destroy(enemy);
-            gameObject.SetActive(false);
+
+            if (tag == "Player")
+            {
+                GameCanvasManager.health = _health;
+            }
         }
-        else
+
+        public void TakeLife()
         {
-            Destroy(gameObject);
+            _lives -= 1;
+            _health = 0;
+
+            if (tag == "Player")
+            {
+                GetComponent<Player>().enabled = false;
+                GameCanvasManager.health = _health;
+            }
+            else
+            {
+                GetComponent<Enemy>().enabled = false;
+            }
+            GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<PolygonCollider2D>().enabled = false;
+            StartCoroutine(Reappear());
         }
-    }
-    
-    private IEnumerator Invincible(float timeInvincible)
-    {
-        _isInvincible = true;
-        yield return new WaitForSeconds(timeInvincible);
-        _isInvincible = false;
+
+        public IEnumerator Reappear()
+        {
+            float invincibleTime = 3f;
+            yield return new WaitForSeconds(_reappearWaitTime);
+            if (tag == "Player" && _lives > 0)
+            {
+                transform.position = new Vector3(0, -2.5f, 0);
+                GetComponent<SpriteRenderer>().enabled = true;
+                GetComponent<PolygonCollider2D>().enabled = true;
+                GetComponent<Player>().enabled = true;
+                _health = _maxHealth;
+                GameCanvasManager.health = _health;
+                GameCanvasManager.lives = _lives;
+                StartCoroutine(Invincible(invincibleTime));
+            }
+            else if (_lives > 0)
+            {
+                transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
+                GetComponent<SpriteRenderer>().enabled = true;
+                GetComponent<PolygonCollider2D>().enabled = true;
+                GetComponent<Enemy>().enabled = true;
+                StartCoroutine(Invincible(invincibleTime));
+            }
+            else if (tag == "Player")
+            {
+                GameCanvasManager.health = _health;
+                GameCanvasManager.lives = _lives;
+                _spawnManager.Spawn(false);
+                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                foreach (GameObject enemy in enemies)
+                    enemy.SetActive(false);
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private IEnumerator Invincible(float timeInvincible)
+        {
+            _isInvincible = true;
+            yield return new WaitForSeconds(timeInvincible);
+            _isInvincible = false;
+        }
     }
 }
