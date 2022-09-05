@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour
 {
 
-    [SerializeField] GameObject smallEnemey;
+    [SerializeField] private GameObject _smallEnemey;
     private bool _canSpawn = true;
     private float _spawnWait;
     private GameObject _enemyParent;
@@ -13,7 +13,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (smallEnemey == null)
+        if (_smallEnemey == null)
         {
             Debug.LogError("Enemy not found on SpawnManager script.");
         }
@@ -24,12 +24,6 @@ public class SpawnManager : MonoBehaviour
         }
 
         Spawn(_canSpawn);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void Spawn(bool canSpawn)
@@ -45,7 +39,7 @@ public class SpawnManager : MonoBehaviour
     {
         while (_canSpawn)
         {
-            Instantiate(smallEnemey, _enemyParent.transform);
+            Instantiate(_smallEnemey, _enemyParent.transform);
             _spawnWait = Random.Range(1f, 5f);
             yield return new WaitForSeconds(_spawnWait);
         }

@@ -10,7 +10,7 @@ namespace ProjectileType
     public class Laser : MonoBehaviour
     {
         [SerializeField] private float _moveSpeed = 8.0f;
-        [SerializeField] private bool _playerLaser = false;
+        private bool _playerLaser = true;
         private GameObject _scoreText;
         private static int _score = 0;
 
@@ -52,8 +52,8 @@ namespace ProjectileType
             {
                 if (transform.position.y > Helper.GetYUpperScreenBounds() + 2.5f)
                 {
-                    transform.position = Vector3.zero;
                     gameObject.SetActive(false);
+                    transform.position = Vector3.zero;
                 }
                 else
                 {
@@ -74,6 +74,12 @@ namespace ProjectileType
             }
         }
 
+        public void SetScore(int pointsToAdd)
+        {
+            _score += pointsToAdd;
+            _scoreText.GetComponent<Text>().text = "Score: " + _score;
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             //Laser hit another collider
@@ -82,14 +88,13 @@ namespace ProjectileType
                 //Enemy hit by player shot 
                 if (other.CompareTag("Enemy") && _playerLaser)
                 {
-                    _score += 5;
-                    _scoreText.GetComponent<Text>().text = "Score: " + _score;
+                    SetScore(5);
                     other.GetComponent<Health>()?.DamageTaken(5);
                 }
                 else if (other.CompareTag("Player") && !_playerLaser)
                 {
                     other.GetComponent<Health>()?.DamageTaken(5);
-                }                
+                }
             }
             if (other.tag == "Laser")
             {
