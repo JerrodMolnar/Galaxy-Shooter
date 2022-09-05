@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using ProjectilePool;
 
@@ -13,10 +11,8 @@ namespace ProjectileFire
         private Vector3 _laserShootPosition;
         private bool _isPlayerShot = false;
         [SerializeField] private bool _isTripleShotActive = false;
-        private float _tripleShotCoolDownWait = 10f;
+        private float _tripleShotCoolDownWait = 7.5f;
         private float _tripleShotCoolDown = -1;
-
-        // Start is called before the first frame update
         void Start()
         {
             _laserPooling = GameObject.Find("Laser Pool").GetComponent<LaserPool>();
@@ -36,11 +32,11 @@ namespace ProjectileFire
         {
             switch (projectileType)
             {
-                case 0: //laser
+                case 0:
                     if (_isTripleShotActive && tag == "Player")
                     {
                         FireTripleShot();
-                        if (_tripleShotCoolDown > Time.time)
+                        if (_tripleShotCoolDown < Time.time)
                         {
                             _isTripleShotActive = false;
                         }

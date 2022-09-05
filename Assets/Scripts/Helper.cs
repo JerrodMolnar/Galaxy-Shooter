@@ -1,6 +1,3 @@
-using UnityEngine;
-using Unity;
-
 namespace Utility
 {
     public class Helper

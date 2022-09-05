@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -15,7 +14,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
 
-    // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
@@ -24,7 +22,6 @@ public class Enemy : MonoBehaviour
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
     }
 
-    // Update is called once per frame
     void Update()
     {
         Movement();
@@ -54,13 +51,11 @@ public class Enemy : MonoBehaviour
             {
                 enemyNum += 2;
             }
-            //transform.position = new Vector3(transform.position.x - 0.05f, transform.position.y - Random.Range(0f, 1f), 0);
             _randomXTranslate = Random.Range(-1f, 0.01f);
         }
         if (transform.position.x <= -(Helper.GetXPositionBounds()))
         {
             enemyNum--;
-            //transform.position = new Vector3(transform.position.x + 0.05f, transform.position.y - Random.Range(0f, 1f), 0);
             _randomXTranslate = Random.Range(0.01f, 1f);
         }
         if (transform.position.y < Helper.GetYLowerBounds() - 2)
@@ -78,10 +73,10 @@ public class Enemy : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other)
-    {        
+    {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent < Health.Health>().DamageTaken(100);
+            other.GetComponent<Health.Health>().DamageTaken(100);
             gameObject.SetActive(false);
         }
     }

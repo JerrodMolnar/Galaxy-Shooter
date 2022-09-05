@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +8,6 @@ namespace ProjectilePool
         [SerializeField] private GameObject _laserPrefab;
         private List<GameObject> _laserList = new List<GameObject>();
 
-        // Start is called before the first frame update
         void Start()
         {
             if (_laserPrefab == null)

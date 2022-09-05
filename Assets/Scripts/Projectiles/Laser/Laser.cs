@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -23,7 +21,6 @@ namespace ProjectileType
 
         private void LaserMovement()
         {
-            //if laser was fired from player make lase go up else make laser go down
             if (_isPlayerLaser)
             {
                 if (transform.position.y > Helper.GetYUpperScreenBounds() + 2.5f)
@@ -52,10 +49,8 @@ namespace ProjectileType
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            //Laser hit another collider
             if (other.gameObject.activeSelf)
             {
-                //Enemy hit by player shot 
                 if (other.CompareTag("Enemy"))
                 {                    
                     other.GetComponent<Health.Health>()?.DamageTaken(5);
@@ -69,7 +64,10 @@ namespace ProjectileType
             {
                 other.gameObject.SetActive(false);
             }
-            gameObject.SetActive(false);
+            if (other.tag != "Powerup")
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

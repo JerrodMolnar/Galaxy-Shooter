@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -9,7 +7,6 @@ namespace ProjectileType
     {
         [SerializeField] private float _moveSpeed = 8.0f;
 
-        // Update is called once per frame
         void Update()
         {
             TripleShotMovement();
