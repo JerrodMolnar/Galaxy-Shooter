@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float _moveSpeed = 4.0f;
     private const float _LASER_WAIT_TIME = 0.25f;
     private float _nextFire = 0.0f;
+    private float _speedPowerupTime = -1;
+    private float _speedPowerupWaitTime = 7.5f;
 
     void Start()
     {
@@ -15,6 +17,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (Time.time > _speedPowerupTime)
+        {
+            _moveSpeed = 4f;
+        }
         Movement();
         FireLaser();
     }
@@ -38,6 +44,12 @@ public class Player : MonoBehaviour
         }
 
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, Helper.GetYLowerBounds(), 1), 0);
+    }
+
+    public void SpeedPowerup()
+    {
+        _speedPowerupTime = Time.time + _speedPowerupWaitTime;
+        _moveSpeed *= 2;
     }
 
     private void FireLaser()

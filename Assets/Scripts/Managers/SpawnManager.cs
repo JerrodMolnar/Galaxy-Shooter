@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -8,6 +9,11 @@ namespace SpawnManager
     {
         [SerializeField] private GameObject _smallEnemey;
         [SerializeField] private GameObject[] _powerups;
+        private int _lastPowerup = -1;
+        private List<GameObject> _speedPowerupsPool = new List<GameObject>();
+        private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
+        private List<GameObject> _shieldPowerupPool = new List<GameObject>();
+        private List<GameObject> _enemyPool = new List<GameObject>();
         private bool _canSpawn = true;
         private float _spawnWait;
         private GameObject _enemyParent;
@@ -51,7 +57,26 @@ namespace SpawnManager
         {
             while (_canSpawn)
             {
-                Instantiate(_smallEnemey, _enemyParent.transform);
+                bool isActiveEnemy = true;
+
+                foreach (GameObject itemInPool in _enemyPool)
+                {
+                    if (itemInPool.activeSelf == false)
+                    {
+                        itemInPool.SetActive(true);
+
+                        itemInPool.GetComponent<Enemy>().enabled = true;
+                        itemInPool.GetComponent<SpriteRenderer>().enabled = true;
+                        itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                        isActiveEnemy = false;
+                        break;
+                    }
+                }
+                if (isActiveEnemy)
+                {
+                    GameObject newEnemy = Instantiate(_smallEnemey, _enemyParent.transform);
+                    _enemyPool.Add(newEnemy);
+                }
                 _spawnWait = Random.Range(1f, 5f);
                 yield return new WaitForSeconds(_spawnWait);
             }
@@ -60,11 +85,92 @@ namespace SpawnManager
         private IEnumerator SpawnPowerups()
         {
             while (_canSpawn)
-            {
+            {               
+                int randomIndexPowerup = Random.Range(0, _powerups.Length);
+                while (randomIndexPowerup == _lastPowerup && _powerups.Length > 1)
+                {
+                    randomIndexPowerup = Random.Range(0, _powerups.Length);
+                    yield return new WaitForSeconds(0.25f);
+                }
+                _lastPowerup = randomIndexPowerup;
+
+                switch (_lastPowerup)
+                {
+                    case 0:
+                        SpawnTripleShotPowerup();
+                        break;
+                    case 1:
+                        SpawnSpeedPowerup();
+                        break;
+                }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
-                Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), 
-                    Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
-                Instantiate(_powerups[Random.Range(0, _powerups.Length)], posToSpawn, Quaternion.identity, _powerupParent.transform);
+            }
+        }
+
+        private void SpawnTripleShotPowerup()
+        {
+            bool isActiveTripleShotPowerup = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _tripleShotPowerupsPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    isActiveTripleShotPowerup = false;
+                    break;
+                }
+            }
+            if (isActiveTripleShotPowerup)
+            {
+                GameObject powerup =
+                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _tripleShotPowerupsPool.Add(powerup);
+            }
+        }
+
+        private void SpawnSpeedPowerup()
+        {
+            bool isActiveSpeedPowerup = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _speedPowerupsPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    isActiveSpeedPowerup = false;
+                    break;
+                }
+            }
+            if (isActiveSpeedPowerup)
+            {
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _speedPowerupsPool.Add(powerup);
+            }
+        }
+
+        private void SpawnShieldPowerup()
+        {
+            bool isActiveShield = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _shieldPowerupPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    isActiveShield = false;
+                    break;
+                }
+            }
+            if (isActiveShield)
+            {
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _shieldPowerupPool.Add(powerup);
             }
         }
     }

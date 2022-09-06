@@ -4,7 +4,6 @@ using Utility;
 
 public class Enemy : MonoBehaviour
 {
-    private static int enemyNum = 0;
     private float _moveSpeed = 3f;
     private float _movementWait = 3f;
     private bool _changeDirection = true;
@@ -14,10 +13,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
 
-    void Start()
+    private void OnEnable()
     {
         transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
-        enemyNum++;
         _randomXTranslate = Random.Range(-1f, 1f);
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
     }
@@ -46,16 +44,10 @@ public class Enemy : MonoBehaviour
         transform.Translate(moveRandom * _moveSpeed * Time.deltaTime);
         if (transform.position.x >= Helper.GetXPositionBounds())
         {
-            enemyNum--;
-            if (enemyNum <= 0)
-            {
-                enemyNum += 2;
-            }
             _randomXTranslate = Random.Range(-1f, 0.01f);
         }
         if (transform.position.x <= -(Helper.GetXPositionBounds()))
         {
-            enemyNum--;
             _randomXTranslate = Random.Range(0.01f, 1f);
         }
         if (transform.position.y < Helper.GetYLowerBounds() - 2)

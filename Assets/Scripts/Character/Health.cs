@@ -124,7 +124,7 @@ namespace Health
             }
             else
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
 
