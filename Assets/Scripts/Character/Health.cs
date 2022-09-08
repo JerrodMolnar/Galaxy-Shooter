@@ -13,7 +13,8 @@ namespace Health
         private int _health;
         private SpawnManager.SpawnManager _spawnManager;
         private float _reappearWaitTime = 2f;
-        private bool _isInvincible = false;
+        private int _hitsOnShield = 0;
+        private int _maxShieldHits = 3;
 
         private void Start()
         {
@@ -34,7 +35,7 @@ namespace Health
 
         public void DamageTaken(int damageAmount)
         {
-            if (!_isInvincible)
+            if (_hitsOnShield == 0)
             {
                 _health -= damageAmount;
                 if (tag == "Enemy")
@@ -70,6 +71,11 @@ namespace Health
             }
         }
 
+        public void EnableShield()
+        {
+            _hitsOnShield = _maxShieldHits;
+        }
+
         public void TakeLife()
         {
             _lives -= 1;
@@ -91,7 +97,6 @@ namespace Health
 
         public IEnumerator Reappear()
         {
-            float invincibleTime = 3f;
             yield return new WaitForSeconds(_reappearWaitTime);
             if (tag == "Player" && _lives > 0)
             {
@@ -102,7 +107,7 @@ namespace Health
                 _health = _maxHealth;
                 GameCanvasManager.health = _health;
                 GameCanvasManager.lives = _lives;
-                StartCoroutine(Invincible(invincibleTime));
+                _hitsOnShield = 1;
             }
             else if (_lives > 0)
             {
@@ -110,7 +115,7 @@ namespace Health
                 GetComponent<SpriteRenderer>().enabled = true;
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Enemy>().enabled = true;
-                StartCoroutine(Invincible(invincibleTime));
+                _hitsOnShield = 1;
             }
             else if (tag == "Player")
             {
@@ -126,13 +131,6 @@ namespace Health
             {
                 gameObject.SetActive(false);
             }
-        }
-
-        private IEnumerator Invincible(float timeInvincible)
-        {
-            _isInvincible = true;
-            yield return new WaitForSeconds(timeInvincible);
-            _isInvincible = false;
         }
     }
 }

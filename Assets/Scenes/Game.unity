@@ -554,6 +554,7 @@ MonoBehaviour:
   _powerups:
   - {fileID: 2451187821556118806, guid: 7272c434024052c4a802d2b4586b99f6, type: 3}
   - {fileID: 2361147744037969484, guid: 229b028c3d8f60e42ac717c8f5a9dcbc, type: 3}
+  - {fileID: 3859948482376026160, guid: cbc30f9f17f8e934792685010d270e42, type: 3}
 --- !u!1 &1131333081
 GameObject:
   m_ObjectHideFlags: 0

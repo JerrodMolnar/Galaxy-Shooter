@@ -102,6 +102,9 @@ namespace SpawnManager
                     case 1:
                         SpawnSpeedPowerup();
                         break;
+                    case 2:
+                        SpawnShieldPowerup();
+                        break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
             }
@@ -125,7 +128,7 @@ namespace SpawnManager
             if (isActiveTripleShotPowerup)
             {
                 GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[0], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _tripleShotPowerupsPool.Add(powerup);
             }
         }
@@ -147,14 +150,14 @@ namespace SpawnManager
             }
             if (isActiveSpeedPowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[1], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _speedPowerupsPool.Add(powerup);
             }
         }
 
         private void SpawnShieldPowerup()
         {
-            bool isActiveShield = true;
+            bool isActiveShieldPowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _shieldPowerupPool)
@@ -163,13 +166,13 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveShield = false;
+                    isActiveShieldPowerup = false;
                     break;
                 }
             }
-            if (isActiveShield)
+            if (isActiveShieldPowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[2], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
             }
         }
