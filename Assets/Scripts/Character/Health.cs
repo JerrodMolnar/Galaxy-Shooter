@@ -15,6 +15,7 @@ namespace Health
         private float _reappearWaitTime = 2f;
         private int _hitsOnShield = 0;
         private int _maxShieldHits = 3;
+        private GameObject _shieldsVisualizer;
 
         private void Start()
         {
@@ -23,6 +24,11 @@ namespace Health
             {
                 GameCanvasManager.health = _health;
                 GameCanvasManager.lives = _lives;
+                _shieldsVisualizer = gameObject.transform.GetChild(0).gameObject;
+                if (_shieldsVisualizer == null)
+                {
+                    Debug.LogError("Shield visualizer not found on Health script on " + tag.ToString());
+                }
             }
 
             _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager.SpawnManager>();
@@ -35,22 +41,47 @@ namespace Health
 
         public void DamageTaken(int damageAmount)
         {
-            if (_hitsOnShield == 0)
+            if (tag == "Player")
+            {
+
+                if (_hitsOnShield > 0)
+                {
+                    Color color;
+                    switch (_hitsOnShield)
+                    {
+                        case 3:
+                            color = new Color(255, 255, 0);
+                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                            _hitsOnShield--;
+                            break;
+                        case 2:
+                            color = new Color(255, 0, 0);
+                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                            _hitsOnShield--;
+                            break;
+                        case 1:
+                            _hitsOnShield--;
+                            color = new Color(255, 255, 255);
+                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                            _shieldsVisualizer.SetActive(false);
+                            break;
+                    }
+                }
+                else
+                {
+                    _health -= damageAmount;
+                    GameCanvasManager.health = _health;
+                }
+            }
+            else
             {
                 _health -= damageAmount;
-                if (tag == "Enemy")
-                {
-                    GameCanvasManager.score += damageAmount;
-                }
+                GameCanvasManager.score += damageAmount;
             }
 
             if (_health <= 0)
             {
                 TakeLife();
-            }
-            else if (tag == "Player")
-            {
-                GameCanvasManager.health = _health;
             }
         }
 
@@ -74,6 +105,7 @@ namespace Health
         public void EnableShield()
         {
             _hitsOnShield = _maxShieldHits;
+            _shieldsVisualizer.SetActive(true);
         }
 
         public void TakeLife()

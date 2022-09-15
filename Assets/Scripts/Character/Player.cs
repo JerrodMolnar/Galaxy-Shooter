@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     private const float _LASER_WAIT_TIME = 0.25f;
     private float _nextFire = 0.0f;
     private float _speedPowerupTime = -1;
-    private float _speedPowerupWaitTime = 7.5f;
+    private const float _SPEED_POWERUP_WAIT_TIME = 7.5f;
 
     void Start()
     {
@@ -48,7 +48,7 @@ public class Player : MonoBehaviour
 
     public void SpeedPowerup()
     {
-        _speedPowerupTime = Time.time + _speedPowerupWaitTime;
+        _speedPowerupTime = Time.time + _SPEED_POWERUP_WAIT_TIME;
         _moveSpeed *= 2;
     }
 
