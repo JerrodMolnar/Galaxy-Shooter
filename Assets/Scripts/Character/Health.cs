@@ -157,6 +157,11 @@ namespace Health
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
                 foreach (GameObject enemy in enemies)
                     enemy.SetActive(false);
+                GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
+                foreach (GameObject powerup in powerups)
+                {
+                    powerup.SetActive(false);
+                }
                 gameObject.SetActive(false);
             }
             else
