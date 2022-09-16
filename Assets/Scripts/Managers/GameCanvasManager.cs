@@ -60,11 +60,10 @@ namespace GameCanvas
                     _livesImage.gameObject.SetActive(true);
                 }
                 _livesImage.sprite = _livesSprites[lives];
-                if (lives == 0)
+                if (lives == 0 && !_gameOverText.gameObject.activeSelf)
                 {
                     _gameOverText.gameObject.SetActive(true);
                     StartCoroutine(GameOver());
-
                 }
             }
             else
@@ -82,9 +81,10 @@ namespace GameCanvas
         {
             while(_gameOverText.gameObject.activeSelf)
             {
-                _gameOverText.enabled = true;
+                _gameOverText.text = "Game Over";
                 yield return new WaitForSeconds(0.5f);
-                _gameOverText.enabled = false;
+                _gameOverText.text = "";
+                yield return new WaitForSeconds(0.5f);
             }
         }
     }
