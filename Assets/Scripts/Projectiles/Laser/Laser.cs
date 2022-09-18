@@ -51,21 +51,20 @@ namespace ProjectileType
         {
             if (other.gameObject.activeSelf)
             {
-                if (other.CompareTag("Enemy"))
+                if (other.CompareTag("Enemy") && _isPlayerLaser)
                 {                    
                     other.GetComponent<Health.Health>()?.DamageTaken(5);
+                    gameObject.SetActive(false);
                 }
                 else if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(5);
+                    other.GetComponent<Health.Health>()?.DamageTaken(15);
+                    gameObject.SetActive(false);
                 }
             }
             if (other.tag == "Laser")
             {
-                other.gameObject.SetActive(false);
-            }
-            if (other.tag != "Powerup")
-            {
+                other.gameObject.SetActive(false); 
                 gameObject.SetActive(false);
             }
         }

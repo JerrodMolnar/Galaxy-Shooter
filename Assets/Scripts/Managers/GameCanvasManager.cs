@@ -42,7 +42,7 @@ namespace GameCanvas
             {
                 Debug.LogError("Game Over text not found on " + name);
             }
-            _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+            _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
             if (_gameManager == null)
             {
                 Debug.LogError("Game Manager not found on GameCanvasManager Script on " + name);

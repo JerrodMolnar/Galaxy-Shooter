@@ -14,7 +14,7 @@ namespace SpawnManager
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyPool = new List<GameObject>();
-        private bool _canSpawn = true;
+        private bool _canSpawn = false;
         private float _spawnWait;
         private GameObject _enemyParent;
         private GameObject _powerupParent;
@@ -39,8 +39,6 @@ namespace SpawnManager
             {
                 Debug.LogError("Powerups are null on SpawnManager");
             }
-
-            Spawn(_canSpawn);
         }
 
         public void Spawn(bool canSpawn)
@@ -55,6 +53,7 @@ namespace SpawnManager
 
         private IEnumerator SpawnEnemies()
         {
+            yield return new WaitForSeconds(1f);
             while (_canSpawn)
             {
                 bool isActiveEnemy = true;
@@ -63,9 +62,8 @@ namespace SpawnManager
                 {
                     if (itemInPool.activeSelf == false)
                     {
-                        itemInPool.SetActive(true);
-
                         itemInPool.GetComponent<Enemy>().enabled = true;
+                        itemInPool.SetActive(true);                        
                         itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
                         isActiveEnemy = false;
                         break;

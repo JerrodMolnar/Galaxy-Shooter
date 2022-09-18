@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Utility;
 using GameCanvas;
+using Color = UnityEngine.Color;
 
 namespace Health
 {
@@ -19,6 +20,8 @@ namespace Health
         private GameObject _shieldsVisualizer;
         private GameCanvasManager _gameCanvasManager;
         private Animator _animator;
+        private float _nextHit = -1f;
+        private const float _HITWAIT = 0.5f;
 
         private void Start()
         {
@@ -45,7 +48,7 @@ namespace Health
                 }
             }
 
-            _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager.SpawnManager>();
+            _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager.SpawnManager>();
 
             if (_spawnManager == null)
             {
@@ -55,48 +58,57 @@ namespace Health
 
         public void DamageTaken(int damageAmount)
         {
-            if (tag == "Player")
+            if (_nextHit < Time.time)
             {
+                _nextHit = Time.time + _HITWAIT;
 
-                if (_hitsOnShield > 0)
+                if (tag == "Player")
                 {
-                    Color color;
-                    switch (_hitsOnShield)
+
+                    if (_hitsOnShield > 0)
                     {
-                        case 3:
-                            color = new Color(255, 255, 0);
-                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                            _hitsOnShield--;
-                            break;
-                        case 2:
-                            color = new Color(255, 0, 0);
-                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                            _hitsOnShield--;
-                            break;
-                        case 1:
-                            _hitsOnShield--;
-                            color = new Color(255, 255, 255);
-                            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                            _shieldsVisualizer.SetActive(false);
-                            break;
+                        Color color;
+                        switch (_hitsOnShield)
+                        {
+                            case 3:
+                                color = new Color(255, 255, 0);
+                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                                _hitsOnShield--;
+                                break;
+                            case 2:
+                                color = new Color(255, 0, 0);
+                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                                _hitsOnShield--;
+                                break;
+                            case 1:
+                                _hitsOnShield--;
+                                color = new Color(255, 255, 255);
+                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                                _shieldsVisualizer.SetActive(false);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        _health -= damageAmount;
+                        if (_health < 0)
+                        {
+                            _health = 0;
+                        }
+                        _gameCanvasManager.UpdateHealth(_health);
                     }
                 }
                 else
                 {
                     _health -= damageAmount;
-                    _gameCanvasManager.UpdateHealth(_health);
+                    _score += damageAmount;
+                    _gameCanvasManager.UpdateScore(_score);
                 }
-            }
-            else
-            {
-                _health -= damageAmount;
-                _score += damageAmount;
-                _gameCanvasManager.UpdateScore(_score);
-            }
 
-            if (_health <= 0)
-            {
-                TakeLife();
+                if (_health <= 0)
+                {
+                    TakeLife();
+                }
             }
         }
 
@@ -126,6 +138,7 @@ namespace Health
         {
             _hitsOnShield = _maxShieldHits;
             _shieldsVisualizer.SetActive(true);
+            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
         }
 
         public void TakeLife()
