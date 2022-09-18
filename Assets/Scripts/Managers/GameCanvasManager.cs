@@ -6,18 +6,14 @@ namespace GameCanvas
 {
     public class GameCanvasManager : MonoBehaviour
     {
-        private static Text _healthText;
-        private static Text _livesText;
-        private static Text _scoreText;
+        private Text _healthText;
+        private Text _livesText;
+        private Text _scoreText;
         private Image _livesImage;
         [SerializeField] private Sprite[] _livesSprites;
-        private static Text _gameOverText;
-
-        public static int score { get; set;}
-
-        public static int health { get; set;}
-
-        public static int lives { get; set;}
+        private Text _gameOverText;
+        private bool _isGameOver = false;
+        private GameManager _gameManager;
 
         void Start()
         {
@@ -46,25 +42,33 @@ namespace GameCanvas
             {
                 Debug.LogError("Game Over text not found on " + name);
             }
+            _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+            if (_gameManager == null)
+            {
+                Debug.LogError("Game Manager not found on GameCanvasManager Script on " + name);
+            }
         }
 
-        private void Update()
+        public void UpdateHealth(int health)
         {
             _healthText.text = "Health: " + health;
+        }
+
+        public void UpdateScore(int score)
+        {
             _scoreText.text = "Score: " + score;
+        }
+
+        public void UpdateLives(int lives)
+        {
             if (lives <= 3)
             {
-                if(_livesImage.gameObject.activeSelf == false)
+                if (_livesImage.gameObject.activeSelf == false)
                 {
                     _livesText.gameObject.SetActive(false);
                     _livesImage.gameObject.SetActive(true);
                 }
                 _livesImage.sprite = _livesSprites[lives];
-                if (lives == 0 && !_gameOverText.gameObject.activeSelf)
-                {
-                    _gameOverText.gameObject.SetActive(true);
-                    StartCoroutine(GameOver());
-                }
             }
             else
             {
@@ -74,6 +78,17 @@ namespace GameCanvas
                     _livesText.gameObject.SetActive(true);
                 }
                 _livesText.text = "Lives: " + lives;
+            }
+        }
+
+        public void UpdateGameOver(bool isGameOver)
+        {
+            _isGameOver = isGameOver;
+            if (_isGameOver)
+            {
+                _gameManager.SetGameOver(_isGameOver);
+                _gameOverText.gameObject.SetActive(true);
+                StartCoroutine(GameOver());
             }
         }
 

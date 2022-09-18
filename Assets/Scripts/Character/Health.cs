@@ -10,20 +10,34 @@ namespace Health
         [SerializeField] private int _maxHealth = 100;
         [SerializeField] private int _lives = 3;
         [SerializeField] private const int _maxLives = 5;
+        private static int _score = 0;
         private int _health;
         private SpawnManager.SpawnManager _spawnManager;
         private float _reappearWaitTime = 2f;
         private int _hitsOnShield = 0;
         private int _maxShieldHits = 3;
         private GameObject _shieldsVisualizer;
+        private GameCanvasManager _gameCanvasManager;
+        private Animator _animator;
 
         private void Start()
         {
             _health = _maxHealth;
+            _gameCanvasManager = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
+            if (_gameCanvasManager == null)
+            {
+                Debug.LogError("Game Canvas Manager not found on Health Script on " + name);
+            }
+            _animator = gameObject.GetComponent<Animator>();
+            if (_animator == null)
+            {
+                Debug.LogError("Animator not found on Health Script on " + name);
+            }
             if (tag == "Player")
             {
-                GameCanvasManager.health = _health;
-                GameCanvasManager.lives = _lives;
+                _gameCanvasManager.UpdateHealth(_health);
+                _gameCanvasManager.UpdateLives(_lives);
+                _gameCanvasManager.UpdateScore(_score);
                 _shieldsVisualizer = gameObject.transform.GetChild(0).gameObject;
                 if (_shieldsVisualizer == null)
                 {
@@ -70,19 +84,25 @@ namespace Health
                 else
                 {
                     _health -= damageAmount;
-                    GameCanvasManager.health = _health;
+                    _gameCanvasManager.UpdateHealth(_health);
                 }
             }
             else
             {
                 _health -= damageAmount;
-                GameCanvasManager.score += damageAmount;
+                _score += damageAmount;
+                _gameCanvasManager.UpdateScore(_score);
             }
 
             if (_health <= 0)
             {
                 TakeLife();
             }
+        }
+
+        public static void SetScoreTo0()
+        {
+            _score = 0;
         }
 
         public void DamageHealed(int healAmount)
@@ -98,7 +118,7 @@ namespace Health
 
             if (tag == "Player")
             {
-                GameCanvasManager.health = _health;
+                _gameCanvasManager.UpdateHealth(_health);
             }
         }
 
@@ -111,62 +131,71 @@ namespace Health
         public void TakeLife()
         {
             _lives -= 1;
-            _health = 0;
 
             if (tag == "Player")
             {
                 GetComponent<Player>().enabled = false;
-                GameCanvasManager.health = _health;
+                _gameCanvasManager.UpdateHealth(_health);
             }
             else
             {
                 GetComponent<Enemy>().enabled = false;
             }
-            GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<PolygonCollider2D>().enabled = false;
-            StartCoroutine(Reappear());
+
+            if (_lives > 0)
+            {
+                StartCoroutine(Reappear());
+            }
+            else
+            {
+                if (tag == "Player")
+                {
+                    _gameCanvasManager.UpdateHealth(_health);
+                    _gameCanvasManager.UpdateLives(_lives);
+                    _gameCanvasManager.UpdateGameOver(true);
+                    _spawnManager.Spawn(false);
+                    GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                    foreach (GameObject enemy in enemies)
+                        enemy.GetComponent<Animator>().SetTrigger("IsDead");
+                    GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
+                    foreach (GameObject powerup in powerups)
+                    {
+                        powerup.SetActive(false);
+                    }
+                    gameObject.SetActive(false);
+                }
+                else
+                {
+                    _animator.SetTrigger("IsDead");
+                }
+            }
         }
 
         public IEnumerator Reappear()
         {
+
+            GetComponent<SpriteRenderer>().enabled = false;
             yield return new WaitForSeconds(_reappearWaitTime);
-            if (tag == "Player" && _lives > 0)
+            if (tag == "Player")
             {
                 transform.position = new Vector3(0, -2.5f, 0);
                 GetComponent<SpriteRenderer>().enabled = true;
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Player>().enabled = true;
                 _health = _maxHealth;
-                GameCanvasManager.health = _health;
-                GameCanvasManager.lives = _lives;
+                _gameCanvasManager.UpdateHealth(_health);
+                _gameCanvasManager.UpdateLives(_lives);
                 _hitsOnShield = 1;
+                yield return new WaitForSeconds(1f);
+                _hitsOnShield = 0;
             }
-            else if (_lives > 0)
+            else
             {
                 transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
                 GetComponent<SpriteRenderer>().enabled = true;
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Enemy>().enabled = true;
-                _hitsOnShield = 1;
-            }
-            else if (tag == "Player")
-            {
-                GameCanvasManager.health = _health;
-                GameCanvasManager.lives = _lives;
-                _spawnManager.Spawn(false);
-                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-                foreach (GameObject enemy in enemies)
-                    enemy.SetActive(false);
-                GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
-                foreach (GameObject powerup in powerups)
-                {
-                    powerup.SetActive(false);
-                }
-                gameObject.SetActive(false);
-            }
-            else
-            {
-                gameObject.SetActive(false);
             }
         }
     }

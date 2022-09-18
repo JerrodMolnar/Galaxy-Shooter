@@ -66,7 +66,6 @@ namespace SpawnManager
                         itemInPool.SetActive(true);
 
                         itemInPool.GetComponent<Enemy>().enabled = true;
-                        itemInPool.GetComponent<SpriteRenderer>().enabled = true;
                         itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
                         isActiveEnemy = false;
                         break;
