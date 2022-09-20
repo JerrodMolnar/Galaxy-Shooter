@@ -149,6 +149,7 @@ namespace Health
             {
                 GetComponent<Player>().enabled = false;
                 _gameCanvasManager.UpdateHealth(_health);
+                transform.GetChild(1).gameObject.SetActive(false);
             }
             else
             {
@@ -194,6 +195,7 @@ namespace Health
             {
                 transform.position = new Vector3(0, -2.5f, 0);
                 GetComponent<SpriteRenderer>().enabled = true;
+                transform.GetChild(1).gameObject.SetActive(true);
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Player>().enabled = true;
                 _health = _maxHealth;

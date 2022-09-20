@@ -9,17 +9,29 @@ public class Player : MonoBehaviour
     private float _nextFire = 0.0f;
     private float _speedPowerupTime = -1;
     private const float _SPEED_POWERUP_WAIT_TIME = 7.5f;
+    private Thruster _thruster;
+    private bool _isSpeedActive = false;
 
     void Start()
     {
         transform.position = new Vector3(0, -2.5f, 0);
+        _thruster = transform.GetChild(1).GetComponent<Thruster>();
+        {
+            if (_thruster == null)
+            {
+                Debug.LogError("Thruster not found on Player Script on " + name);
+            }
+        }
     }
 
     void Update()
     {
-        if (Time.time > _speedPowerupTime)
+        if (_isSpeedActive && Time.time > _speedPowerupTime)
         {
-            _moveSpeed = 4f;
+            _moveSpeed /= 2;
+            _thruster.NormalSpeedThrust();
+            _isSpeedActive = false;
+
         }
         Movement();
         FireLaser();
@@ -50,6 +62,8 @@ public class Player : MonoBehaviour
     {
         _speedPowerupTime = Time.time + _SPEED_POWERUP_WAIT_TIME;
         _moveSpeed *= 2;
+        _thruster.SpeedBoostThrust();
+        _isSpeedActive = true;
     }
 
     private void FireLaser()
