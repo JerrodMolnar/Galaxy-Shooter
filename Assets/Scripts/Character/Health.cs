@@ -3,6 +3,8 @@ using UnityEngine;
 using Utility;
 using GameCanvas;
 using Color = UnityEngine.Color;
+using System.Reflection.Emit;
+using System.Drawing;
 
 namespace Health
 {
@@ -21,7 +23,10 @@ namespace Health
         private GameCanvasManager _gameCanvasManager;
         private Animator _animator;
         private float _nextHit = -1f;
-        private const float _HITWAIT = 0.5f;
+        private const float _HITWAIT = 1f;
+        private GameObject _rightEngineFire;
+        private GameObject _leftEngineFire;
+        private int _fireNumber = 0;
 
         private void Start()
         {
@@ -46,13 +51,49 @@ namespace Health
                 {
                     Debug.LogError("Shield visualizer not found on Health script on " + tag.ToString());
                 }
+
+
+                _leftEngineFire = transform.GetChild(2).gameObject;
+                _rightEngineFire = transform.GetChild(3).gameObject;
+                if (_rightEngineFire == null)
+                {
+                    Debug.LogError("Right engine fire is not found on Health script on " + name);
+                }
+                if (_leftEngineFire == null)
+                {
+                    Debug.LogError("Left engine fire is not found on Health script on " + name);
+                }
             }
 
             _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager.SpawnManager>();
-
             if (_spawnManager == null)
             {
                 Debug.LogError("Spawn Manager not found on Health script");
+            }
+
+        }
+
+        private void ShieldEnabled()
+        {
+            Color color;
+            switch (_hitsOnShield)
+            {
+                case 3:
+                    color = new Color(255, 255, 0);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _hitsOnShield--;
+                    break;
+                case 2:
+                    color = new Color(255, 0, 0);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _hitsOnShield--;
+                    break;
+                case 1:
+                    _hitsOnShield--;
+                    color = new Color(255, 255, 255);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _shieldsVisualizer.SetActive(false);
+                    break;
             }
         }
 
@@ -67,33 +108,27 @@ namespace Health
 
                     if (_hitsOnShield > 0)
                     {
-                        Color color;
-                        switch (_hitsOnShield)
-                        {
-                            case 3:
-                                color = new Color(255, 255, 0);
-                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                                _hitsOnShield--;
-                                break;
-                            case 2:
-                                color = new Color(255, 0, 0);
-                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                                _hitsOnShield--;
-                                break;
-                            case 1:
-                                _hitsOnShield--;
-                                color = new Color(255, 255, 255);
-                                _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                                _shieldsVisualizer.SetActive(false);
-                                break;
-                        }
+                        ShieldEnabled();
                     }
                     else
                     {
                         _health -= damageAmount;
+
                         if (_health < 0)
                         {
                             _health = 0;
+                        }
+                        float healthPercent = (float) _health / (float) _maxHealth;
+                        Debug.Log(healthPercent + "%");
+                        if (healthPercent < 0.66f && _fireNumber == 0)
+                        {
+                            _fireNumber++;
+                            EngineDamage();
+                        }
+                        else if (healthPercent < 0.33 && _fireNumber == 1)
+                        {
+                            _fireNumber++;
+                            EngineDamage();
                         }
                         _gameCanvasManager.UpdateHealth(_health);
                     }
@@ -108,6 +143,31 @@ namespace Health
                 if (_health <= 0)
                 {
                     TakeLife();
+                }
+            }
+        }
+
+        private void EngineDamage()
+        {
+            if (_rightEngineFire.activeSelf)
+            {
+                _leftEngineFire.gameObject.SetActive(true);
+            }
+            else if (_leftEngineFire.activeSelf)
+            {
+                _rightEngineFire.SetActive(true);
+            }
+            else
+            {
+                int randomFire = Random.Range(0, 2);
+                switch (randomFire)
+                {
+                    case 0:
+                        _leftEngineFire.gameObject.SetActive(true);
+                        break;
+                    case 1:
+                        _rightEngineFire.gameObject.SetActive(true);
+                        break;
                 }
             }
         }
@@ -150,6 +210,8 @@ namespace Health
                 GetComponent<Player>().enabled = false;
                 _gameCanvasManager.UpdateHealth(_health);
                 transform.GetChild(1).gameObject.SetActive(false);
+                _leftEngineFire.SetActive(false);
+                _rightEngineFire.SetActive(false);
             }
             else
             {
@@ -201,9 +263,13 @@ namespace Health
                 _health = _maxHealth;
                 _gameCanvasManager.UpdateHealth(_health);
                 _gameCanvasManager.UpdateLives(_lives);
-                _hitsOnShield = 1;
+                _hitsOnShield = 2;
+                ShieldEnabled();
                 yield return new WaitForSeconds(1f);
-                _hitsOnShield = 0;
+                ShieldEnabled();
+                _fireNumber = 0;
+                _leftEngineFire.SetActive(false);
+                _rightEngineFire.SetActive(false);
             }
             else
             {
