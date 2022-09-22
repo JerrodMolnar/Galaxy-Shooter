@@ -118,7 +118,7 @@ namespace Health
                         {
                             _health = 0;
                         }
-                        float healthPercent = (float) _health / (float) _maxHealth;
+                        float healthPercent = (float)_health / (float)_maxHealth;
                         Debug.Log(healthPercent + "%");
                         if (healthPercent < 0.66f && _fireNumber == 0)
                         {
@@ -155,7 +155,7 @@ namespace Health
             }
             else if (_leftEngineFire.activeSelf)
             {
-                _rightEngineFire.SetActive(true);
+                _rightEngineFire.gameObject.SetActive(true);
             }
             else
             {
