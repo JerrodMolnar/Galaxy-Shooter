@@ -1810,6 +1810,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 100
   _lives: 3
+  _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
 --- !u!114 &1997555729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2090,6 +2091,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Asteroid
       objectReference: {fileID: 0}
+    - target: {fileID: 3834949582982345987, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
+      propertyPath: _explosionClip
+      value: 
+      objectReference: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
     - target: {fileID: 3834949582982345988, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
       propertyPath: m_RootOrder
       value: 8
