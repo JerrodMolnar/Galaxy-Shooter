@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
 
@@ -7,11 +8,30 @@ namespace Powerup
     {
         [SerializeField] private float _speed = 3.0f;
         [SerializeField] private _powerupID _currentID;
+        private AudioSource _audioSource;
+        [SerializeField] private AudioClip _powerupClip;
         private enum _powerupID
         {
             TripleShot,
             Speed,
             Shield
+        }
+
+        private void Start()
+        {
+
+            _audioSource = transform.AddComponent<AudioSource>();
+            if (_audioSource == null)
+            {
+                Debug.LogError("AudioSource not found on Powerup Script on " + name);
+            }
+            else
+            {
+                _audioSource.playOnAwake = false;
+                _audioSource.volume = 1;
+                _audioSource.clip = _powerupClip;
+                _audioSource.priority = 100;
+            }
         }
 
         void Update()
@@ -32,6 +52,7 @@ namespace Powerup
         {
             if (collision.CompareTag("Player"))
             {
+                _audioSource.Play();
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:

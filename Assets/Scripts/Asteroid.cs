@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Asteroid : MonoBehaviour
@@ -6,10 +7,12 @@ public class Asteroid : MonoBehaviour
     private SpawnManager.SpawnManager _spawnManager;
     private Animator _animator;
     private PolygonCollider2D _collider;
+    [SerializeField] private AudioClip _explosionClip;
+    private AudioSource _explosionSource;
 
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager.SpawnManager>();
         if (_spawnManager == null)
         {
@@ -27,6 +30,17 @@ public class Asteroid : MonoBehaviour
         {
             Debug.LogError("Polygon Collider not found on Asteroid Script on " + name);
         }
+        _explosionSource = this.AddComponent<AudioSource>();
+        if (_explosionSource == null)
+        {
+            Debug.LogError("AudioSource not found on Asteroid Script on " + name);
+        }
+        else
+        {
+            _explosionSource.playOnAwake = false;
+            _explosionSource.clip = _explosionClip;
+            _explosionSource.volume = 0.25f;
+        }
     }
 
     // Update is called once per frame
@@ -37,13 +51,13 @@ public class Asteroid : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Projectile" || other.tag == "Player")
+        if (other.tag == "Projectile")
         {
             other.gameObject.SetActive(false);
             _rotationSpeed = 0;
             _collider.enabled = false;
             _animator.SetTrigger("Explode");
-
+            _explosionSource.Play();
             _spawnManager.Spawn(true);
         }
     }

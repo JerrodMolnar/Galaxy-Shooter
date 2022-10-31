@@ -1,5 +1,6 @@
 using UnityEngine;
 using ProjectilePool;
+using Unity.VisualScripting;
 
 namespace ProjectileFire
 {
@@ -13,6 +14,8 @@ namespace ProjectileFire
         [SerializeField] private bool _isTripleShotActive = false;
         private float _tripleShotCoolDownWait = 7.5f;
         private float _tripleShotCoolDown = -1;
+        private AudioSource _audioSource;
+        [SerializeField] private AudioClip _laserSoundClip;
         void Start()
         {
             _laserPooling = GameObject.Find("Laser Pool").GetComponent<LaserPool>();
@@ -26,6 +29,18 @@ namespace ProjectileFire
             {
                 Debug.LogError("Triple shot pool not found on FireProjectiles on " + name);
             }
+
+            _audioSource = transform.AddComponent<AudioSource>();
+            if (_audioSource == null)
+            {
+                Debug.LogError("AudioSource not found on FireProjectiles on " + name);
+            }
+            else
+            {
+                _audioSource.playOnAwake = false;
+                _audioSource.volume = 0.1f;
+                _audioSource.priority = 20;
+            }
         }
 
         public void ShootProjectile(int projectileType)
@@ -33,6 +48,8 @@ namespace ProjectileFire
             switch (projectileType)
             {
                 case 0:
+                    _audioSource.clip = _laserSoundClip;
+                    _audioSource.Play();
                     if (_isTripleShotActive && tag == "Player")
                     {
                         FireTripleShot();
@@ -44,7 +61,7 @@ namespace ProjectileFire
                     else
                     {
                         FireLaser();
-                    }
+                    }                   
                     break;
             }
         }

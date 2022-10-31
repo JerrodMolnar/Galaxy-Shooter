@@ -5,6 +5,7 @@ using GameCanvas;
 using Color = UnityEngine.Color;
 using System.Reflection.Emit;
 using System.Drawing;
+using Unity.VisualScripting;
 
 namespace Health
 {
@@ -27,6 +28,8 @@ namespace Health
         private GameObject _rightEngineFire;
         private GameObject _leftEngineFire;
         private int _fireNumber = 0;
+        [SerializeField] private AudioClip _explosionClip;
+        private AudioSource _audioSource;
 
         private void Start()
         {
@@ -68,9 +71,21 @@ namespace Health
             _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager.SpawnManager>();
             if (_spawnManager == null)
             {
-                Debug.LogError("Spawn Manager not found on Health script");
+                Debug.LogError("Spawn Manager not found on Health script " + name);
             }
 
+
+            _audioSource = this.AddComponent<AudioSource>();
+            if (_audioSource == null)
+            {
+                Debug.LogError("AudioSource not found on Health script on " + name);
+            }
+            else
+            {
+                _audioSource.playOnAwake = false;
+                _audioSource.clip = _explosionClip;
+                _audioSource.volume = 0.25f;
+            }
         }
 
         private void ShieldEnabled()
@@ -217,6 +232,7 @@ namespace Health
             {
                 GetComponent<Enemy>().enabled = false;
             }
+            _audioSource.Play();
             GetComponent<PolygonCollider2D>().enabled = false;
 
             if (_lives > 0)
@@ -233,7 +249,11 @@ namespace Health
                     _spawnManager.Spawn(false);
                     GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
                     foreach (GameObject enemy in enemies)
+                    {
+                        enemy.GetComponent<Enemy>().enabled = false;
                         enemy.GetComponent<Animator>().SetTrigger("IsDead");
+                        _audioSource.Play();
+                    }
                     GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
                     foreach (GameObject powerup in powerups)
                     {

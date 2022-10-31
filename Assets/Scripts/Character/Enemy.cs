@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             other.GetComponent<Health.Health>().DamageTaken(100);
-            gameObject.SetActive(false);
+            this.GetComponent<Health.Health>().DamageTaken(100);
         }
     }
 
