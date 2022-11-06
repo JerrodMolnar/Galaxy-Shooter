@@ -30,10 +30,11 @@ public class Asteroid : MonoBehaviour
         {
             Debug.LogError("Polygon Collider not found on Asteroid Script on " + name);
         }
-        _explosionSource = this.AddComponent<AudioSource>();
+
+        _explosionSource = GetComponent<AudioSource>();
         if (_explosionSource == null)
         {
-            Debug.LogError("AudioSource not found on Asteroid Script on " + name);
+            _explosionSource = this.AddComponent<AudioSource>();
         }
         else
         {

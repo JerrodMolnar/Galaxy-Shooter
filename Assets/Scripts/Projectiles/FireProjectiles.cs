@@ -30,17 +30,15 @@ namespace ProjectileFire
                 Debug.LogError("Triple shot pool not found on FireProjectiles on " + name);
             }
 
-            _audioSource = transform.AddComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
             if (_audioSource == null)
             {
-                Debug.LogError("AudioSource not found on FireProjectiles on " + name);
+                _audioSource = transform.AddComponent<AudioSource>();
             }
-            else
-            {
-                _audioSource.playOnAwake = false;
-                _audioSource.volume = 0.1f;
-                _audioSource.priority = 20;
-            }
+            _audioSource.playOnAwake = false;
+            _audioSource.volume = 0.1f;
+            _audioSource.priority = 20;
+
         }
 
         public void ShootProjectile(int projectileType)
@@ -61,7 +59,7 @@ namespace ProjectileFire
                     else
                     {
                         FireLaser();
-                    }                   
+                    }
                     break;
             }
         }

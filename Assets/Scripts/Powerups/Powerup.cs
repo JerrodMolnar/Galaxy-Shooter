@@ -20,10 +20,10 @@ namespace Powerup
         private void Start()
         {
 
-            _audioSource = transform.AddComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
             if (_audioSource == null)
             {
-                Debug.LogError("AudioSource not found on Powerup Script on " + name);
+                _audioSource = transform.AddComponent<AudioSource>();
             }
             else
             {

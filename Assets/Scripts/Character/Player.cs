@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     private const float _SPEED_POWERUP_WAIT_TIME = 7.5f;
     private Thruster _thruster;
     private bool _isSpeedActive = false;
+    private Animator _animator;
 
     void Start()
     {
@@ -21,6 +22,11 @@ public class Player : MonoBehaviour
             {
                 Debug.LogError("Thruster not found on Player Script on " + name);
             }
+        }
+        _animator = gameObject.GetComponent<Animator>();
+        if (_animator == null)
+        {
+            Debug.LogError("Animator not found on Player Script on " + name);
         }
     }
 
@@ -43,6 +49,22 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 moveDirection = new Vector3(horizontalInput, verticalInput, 0);
+
+        if (horizontalInput == 0)
+        {
+            _animator.SetBool("TurnRight", false);
+            _animator.SetBool("TurnLeft", false);
+        }
+        else if (horizontalInput > 0)
+        {
+            _animator.SetBool("TurnRight", true);
+            _animator.SetBool("TurnLeft", false);
+        }
+        else if (horizontalInput < 0)
+        {
+            _animator.SetBool("TurnLeft", true);
+            _animator.SetBool("TurnRight", false);
+        }
 
         transform.Translate(moveDirection * _moveSpeed * Time.deltaTime);
 

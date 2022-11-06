@@ -6,6 +6,7 @@ using Color = UnityEngine.Color;
 using System.Reflection.Emit;
 using System.Drawing;
 using Unity.VisualScripting;
+using TMPro;
 
 namespace Health
 {
@@ -74,17 +75,25 @@ namespace Health
                 Debug.LogError("Spawn Manager not found on Health script " + name);
             }
 
-
-            _audioSource = this.AddComponent<AudioSource>();
+            _audioSource = gameObject.GetComponent<AudioSource>();
             if (_audioSource == null)
             {
-                Debug.LogError("AudioSource not found on Health script on " + name);
+                _audioSource = this.AddComponent<AudioSource>();
             }
-            else
+
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                _audioSource.playOnAwake = false;
-                _audioSource.clip = _explosionClip;
-                _audioSource.volume = 0.25f;
+                if (CompareTag("Player"))
+                {
+                    if (_lives > 0)
+                    {
+                        TakeLife();
+                    }
+                }
             }
         }
 
@@ -227,11 +236,16 @@ namespace Health
                 transform.GetChild(1).gameObject.SetActive(false);
                 _leftEngineFire.SetActive(false);
                 _rightEngineFire.SetActive(false);
+                _animator.SetTrigger("IsDead");
             }
             else
             {
                 GetComponent<Enemy>().enabled = false;
             }
+
+            _audioSource.playOnAwake = false;
+            _audioSource.clip = _explosionClip;
+            _audioSource.volume = 0.25f;
             _audioSource.Play();
             GetComponent<PolygonCollider2D>().enabled = false;
 
@@ -259,7 +273,6 @@ namespace Health
                     {
                         powerup.SetActive(false);
                     }
-                    gameObject.SetActive(false);
                 }
                 else
                 {
@@ -271,13 +284,12 @@ namespace Health
         public IEnumerator Reappear()
         {
 
-            GetComponent<SpriteRenderer>().enabled = false;
             yield return new WaitForSeconds(_reappearWaitTime);
             if (tag == "Player")
             {
                 transform.position = new Vector3(0, -2.5f, 0);
-                GetComponent<SpriteRenderer>().enabled = true;
-                transform.GetChild(1).gameObject.SetActive(true);
+                _animator.SetTrigger("IsReappear");
+                transform.GetChild(1).gameObject.SetActive(true); //Thrusters
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Player>().enabled = true;
                 _health = _maxHealth;
