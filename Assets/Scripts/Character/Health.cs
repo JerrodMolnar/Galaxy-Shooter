@@ -3,10 +3,7 @@ using UnityEngine;
 using Utility;
 using GameCanvas;
 using Color = UnityEngine.Color;
-using System.Reflection.Emit;
-using System.Drawing;
 using Unity.VisualScripting;
-using TMPro;
 
 namespace Health
 {
@@ -31,6 +28,7 @@ namespace Health
         private int _fireNumber = 0;
         [SerializeField] private AudioClip _explosionClip;
         private AudioSource _audioSource;
+        [SerializeField] private AudioClip _playerHurtClip;
 
         private void Start()
         {
@@ -81,6 +79,8 @@ namespace Health
                 _audioSource = this.AddComponent<AudioSource>();
             }
 
+            _audioSource.playOnAwake = false;
+
         }
 
         private void Update()
@@ -129,6 +129,9 @@ namespace Health
 
                 if (tag == "Player")
                 {
+                    _audioSource.clip = _playerHurtClip;
+                    _audioSource.volume = 0.075f;
+                    _audioSource.Play();
 
                     if (_hitsOnShield > 0)
                     {
@@ -143,7 +146,6 @@ namespace Health
                             _health = 0;
                         }
                         float healthPercent = (float)_health / (float)_maxHealth;
-                        Debug.Log(healthPercent + "%");
                         if (healthPercent < 0.66f && _fireNumber == 0)
                         {
                             _fireNumber++;
@@ -243,7 +245,6 @@ namespace Health
                 GetComponent<Enemy>().enabled = false;
             }
 
-            _audioSource.playOnAwake = false;
             _audioSource.clip = _explosionClip;
             _audioSource.volume = 0.25f;
             _audioSource.Play();

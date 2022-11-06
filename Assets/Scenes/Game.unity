@@ -1747,6 +1747,7 @@ MonoBehaviour:
   _maxHealth: 100
   _lives: 3
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _playerHurtClip: {fileID: 8300000, guid: 86ec08f7719a78045adb417241a5e685, type: 3}
 --- !u!114 &1997555729
 MonoBehaviour:
   m_ObjectHideFlags: 0

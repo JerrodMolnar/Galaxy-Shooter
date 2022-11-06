@@ -8,7 +8,6 @@ namespace Powerup
     {
         [SerializeField] private float _speed = 3.0f;
         [SerializeField] private _powerupID _currentID;
-        private AudioSource _audioSource;
         [SerializeField] private AudioClip _powerupClip;
         private enum _powerupID
         {
@@ -17,22 +16,6 @@ namespace Powerup
             Shield
         }
 
-        private void Start()
-        {
-
-            _audioSource = GetComponent<AudioSource>();
-            if (_audioSource == null)
-            {
-                _audioSource = transform.AddComponent<AudioSource>();
-            }
-            else
-            {
-                _audioSource.playOnAwake = false;
-                _audioSource.volume = 1;
-                _audioSource.clip = _powerupClip;
-                _audioSource.priority = 100;
-            }
-        }
 
         void Update()
         {
@@ -52,7 +35,7 @@ namespace Powerup
         {
             if (collision.CompareTag("Player"))
             {
-                _audioSource.Play();
+                AudioSource.PlayClipAtPoint(_powerupClip, transform.position);
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:
