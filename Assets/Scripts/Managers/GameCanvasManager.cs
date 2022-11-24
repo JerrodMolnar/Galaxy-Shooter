@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace GameCanvas
@@ -14,6 +15,7 @@ namespace GameCanvas
         private Text _gameOverText;
         private bool _isGameOver = false;
         private GameManager _gameManager;
+        private GameObject _escapeMenu;
 
         void Start()
         {
@@ -46,6 +48,20 @@ namespace GameCanvas
             if (_gameManager == null)
             {
                 Debug.LogError("Game Manager not found on GameCanvasManager Script on " + name);
+            }
+
+            _escapeMenu = transform.GetChild(5).gameObject;
+            if (_escapeMenu == null)
+            {
+                Debug.LogError("Escape Menu not found on GameCanvasManager Script on " + name);
+            }
+        }
+
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                PauseMenu();
             }
         }
 
@@ -101,6 +117,37 @@ namespace GameCanvas
                 _gameOverText.text = "";
                 yield return new WaitForSeconds(0.5f);
             }
+        }
+
+        private void PauseMenu()
+        {
+            if (!_escapeMenu.activeSelf)
+            {
+                Time.timeScale = 0;
+                _escapeMenu.SetActive(true);
+            }
+            else
+            {
+                Time.timeScale = 1f;
+                _escapeMenu.SetActive(false);
+            }
+            
+        }    
+
+        public void QuitGame()
+        {
+            Application.Quit();
+        }
+
+        public void ReturnToGame()
+        {
+            _escapeMenu.SetActive(false);
+            Time.timeScale = 1.0f;
+        }
+
+        public void MainMenu()
+        {
+            SceneManager.LoadScene(0);
         }
     }
 }
