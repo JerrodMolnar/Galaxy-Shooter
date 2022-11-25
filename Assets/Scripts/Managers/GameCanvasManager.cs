@@ -55,6 +55,10 @@ namespace GameCanvas
             {
                 Debug.LogError("Escape Menu not found on GameCanvasManager Script on " + name);
             }
+            else
+            {
+                _escapeMenu.SetActive(false);
+            }
         }
 
         public void Update()
@@ -130,8 +134,7 @@ namespace GameCanvas
             {
                 Time.timeScale = 1f;
                 _escapeMenu.SetActive(false);
-            }
-            
+            }            
         }    
 
         public void QuitGame()
