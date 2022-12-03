@@ -1,3 +1,4 @@
+using GameCanvas;
 using UnityEngine;
 using Utility;
 
@@ -7,11 +8,13 @@ public class Player : MonoBehaviour
     [SerializeField] private float _moveSpeed = 4.0f;
     private const float _LASER_WAIT_TIME = 0.25f;
     private float _nextFire = 0.0f;
-    private float _speedPowerupTime = -1;
-    private const float _SPEED_POWERUP_WAIT_TIME = 7.5f;
     private Thruster _thruster;
-    private bool _isSpeedActive = false;
     private Animator _animator;
+    [SerializeField] private float _thrusterTime = 100.0f;
+    private float _thrustMaxTime = 100f;
+    [SerializeField] private float _thrustUsageDecreasedTime = 15f;
+    private bool _isThrustersActive = false;
+    private GameCanvasManager _gameCanvasManager;
 
     void Start()
     {
@@ -28,17 +31,29 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Animator not found on Player Script on " + name);
         }
+
+        _gameCanvasManager = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
+        if (_gameCanvasManager == null)
+        {
+            Debug.LogError("Game Canvas Manager not found on Player Script on " + name);
+        }
+        else
+        {
+            _gameCanvasManager.UpdateThrusterBar(_thrusterTime);
+        }
     }
 
     void Update()
     {
-        if (_isSpeedActive && Time.time > _speedPowerupTime)
+        if (Input.GetAxis("Thrusters") > 0)
         {
-            _moveSpeed /= 2;
-            _thruster.NormalSpeedThrust();
-            _isSpeedActive = false;
-
+            ActivateThrusters();
         }
+        else
+        {
+            DeactivateThrusters();
+        }
+
         Movement();
         FireLaser();
     }
@@ -82,10 +97,8 @@ public class Player : MonoBehaviour
 
     public void SpeedPowerup()
     {
-        _speedPowerupTime = Time.time + _SPEED_POWERUP_WAIT_TIME;
-        _moveSpeed *= 2;
-        _thruster.SpeedBoostThrust();
-        _isSpeedActive = true;
+        _thrusterTime = _thrustMaxTime;
+        _gameCanvasManager.UpdateThrusterBar(_thrusterTime);
     }
 
     private void FireLaser()
@@ -96,4 +109,34 @@ public class Player : MonoBehaviour
             GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile(0);
         }
     }
+
+    private void ActivateThrusters()
+    {
+        if (_thrusterTime > 0.0f)
+        {
+            _thrusterTime = _thrusterTime - (Time.deltaTime * _thrustUsageDecreasedTime);
+            _gameCanvasManager.UpdateThrusterBar(_thrusterTime);
+            if (!_isThrustersActive)
+            {
+                _isThrustersActive = true;
+                _moveSpeed *= 2;
+                _thruster.SpeedBoostThrust();
+            }
+        }
+        else if (_thrusterTime <= 0.0f)
+        {
+            DeactivateThrusters();
+        }
+    }
+
+    private void DeactivateThrusters()
+    {
+        if (_isThrustersActive)
+        {
+            _moveSpeed /= 2;
+            _thruster.NormalSpeedThrust();
+            _isThrustersActive = false;
+        }
+    }
+
 }

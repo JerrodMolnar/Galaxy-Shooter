@@ -16,6 +16,7 @@ namespace GameCanvas
         private bool _isGameOver = false;
         private GameManager _gameManager;
         private GameObject _escapeMenu;
+        private Slider _thrustBar;
 
         void Start()
         {
@@ -58,6 +59,12 @@ namespace GameCanvas
             else
             {
                 _escapeMenu.SetActive(false);
+            }
+
+            _thrustBar = transform.GetChild(6).gameObject.GetComponent<Slider>();
+            if (_thrustBar == null)
+            {
+                Debug.LogError("Thrust Bar not found on GameCanvasManager Script on " + name);
             }
         }
 
@@ -151,6 +158,11 @@ namespace GameCanvas
         public void MainMenu()
         {
             SceneManager.LoadScene(0);
+        }
+
+        public void UpdateThrusterBar(float thrustValue)
+        {
+            _thrustBar.value = thrustValue;
         }
     }
 }

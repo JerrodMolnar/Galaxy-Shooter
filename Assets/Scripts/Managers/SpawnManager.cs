@@ -14,6 +14,7 @@ namespace SpawnManager
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyPool = new List<GameObject>();
+        private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private bool _canSpawn = false;
         private float _spawnWait;
         private GameObject _enemyParent;
@@ -63,7 +64,7 @@ namespace SpawnManager
                     if (itemInPool.activeSelf == false)
                     {
                         itemInPool.GetComponent<Enemy>().enabled = true;
-                        itemInPool.SetActive(true);                        
+                        itemInPool.SetActive(true);
                         itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
                         isActiveEnemy = false;
                         break;
@@ -82,7 +83,7 @@ namespace SpawnManager
         private IEnumerator SpawnPowerups()
         {
             while (_canSpawn)
-            {               
+            {
                 int randomIndexPowerup = Random.Range(0, _powerups.Length);
                 while (randomIndexPowerup == _lastPowerup && _powerups.Length > 1)
                 {
@@ -101,6 +102,9 @@ namespace SpawnManager
                         break;
                     case 2:
                         SpawnShieldPowerup();
+                        break;
+                    case 3:
+                        SpawnAmmoPowerup();
                         break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
@@ -171,6 +175,28 @@ namespace SpawnManager
             {
                 GameObject powerup = Instantiate(_powerups[2], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
+            }
+        }
+
+        private void SpawnAmmoPowerup()
+        {
+            bool isActiveAmmoPowerup = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _ammoPowerupPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    isActiveAmmoPowerup = false;
+                    break;
+                }
+            }
+            if (isActiveAmmoPowerup)
+            {
+                GameObject powerup = Instantiate(_powerups[3], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _ammoPowerupPool.Add(powerup);
             }
         }
     }

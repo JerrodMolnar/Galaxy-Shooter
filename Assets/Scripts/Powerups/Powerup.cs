@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using ProjectileFire;
 using UnityEngine;
 using Utility;
 
@@ -13,7 +13,8 @@ namespace Powerup
         {
             TripleShot,
             Speed,
-            Shield
+            Shield,
+            Ammo
         }
 
 
@@ -39,7 +40,7 @@ namespace Powerup
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:
-                        collision.GetComponent<ProjectileFire.FireProjectiles>().TripleShotEnable();
+                        collision.GetComponent<FireProjectiles>().TripleShotEnable();
                         gameObject.SetActive(false);
                         break;
                     case _powerupID.Speed:
@@ -48,6 +49,10 @@ namespace Powerup
                         break;
                     case _powerupID.Shield:
                         collision.GetComponent<Health.Health>().EnableShield();
+                        gameObject.SetActive(false);
+                        break;
+                    case _powerupID.Ammo:
+                        collision.GetComponent<FireProjectiles>().AmmoPickup();
                         gameObject.SetActive(false);
                         break;
                     default:

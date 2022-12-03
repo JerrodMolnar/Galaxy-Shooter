@@ -12,10 +12,14 @@ namespace ProjectileFire
         private Vector3 _laserShootPosition;
         private bool _isPlayerShot = false;
         [SerializeField] private bool _isTripleShotActive = false;
-        private float _tripleShotCoolDownWait = 7.5f;
+        private float _tripleShotCoolDownWait = 5f;
         private float _tripleShotCoolDown = -1;
         private AudioSource _audioSource;
         [SerializeField] private AudioClip _laserSoundClip;
+        [SerializeField] private AudioClip _outOfAmmoClip;
+        private int _ammoCount = 0;
+        private int _maxAmmoCount = 15;
+
         void Start()
         {
             _laserPooling = GameObject.Find("Laser Pool").GetComponent<LaserPool>();
@@ -39,6 +43,7 @@ namespace ProjectileFire
             _audioSource.volume = 0.1f;
             _audioSource.priority = 20;
 
+            _ammoCount = _maxAmmoCount;
         }
 
         public void ShootProjectile(int projectileType)
@@ -46,8 +51,6 @@ namespace ProjectileFire
             switch (projectileType)
             {
                 case 0:
-                    _audioSource.clip = _laserSoundClip;
-                    _audioSource.Play();
                     if (_isTripleShotActive && tag == "Player")
                     {
                         FireTripleShot();
@@ -70,6 +73,11 @@ namespace ProjectileFire
             _tripleShotCoolDown = Time.time + _tripleShotCoolDownWait;
         }
 
+        public void AmmoPickup()
+        {
+            _ammoCount = _maxAmmoCount;
+        }
+
         private void FireTripleShot()
         {
             _tripleShotPool.ShootTripleShot(true, transform.position);
@@ -79,15 +87,29 @@ namespace ProjectileFire
         {
             if (tag == "Player")
             {
-                _isPlayerShot = true;
-                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.25f, 0);
+                if (_ammoCount > 0)
+                {
+                    _audioSource.clip = _laserSoundClip;
+                    _audioSource.Play();
+                    _isPlayerShot = true;
+                    _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.25f, 0);
+                    _ammoCount--;
+                    _laserPooling.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+                }
+                else
+                {
+                    _audioSource.clip = _outOfAmmoClip;
+                    _audioSource.Play();
+                }                
             }
             else
             {
+                _audioSource.clip = _laserSoundClip;
+                _audioSource.Play();
                 _isPlayerShot = false;
                 _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
-            }
-            _laserPooling.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+                _laserPooling.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+            }            
         }
     }
 }
