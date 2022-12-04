@@ -106,7 +106,7 @@ public class Player : MonoBehaviour
         if (Input.GetAxis("FireLasers") > 0 && Time.time > _nextFire)
         {
             _nextFire = Time.time + _LASER_WAIT_TIME;
-            GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile(0);
+            GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
         }
     }
 

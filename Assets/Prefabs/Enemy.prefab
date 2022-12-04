@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isTripleShotActive: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
+  _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
 --- !u!114 &1181681802453169285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +257,7 @@ MonoBehaviour:
   _maxHealth: 5
   _lives: 1
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _playerHurtClip: {fileID: 0}
 --- !u!95 &2528254005500708756
 Animator:
   serializedVersion: 4

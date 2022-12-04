@@ -10,11 +10,13 @@ namespace SpawnManager
         [SerializeField] private GameObject _smallEnemey;
         [SerializeField] private GameObject[] _powerups;
         private int _lastPowerup = -1;
+        private int _secondLastPowerup = -1;
         private List<GameObject> _speedPowerupsPool = new List<GameObject>();
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
+        private List<GameObject> _healthPowerupPool = new List<GameObject>();
         private bool _canSpawn = false;
         private float _spawnWait;
         private GameObject _enemyParent;
@@ -85,11 +87,18 @@ namespace SpawnManager
             while (_canSpawn)
             {
                 int randomIndexPowerup = Random.Range(0, _powerups.Length);
-                while (randomIndexPowerup == _lastPowerup && _powerups.Length > 1)
+
+                while ((randomIndexPowerup == _lastPowerup || randomIndexPowerup == _secondLastPowerup) && _powerups.Length > 1)
                 {
                     randomIndexPowerup = Random.Range(0, _powerups.Length);
-                    yield return new WaitForSeconds(0.25f);
+                    yield return new WaitForSeconds(0.1f);
+                }                
+
+                if (_lastPowerup != -1)
+                {
+                    _secondLastPowerup = _lastPowerup;
                 }
+
                 _lastPowerup = randomIndexPowerup;
 
                 switch (_lastPowerup)
@@ -106,8 +115,33 @@ namespace SpawnManager
                     case 3:
                         SpawnAmmoPowerup();
                         break;
+                    case 4:
+                        SpawnHealthPowerup();
+                        break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
+            }
+        }
+
+        private void SpawnHealthPowerup()
+        {
+            bool isActiveHealthPowerup = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _healthPowerupPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    isActiveHealthPowerup = false;
+                    break;
+                }
+            }
+            if (isActiveHealthPowerup)
+            {
+                GameObject powerup = Instantiate(_powerups[4], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _healthPowerupPool.Add(powerup);
             }
         }
 

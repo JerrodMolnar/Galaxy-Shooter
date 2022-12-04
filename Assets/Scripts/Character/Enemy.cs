@@ -76,6 +76,6 @@ public class Enemy : MonoBehaviour
     private void ShootLasers()
     {
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
-        GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile(0);
+        GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
     }
 }

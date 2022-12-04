@@ -199,6 +199,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 161474949}
   m_CullTransparentMesh: 1
+--- !u!1 &322044570
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322044571}
+  - component: {fileID: 322044572}
+  m_Layer: 0
+  m_Name: Missile Pool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &322044571
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322044570}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1848121860}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &322044572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322044570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 415d332e758eaea4bb9db17d039a4b08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _missilePrefab: {fileID: 4186833830116705953, guid: e8bca134607a4c242a6808f27f3ae651, type: 3}
 --- !u!1 &435585823
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,6 +1697,7 @@ MonoBehaviour:
   - {fileID: 2361147744037969484, guid: 229b028c3d8f60e42ac717c8f5a9dcbc, type: 3}
   - {fileID: 3859948482376026160, guid: cbc30f9f17f8e934792685010d270e42, type: 3}
   - {fileID: 732848994795500337, guid: a724c47fa2e379f44a55fdbd19b005c6, type: 3}
+  - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
 --- !u!1 &1004227467
 GameObject:
   m_ObjectHideFlags: 0
@@ -2682,6 +2728,7 @@ Transform:
   m_Children:
   - {fileID: 1173653686}
   - {fileID: 878388885}
+  - {fileID: 322044571}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3066,7 +3113,7 @@ MonoBehaviour:
   _maxHealth: 100
   _lives: 3
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
-  _playerHurtClip: {fileID: 8300000, guid: 86ec08f7719a78045adb417241a5e685, type: 3}
+  _playerHurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
 --- !u!114 &1997555729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3080,8 +3127,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTripleShotActive: 0
+  _isMissileEnabled: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
-  _outOfAmmoClip: {fileID: 8300000, guid: 455ea2f7f0a0d67499844af280adcab1, type: 3}
+  _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
+  _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}
 --- !u!212 &1997555730
 SpriteRenderer:
   m_ObjectHideFlags: 0

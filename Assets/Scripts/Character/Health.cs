@@ -95,6 +95,14 @@ namespace Health
                     }
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.Alpha0)) 
+            {
+                if (CompareTag("Enemy"))
+                {
+                    TakeLife();
+                }
+            }
         }
 
         private void ShieldEnabled()
