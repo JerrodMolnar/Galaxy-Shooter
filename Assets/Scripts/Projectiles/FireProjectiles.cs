@@ -8,7 +8,7 @@ namespace ProjectileFire
     {
         private LaserPool _laserPool;
         private TripleShotPool _tripleShotPool;
-        private MissilePool _missilePool;        
+        private MissilePool _missilePool;
         private Vector3 _laserShootPosition;
         private bool _isPlayerShot = false;
         [SerializeField] private bool _isTripleShotActive = false;
@@ -52,6 +52,14 @@ namespace ProjectileFire
             _audioSource.priority = 20;
 
             _ammoCount = _maxAmmoCount;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                MissileEnable();
+            }
         }
 
         public void ShootProjectile()

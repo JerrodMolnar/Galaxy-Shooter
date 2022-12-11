@@ -29,6 +29,7 @@ namespace Health
         [SerializeField] private AudioClip _explosionClip;
         private AudioSource _audioSource;
         [SerializeField] private AudioClip _playerHurtClip;
+        [SerializeField] private GameObject _mainCamera;
 
         private void Start()
         {
@@ -81,6 +82,10 @@ namespace Health
 
             _audioSource.playOnAwake = false;
 
+            if (_mainCamera == null)
+            {
+                _mainCamera = GameObject.Find("Main Camera");
+            }
         }
 
         private void Update()
@@ -96,7 +101,7 @@ namespace Health
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Alpha0)) 
+            if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 if (CompareTag("Enemy"))
                 {
@@ -134,7 +139,6 @@ namespace Health
             if (_nextHit < Time.time)
             {
                 _nextHit = Time.time + _HITWAIT;
-
                 if (tag == "Player")
                 {
                     _audioSource.clip = _playerHurtClip;
@@ -147,23 +151,14 @@ namespace Health
                     }
                     else
                     {
+                        _mainCamera.GetComponent<Shake>().EnableShake();
                         _health -= damageAmount;
 
                         if (_health < 0)
                         {
                             _health = 0;
                         }
-                        float healthPercent = (float)_health / (float)_maxHealth;
-                        if (healthPercent < 0.66f && _fireNumber == 0)
-                        {
-                            _fireNumber++;
-                            EngineDamage();
-                        }
-                        else if (healthPercent < 0.33 && _fireNumber == 1)
-                        {
-                            _fireNumber++;
-                            EngineDamage();
-                        }
+                        EngineDamage(false);
                         _gameCanvasManager.UpdateHealth(_health);
                     }
                 }
@@ -181,29 +176,77 @@ namespace Health
             }
         }
 
-        private void EngineDamage()
+        private void EngineDamage(bool isHealed)
         {
-            if (_rightEngineFire.activeSelf)
+            float healthPercent = (float)_health / (float)_maxHealth;
+            if (!isHealed)
             {
-                _leftEngineFire.gameObject.SetActive(true);
-            }
-            else if (_leftEngineFire.activeSelf)
-            {
-                _rightEngineFire.gameObject.SetActive(true);
+                if (healthPercent < 0.66f && _fireNumber == 0)
+                {
+                    _fireNumber = 1;
+                    if (_rightEngineFire.activeSelf)
+                    {
+                        _leftEngineFire.gameObject.SetActive(true);
+                    }
+                    else if (_leftEngineFire.activeSelf)
+                    {
+                        _rightEngineFire.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        int randomFire = Random.Range(0, 2);
+                        switch (randomFire)
+                        {
+                            case 0:
+                                _leftEngineFire.gameObject.SetActive(true);
+                                break;
+                            case 1:
+                                _rightEngineFire.gameObject.SetActive(true);
+                                break;
+                        }
+                    }
+                }
+                else if (healthPercent < 0.33 && _fireNumber == 1)
+                {
+                    _fireNumber = 2;
+                    if (_rightEngineFire.activeSelf)
+                    {
+                        _leftEngineFire.gameObject.SetActive(true);
+                    }
+                    else if (_leftEngineFire.activeSelf)
+                    {
+                        _rightEngineFire.gameObject.SetActive(true);
+                    }
+                }
             }
             else
             {
-                int randomFire = Random.Range(0, 2);
-                switch (randomFire)
+                if (healthPercent > 0.66 && _fireNumber == 1)
                 {
-                    case 0:
-                        _leftEngineFire.gameObject.SetActive(true);
-                        break;
-                    case 1:
-                        _rightEngineFire.gameObject.SetActive(true);
-                        break;
+                    _fireNumber = 0;
+                    _leftEngineFire.gameObject.SetActive(false);
+                    _rightEngineFire.gameObject.SetActive(false);
+                }
+                else if (healthPercent > 0.33 && healthPercent < 0.66 && _fireNumber == 2 )
+                {
+                    _fireNumber = 1;
+                    int randomFire = Random.Range(0, 2);
+                    switch (randomFire)
+                    {
+                        case 0:
+                            _leftEngineFire.gameObject.SetActive(true);
+                            _rightEngineFire.gameObject.SetActive(false);
+                            break;
+                        case 1:
+                            _rightEngineFire.gameObject.SetActive(true);
+                            _leftEngineFire.gameObject.SetActive(false);
+                            break;
+                    }
+
                 }
             }
+
+
         }
 
         public static void SetScoreTo0()
@@ -225,6 +268,7 @@ namespace Health
             if (tag == "Player")
             {
                 _gameCanvasManager.UpdateHealth(_health);
+                EngineDamage(true);
             }
         }
 

@@ -48,6 +48,14 @@ public class Asteroid : MonoBehaviour
     void Update()
     {
         transform.Rotate(0, 0, 1 * _rotationSpeed * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.Alpha0)) 
+        {
+            _rotationSpeed = 0;
+            _collider.enabled = false;
+            _animator.SetTrigger("Explode");
+            _explosionSource.Play();
+            _spawnManager.Spawn(true);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
