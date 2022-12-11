@@ -11,12 +11,14 @@ namespace SpawnManager
         [SerializeField] private GameObject[] _powerups;
         private int _lastPowerup = -1;
         private int _secondLastPowerup = -1;
+        private int _missileRareCount = 0;
         private List<GameObject> _speedPowerupsPool = new List<GameObject>();
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private List<GameObject> _healthPowerupPool = new List<GameObject>();
+        private List<GameObject> _missilePowerupPool = new List<GameObject>();
         private bool _canSpawn = false;
         private float _spawnWait;
         private GameObject _enemyParent;
@@ -92,7 +94,7 @@ namespace SpawnManager
                 {
                     randomIndexPowerup = Random.Range(0, _powerups.Length);
                     yield return new WaitForSeconds(0.1f);
-                }                
+                }
 
                 if (_lastPowerup != -1)
                 {
@@ -118,6 +120,9 @@ namespace SpawnManager
                     case 4:
                         SpawnHealthPowerup();
                         break;
+                    case 5:
+                        SpawnMissilePowerup();
+                        break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
             }
@@ -125,7 +130,7 @@ namespace SpawnManager
 
         private void SpawnHealthPowerup()
         {
-            bool isActiveHealthPowerup = true;
+            bool noInactiveHealth = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _healthPowerupPool)
@@ -134,11 +139,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveHealthPowerup = false;
+                    noInactiveHealth = false;
                     break;
                 }
             }
-            if (isActiveHealthPowerup)
+            if (noInactiveHealth)
             {
                 GameObject powerup = Instantiate(_powerups[4], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _healthPowerupPool.Add(powerup);
@@ -147,7 +152,7 @@ namespace SpawnManager
 
         private void SpawnTripleShotPowerup()
         {
-            bool isActiveTripleShotPowerup = true;
+            bool noInactiveTripleShot = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _tripleShotPowerupsPool)
@@ -156,11 +161,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveTripleShotPowerup = false;
+                    noInactiveTripleShot = false;
                     break;
                 }
             }
-            if (isActiveTripleShotPowerup)
+            if (noInactiveTripleShot)
             {
                 GameObject powerup =
                 Instantiate(_powerups[0], posToSpawn, Quaternion.identity, _powerupParent.transform);
@@ -170,7 +175,7 @@ namespace SpawnManager
 
         private void SpawnSpeedPowerup()
         {
-            bool isActiveSpeedPowerup = true;
+            bool noInactiveSpeed = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _speedPowerupsPool)
@@ -179,11 +184,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveSpeedPowerup = false;
+                    noInactiveSpeed = false;
                     break;
                 }
             }
-            if (isActiveSpeedPowerup)
+            if (noInactiveSpeed)
             {
                 GameObject powerup = Instantiate(_powerups[1], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _speedPowerupsPool.Add(powerup);
@@ -192,7 +197,7 @@ namespace SpawnManager
 
         private void SpawnShieldPowerup()
         {
-            bool isActiveShieldPowerup = true;
+            bool noInactiveShield = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _shieldPowerupPool)
@@ -201,11 +206,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveShieldPowerup = false;
+                    noInactiveShield = false;
                     break;
                 }
             }
-            if (isActiveShieldPowerup)
+            if (noInactiveShield)
             {
                 GameObject powerup = Instantiate(_powerups[2], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
@@ -214,7 +219,7 @@ namespace SpawnManager
 
         private void SpawnAmmoPowerup()
         {
-            bool isActiveAmmoPowerup = true;
+            bool noInactiveAmmo = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _ammoPowerupPool)
@@ -223,14 +228,45 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    isActiveAmmoPowerup = false;
+                    noInactiveAmmo = false;
                     break;
                 }
             }
-            if (isActiveAmmoPowerup)
+            if (noInactiveAmmo)
             {
                 GameObject powerup = Instantiate(_powerups[3], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _ammoPowerupPool.Add(powerup);
+            }
+        }
+
+        private void SpawnMissilePowerup()
+        {
+            if (_missileRareCount > 1)
+            {
+                bool noInactiveMissile = true;
+                Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+                foreach (GameObject itemInPool in _missilePowerupPool)
+                {
+                    if (itemInPool.activeSelf == false)
+                    {
+                        itemInPool.SetActive(true);
+                        itemInPool.transform.position = posToSpawn;
+                        noInactiveMissile = false;
+                        break;
+                    }
+                }
+                if (noInactiveMissile)
+                {
+                    GameObject powerup =
+                    Instantiate(_powerups[5], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                    _missilePowerupPool.Add(powerup);
+                }
+                _missileRareCount = 0;
+            }
+            else
+            {
+                _missileRareCount++;
             }
         }
     }

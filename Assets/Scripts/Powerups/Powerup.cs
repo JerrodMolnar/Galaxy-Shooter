@@ -15,7 +15,8 @@ namespace Powerup
             Speed,
             Shield,
             Ammo,
-            Health
+            Health,
+            MissileShot
         }
 
 
@@ -58,6 +59,10 @@ namespace Powerup
                         break;
                     case _powerupID.Health:
                         collision.GetComponent<Health.Health>().DamageHealed(33);
+                        gameObject.SetActive(false);
+                        break;
+                    case _powerupID.MissileShot:
+                        collision.GetComponent<FireProjectiles>().MissileEnable();
                         gameObject.SetActive(false);
                         break;
                     default:

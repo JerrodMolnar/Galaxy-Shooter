@@ -31,7 +31,7 @@ namespace ProjectileType
                 if (_enemyFound != null)
                 {
                     Vector3 direction = _enemyFound.transform.position - transform.position;
-                    transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                    transform.rotation = Quaternion.LookRotation(Vector3.forward, direction.normalized);
                     direction = direction.normalized;
                     transform.Translate(direction * _moveSpeed * Time.deltaTime);
                 }
