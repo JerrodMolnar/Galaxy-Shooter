@@ -54,14 +54,6 @@ namespace ProjectileFire
             _ammoCount = _maxAmmoCount;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                MissileEnable();
-            }
-        }
-
         public void ShootProjectile()
         {
 
@@ -73,13 +65,13 @@ namespace ProjectileFire
                     _isTripleShotActive = false;
                 }
             }
-            else if (!_isMissileEnabled)
+            else if (_isMissileEnabled)
             {
-                FireLaser();
+                FireMissile();
             }
             else
             {
-                FireMissile();
+                FireLaser();
             }
         }
 
@@ -125,11 +117,25 @@ namespace ProjectileFire
             }
             else
             {
+                int enemyType = GetComponent<Enemy>().GetEnemyType();
+                switch (enemyType)
+                {
+                    case 0:
+                        _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1.3f, 0);
+                        _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+                        break;
+                    case 1:
+                        _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
+                        _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+                        break;
+                    case 2:
+                        break;
+                }
+
                 _audioSource.clip = _laserSoundClip;
                 _audioSource.Play();
                 _isPlayerShot = false;
-                _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
-                _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
+
             }
         }
 

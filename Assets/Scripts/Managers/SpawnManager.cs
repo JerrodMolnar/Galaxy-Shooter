@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using Utility;
 
@@ -7,15 +8,20 @@ namespace SpawnManager
 {
     public class SpawnManager : MonoBehaviour
     {
-        [SerializeField] private GameObject _smallEnemey;
+        [SerializeField] private GameObject[] _enemy;
         [SerializeField] private GameObject[] _powerups;
         private int _lastPowerup = -1;
         private int _secondLastPowerup = -1;
         private int _missileRareCount = 0;
+        private int _waveCount = 0;
+        private int _enemyCount = 0;
+        private const int _MAX_ENEMIES_PER_WAVE = 5;
         private List<GameObject> _speedPowerupsPool = new List<GameObject>();
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
-        private List<GameObject> _enemyPool = new List<GameObject>();
+        private List<GameObject> _enemySidewaysPool = new List<GameObject>();
+        private List<GameObject> _enemyBossPool = new List<GameObject>();
+        private List<GameObject> _enemyRegularPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private List<GameObject> _healthPowerupPool = new List<GameObject>();
         private List<GameObject> _missilePowerupPool = new List<GameObject>();
@@ -23,10 +29,12 @@ namespace SpawnManager
         private float _spawnWait;
         private GameObject _enemyParent;
         private GameObject _powerupParent;
+        [SerializeField] private GameObject _asteroid;
+
 
         void Start()
         {
-            if (_smallEnemey == null)
+            if (_enemy == null)
             {
                 Debug.LogError("Enemy not found on SpawnManager script.");
             }
@@ -44,13 +52,18 @@ namespace SpawnManager
             {
                 Debug.LogError("Powerups are null on SpawnManager");
             }
+            if (_asteroid == null)
+            {
+                _asteroid = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Asteroid.prefab", typeof(GameObject));
+            }
         }
 
-        public void Spawn(bool canSpawn)
+        public void StartSpawn(bool canSpawn)
         {
             _canSpawn = canSpawn;
             if (_canSpawn)
             {
+                _waveCount++;
                 StartCoroutine(SpawnEnemies());
                 StartCoroutine(SpawnPowerups());
             }
@@ -61,27 +74,83 @@ namespace SpawnManager
             yield return new WaitForSeconds(1f);
             while (_canSpawn)
             {
-                bool isActiveEnemy = true;
-
-                foreach (GameObject itemInPool in _enemyPool)
-                {
-                    if (itemInPool.activeSelf == false)
-                    {
-                        itemInPool.GetComponent<Enemy>().enabled = true;
-                        itemInPool.SetActive(true);
-                        itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
-                        isActiveEnemy = false;
-                        break;
-                    }
-                }
-                if (isActiveEnemy)
-                {
-                    GameObject newEnemy = Instantiate(_smallEnemey, _enemyParent.transform);
-                    _enemyPool.Add(newEnemy);
-                }
-                _spawnWait = Random.Range(1f, 5f);
                 yield return new WaitForSeconds(_spawnWait);
+                int randomEnemy = Random.Range(0, _enemy.Length);
+
+                if (_waveCount == 1 || randomEnemy == 0)
+                {
+                    SpawnRegularEnemy();
+                }
+                else if (randomEnemy == 1)
+                {
+                    SpawnRandomEnemy();
+                }
+                else if (_waveCount % 5 == 0 && randomEnemy == 2)
+                {
+                    _enemyCount += 5;
+                    SpawnBossEnemy();
+                }
+                _enemyCount++;
+                if (_MAX_ENEMIES_PER_WAVE * _waveCount <= _enemyCount)
+                {
+                    StartSpawn(false);
+                    _enemyCount = 0;
+                    yield return new WaitForSeconds(5f * _waveCount);
+                    Instantiate(_asteroid, new Vector3(0f, 4.6f, 0f), Quaternion.identity);
+
+                }
             }
+        }
+
+        private void SpawnRegularEnemy()
+        {
+            bool isActiveEnemy = true;
+
+            foreach (GameObject itemInPool in _enemyRegularPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.SetActive(true);
+                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    isActiveEnemy = false;
+                    break;
+                }
+            }
+            if (isActiveEnemy)
+            {
+                GameObject newEnemy = Instantiate(_enemy[0], _enemyParent.transform);
+                _enemyRegularPool.Add(newEnemy);
+            }
+            _spawnWait = Random.Range(1f, 5f);
+        }
+
+        private void SpawnRandomEnemy()
+        {
+            bool isActiveEnemy = true;
+
+            foreach (GameObject itemInPool in _enemySidewaysPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.SetActive(true);
+                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    isActiveEnemy = false;
+                    break;
+                }
+            }
+            if (isActiveEnemy)
+            {
+                GameObject newEnemy = Instantiate(_enemy[1], _enemyParent.transform);
+                _enemySidewaysPool.Add(newEnemy);
+            }
+            _spawnWait = Random.Range(1f, 5f);
+        }
+
+        private void SpawnBossEnemy()
+        {
+
         }
 
         private IEnumerator SpawnPowerups()

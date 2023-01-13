@@ -84,6 +84,10 @@ namespace GameCanvas
         public void UpdateScore(int score)
         {
             _scoreText.text = "Score: " + score;
+            if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0 && !_isGameOver)
+            {
+                
+            }
         }
 
         public void UpdateLives(int lives)
@@ -163,6 +167,11 @@ namespace GameCanvas
         public void UpdateThrusterBar(float thrustValue)
         {
             _thrustBar.value = thrustValue;
+        }
+
+        public void UpdateWave(int wave)
+        {
+
         }
     }
 }

@@ -20,7 +20,5 @@ public class GameManager : MonoBehaviour
     public void SetGameOver(bool gameOver)
     {
         _isGameOver = gameOver;
-    }
-
-  
+    }  
 }

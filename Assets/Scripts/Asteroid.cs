@@ -54,7 +54,7 @@ public class Asteroid : MonoBehaviour
             _collider.enabled = false;
             _animator.SetTrigger("Explode");
             _explosionSource.Play();
-            _spawnManager.Spawn(true);
+            _spawnManager.StartSpawn(true);
         }
     }
 
@@ -67,7 +67,7 @@ public class Asteroid : MonoBehaviour
             _collider.enabled = false;
             _animator.SetTrigger("Explode");
             _explosionSource.Play();
-            _spawnManager.Spawn(true);
+            _spawnManager.StartSpawn(true);
         }
     }
 }

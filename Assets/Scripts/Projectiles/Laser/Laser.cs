@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Utility;
 
@@ -51,7 +52,7 @@ namespace ProjectileType
         {
             if (other.gameObject.activeSelf)
             {
-                if (other.CompareTag("Enemy") && _isPlayerLaser)
+                if (other.CompareTag("Enemy"))
                 {                    
                     other.GetComponent<Health.Health>()?.DamageTaken(5);
                     gameObject.SetActive(false);
@@ -68,5 +69,6 @@ namespace ProjectileType
                 gameObject.SetActive(false);
             }
         }
+
     }
 }

@@ -1,9 +1,9 @@
+using GameCanvas;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
-using GameCanvas;
 using Color = UnityEngine.Color;
-using Unity.VisualScripting;
 
 namespace Health
 {
@@ -11,11 +11,11 @@ namespace Health
     {
         [SerializeField] private int _maxHealth = 100;
         [SerializeField] private int _lives = 3;
-        [SerializeField] private const int _maxLives = 5;
+        [SerializeField] private int _maxLives = 5;
         private static int _score = 0;
         private int _health;
         private SpawnManager.SpawnManager _spawnManager;
-        private float _reappearWaitTime = 2f;
+        private const float _REAPPEAR_WAIT_TIME = 2f;
         private int _hitsOnShield = 0;
         private int _maxShieldHits = 3;
         private GameObject _shieldsVisualizer;
@@ -90,17 +90,6 @@ namespace Health
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (CompareTag("Player"))
-                {
-                    if (_lives > 0)
-                    {
-                        TakeLife();
-                    }
-                }
-            }
-
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 if (CompareTag("Enemy"))
@@ -109,31 +98,6 @@ namespace Health
                 }
             }
         }
-
-        private void ShieldEnabled()
-        {
-            Color color;
-            switch (_hitsOnShield)
-            {
-                case 3:
-                    color = new Color(255, 255, 0);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _hitsOnShield--;
-                    break;
-                case 2:
-                    color = new Color(255, 0, 0);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _hitsOnShield--;
-                    break;
-                case 1:
-                    _hitsOnShield--;
-                    color = new Color(255, 255, 255);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _shieldsVisualizer.SetActive(false);
-                    break;
-            }
-        }
-
         public void DamageTaken(int damageAmount)
         {
             if (_nextHit < Time.time)
@@ -164,6 +128,8 @@ namespace Health
                 }
                 else
                 {
+
+                    StartCoroutine(ColorFlasher());
                     _health -= damageAmount;
                     _score += damageAmount;
                     _gameCanvasManager.UpdateScore(_score);
@@ -227,7 +193,7 @@ namespace Health
                     _leftEngineFire.gameObject.SetActive(false);
                     _rightEngineFire.gameObject.SetActive(false);
                 }
-                else if (healthPercent > 0.33 && healthPercent < 0.66 && _fireNumber == 2 )
+                else if (healthPercent > 0.33 && healthPercent < 0.66 && _fireNumber == 2)
                 {
                     _fireNumber = 1;
                     int randomFire = Random.Range(0, 2);
@@ -247,36 +213,6 @@ namespace Health
             }
 
 
-        }
-
-        public static void SetScoreTo0()
-        {
-            _score = 0;
-        }
-
-        public void DamageHealed(int healAmount)
-        {
-            if (_health + healAmount > _maxHealth)
-            {
-                _health = _maxHealth;
-            }
-            else
-            {
-                _health += healAmount;
-            }
-
-            if (tag == "Player")
-            {
-                _gameCanvasManager.UpdateHealth(_health);
-                EngineDamage(true);
-            }
-        }
-
-        public void EnableShield()
-        {
-            _hitsOnShield = _maxShieldHits;
-            _shieldsVisualizer.SetActive(true);
-            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
         }
 
         public void TakeLife()
@@ -313,7 +249,7 @@ namespace Health
                     _gameCanvasManager.UpdateHealth(_health);
                     _gameCanvasManager.UpdateLives(_lives);
                     _gameCanvasManager.UpdateGameOver(true);
-                    _spawnManager.Spawn(false);
+                    _spawnManager.StartSpawn(false);
                     GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
                     foreach (GameObject enemy in enemies)
                     {
@@ -334,10 +270,64 @@ namespace Health
             }
         }
 
+        public void EnableShield()
+        {
+            _hitsOnShield = _maxShieldHits;
+            _shieldsVisualizer.SetActive(true);
+            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        private void ShieldEnabled()
+        {
+            Color color;
+            switch (_hitsOnShield)
+            {
+                case 3:
+                    color = new Color(255, 255, 0);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _hitsOnShield--;
+                    break;
+                case 2:
+                    color = new Color(255, 0, 0);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _hitsOnShield--;
+                    break;
+                case 1:
+                    _hitsOnShield--;
+                    color = new Color(255, 255, 255);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
+                    _shieldsVisualizer.SetActive(false);
+                    break;
+            }
+        }
+
+        public void DamageHealed(int healAmount)
+        {
+            if (_health + healAmount > _maxHealth)
+            {
+                _health = _maxHealth;
+            }
+            else
+            {
+                _health += healAmount;
+            }
+
+            if (tag == "Player")
+            {
+                _gameCanvasManager.UpdateHealth(_health);
+                EngineDamage(true);
+            }
+        }
+
+        public static void SetScoreTo0()
+        {
+            _score = 0;
+        }
+
         public IEnumerator Reappear()
         {
 
-            yield return new WaitForSeconds(_reappearWaitTime);
+            yield return new WaitForSeconds(_REAPPEAR_WAIT_TIME);
             if (tag == "Player")
             {
                 transform.position = new Vector3(0, -2.5f, 0);
@@ -363,6 +353,21 @@ namespace Health
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Enemy>().enabled = true;
             }
+        }
+
+
+        private IEnumerator ColorFlasher()
+        {
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            float flashTime = 0.1f;
+            spriteRenderer.color = Color.red;
+            yield return new WaitForSeconds(flashTime);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(flashTime);
+            spriteRenderer.color = Color.red;
+            yield return new WaitForSeconds(flashTime);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(flashTime);
         }
     }
 }
