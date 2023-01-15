@@ -2,10 +2,10 @@
 
 public class Shake : MonoBehaviour
 {
+    [SerializeField] private float _shakeMultiplier = 0.25f;
     [SerializeField] private float _shakeTime = 1f;
     [SerializeField] private float _shakeDuration = 1f;
     private bool _shakeEnabled = false;
-    [SerializeField] private float _shakeMultiplier = 0.25f;
     private Vector3 originalPosition;
 
     private void OnEnable()

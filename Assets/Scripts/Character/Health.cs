@@ -10,9 +10,6 @@ namespace Health
 {
     public class Health : MonoBehaviour
     {
-        [SerializeField] private int _maxHealth = 100;
-        [SerializeField] private int _lives = 3;
-        [SerializeField] private int _maxLives = 5;
         private static int _score = 0;
         private int _health;
         private SpawnManager.SpawnManager _spawnManager;
@@ -27,24 +24,30 @@ namespace Health
         private GameObject _rightEngineFire;
         private GameObject _leftEngineFire;
         private int _fireNumber = 0;
-        [SerializeField] private AudioClip _explosionClip;
         private AudioSource _audioSource;
         [SerializeField] private AudioClip _playerHurtClip;
         [SerializeField] private GameObject _mainCamera;
+        [SerializeField] private int _maxHealth = 100;
+        [SerializeField] private int _lives = 3;
+        [SerializeField] private int _maxLives = 5;
+        [SerializeField] private AudioClip _explosionClip;
 
         private void Start()
         {
             _health = _maxHealth;
+
             _gameCanvasManager = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
             if (_gameCanvasManager == null)
             {
                 Debug.LogError("Game Canvas Manager not found on Health Script on " + name);
             }
+
             _animator = gameObject.GetComponent<Animator>();
             if (_animator == null)
             {
                 Debug.LogError("Animator not found on Health Script on " + name);
             }
+
             if (tag == "Player")
             {
                 _gameCanvasManager.UpdateHealth(_health);
@@ -55,7 +58,6 @@ namespace Health
                 {
                     Debug.LogError("Shield visualizer not found on Health script on " + tag.ToString());
                 }
-
 
                 _leftEngineFire = transform.GetChild(2).gameObject;
                 _rightEngineFire = transform.GetChild(3).gameObject;
@@ -82,7 +84,6 @@ namespace Health
             }
 
             _audioSource.playOnAwake = false;
-
             if (_mainCamera == null)
             {
                 _mainCamera = GameObject.Find("Main Camera");
@@ -99,6 +100,7 @@ namespace Health
                 }
             }
         }
+
         public void DamageTaken(int damageAmount)
         {
             if (_nextHit < Time.time)
@@ -129,7 +131,6 @@ namespace Health
                 }
                 else
                 {
-
                     StartCoroutine(ColorFlasher());
                     _health -= damageAmount;
                     _score += damageAmount;
@@ -353,7 +354,6 @@ namespace Health
                 GetComponent<Enemy>().enabled = true;
             }
         }
-
 
         private IEnumerator ColorFlasher()
         {

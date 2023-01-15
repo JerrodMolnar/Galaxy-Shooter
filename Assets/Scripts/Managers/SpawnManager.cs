@@ -33,7 +33,6 @@ namespace SpawnManager
         private GameObject _asteroid;
         private GameCanvasManager _gameCanvas;
 
-
         void Start()
         {
             if (_enemy == null)
@@ -45,6 +44,7 @@ namespace SpawnManager
                 _enemyParent = new GameObject("Enemies");
                 _enemyParent.transform.SetParent(this.transform);
             }
+
             if (_powerupParent == null)
             {
                 _powerupParent = new GameObject("Powerups");
@@ -54,11 +54,13 @@ namespace SpawnManager
             {
                 Debug.LogError("Powerups are null on SpawnManager");
             }
+
             _asteroid = GameObject.Find("Asteroid");
             if (_asteroid == null)
             {
                 Debug.LogError("Asteroid not found on SpawnManager");
             }
+
             _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
             if (_gameCanvas == null)
             {
@@ -385,7 +387,6 @@ namespace SpawnManager
                 Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _missilePowerupPool.Add(powerup);
             }
-
         }
     }
 }

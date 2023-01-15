@@ -38,8 +38,7 @@ namespace Powerup
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.CompareTag("Player"))
-            {
-                
+            {                
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:
@@ -68,7 +67,6 @@ namespace Powerup
                         break;
                     case _powerupID.LifeSteal:
                         collision.GetComponent<Health.Health>().TakeLife();
-
                         gameObject.SetActive(false);
                         break;
                     default:

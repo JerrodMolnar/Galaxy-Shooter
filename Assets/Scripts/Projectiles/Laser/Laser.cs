@@ -69,6 +69,5 @@ namespace ProjectileType
                 gameObject.SetActive(false);
             }
         }
-
     }
 }

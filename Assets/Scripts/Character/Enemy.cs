@@ -4,14 +4,14 @@ using Utility;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private float _moveSpeed = 3f;
     private float _movementWait = 3f;
     private bool _changeDirection = true;
     private float _randomXTranslate;
     private float _nextFire = -1;
+    private static int _enemyCount;
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
-    private static int _enemyCount;
+    [SerializeField] private float _moveSpeed = 3f;
 
     private enum EnemyTypes
     {
@@ -20,7 +20,6 @@ public class Enemy : MonoBehaviour
         Boss
     };
     [SerializeField] private EnemyTypes CurrentEnemyType;
-
 
     private void OnEnable()
     {
@@ -38,7 +37,6 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         Movement();
-        
 
         if (Time.time > _nextFire)
         {
@@ -68,7 +66,7 @@ public class Enemy : MonoBehaviour
                         transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
                     }
                     break;
-                }                
+                }
 
             case EnemyTypes.RandomEnemy:
                 {
@@ -93,7 +91,7 @@ public class Enemy : MonoBehaviour
                     }
                     break;
                 }
-               
+
             case EnemyTypes.Boss:
                 {
                     move = new Vector3(_randomXTranslate, 0, 0);
@@ -139,7 +137,6 @@ public class Enemy : MonoBehaviour
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
         GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
     }
-
 
     public static int GetEnemyCount()
     {

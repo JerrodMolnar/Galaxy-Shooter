@@ -12,17 +12,17 @@ namespace ProjectileFire
         private MissilePool _missilePool;
         private Vector3 _laserShootPosition;
         private bool _isPlayerShot = false;
-        [SerializeField] private bool _isTripleShotActive = false;
-        [SerializeField] private bool _isMissileEnabled = false;
         private AudioSource _audioSource;
-        [SerializeField] private AudioClip _laserSoundClip;
-        [SerializeField] private AudioClip _outOfAmmoClip;
-        [SerializeField] private AudioClip _missileClip;
         private static int _ammoCount = 0;
         private static int _maxAmmoCount = 15;
         private float _tripleShotCoolDownWait = 5f;
         private float _tripleShotCoolDown = -1;
         private GameCanvasManager _gameCanvas;
+        [SerializeField] private bool _isTripleShotActive = false;
+        [SerializeField] private bool _isMissileEnabled = false;
+        [SerializeField] private AudioClip _laserSoundClip;
+        [SerializeField] private AudioClip _outOfAmmoClip;
+        [SerializeField] private AudioClip _missileClip;
 
         void Start()
         {
@@ -151,7 +151,6 @@ namespace ProjectileFire
                 _audioSource.clip = _laserSoundClip;
                 _audioSource.Play();
                 _isPlayerShot = false;
-
             }
         }
 
