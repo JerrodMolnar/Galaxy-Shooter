@@ -1,8 +1,6 @@
 using GameCanvas;
-using ProjectileFire;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using Utility;
 
@@ -23,6 +21,7 @@ namespace SpawnManager
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemySidewaysPool = new List<GameObject>();
         private List<GameObject> _enemyBossPool = new List<GameObject>();
+        private List<GameObject> _lifeStealerPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyRegularPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private List<GameObject> _healthPowerupPool = new List<GameObject>();
@@ -60,7 +59,7 @@ namespace SpawnManager
             {
                 Debug.LogError("Asteroid not found on SpawnManager");
             }
-            _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>(); 
+            _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
             if (_gameCanvas == null)
             {
                 Debug.LogError("Game Canvas not found on SpawnManager");
@@ -113,13 +112,12 @@ namespace SpawnManager
                         {
                             yield return new WaitForSeconds(0.5f);
                         }
-                        StartSpawn(false);                        
+                        StartSpawn(false);
                         _gameCanvas.EndWave(_waveCount);
                         yield return new WaitForSeconds(3f);
                         _asteroid.SetActive(true);
                     }
                     StartCoroutine(WaitForNoEnemies());
-                    GameObject.FindGameObjectWithTag("Player").GetComponent<FireProjectiles>().AmmoPickup();
                 }
             }
         }
@@ -215,6 +213,9 @@ namespace SpawnManager
                     case 5:
                         SpawnMissilePowerup();
                         break;
+                    case 6:
+                        SpawnLifeStealerPowerup();
+                        break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
             }
@@ -237,7 +238,7 @@ namespace SpawnManager
             }
             if (noInactiveHealth)
             {
-                GameObject powerup = Instantiate(_powerups[4], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _healthPowerupPool.Add(powerup);
             }
         }
@@ -260,7 +261,7 @@ namespace SpawnManager
             if (noInactiveTripleShot)
             {
                 GameObject powerup =
-                Instantiate(_powerups[0], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _tripleShotPowerupsPool.Add(powerup);
             }
         }
@@ -282,7 +283,7 @@ namespace SpawnManager
             }
             if (noInactiveSpeed)
             {
-                GameObject powerup = Instantiate(_powerups[1], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _speedPowerupsPool.Add(powerup);
             }
         }
@@ -304,7 +305,7 @@ namespace SpawnManager
             }
             if (noInactiveShield)
             {
-                GameObject powerup = Instantiate(_powerups[2], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
             }
         }
@@ -326,7 +327,7 @@ namespace SpawnManager
             }
             if (noInactiveAmmo)
             {
-                GameObject powerup = Instantiate(_powerups[3], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _ammoPowerupPool.Add(powerup);
             }
         }
@@ -351,7 +352,7 @@ namespace SpawnManager
                 if (noInactiveMissile)
                 {
                     GameObject powerup =
-                    Instantiate(_powerups[5], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                    Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                     _missilePowerupPool.Add(powerup);
                 }
                 _missileRareCount = 0;
@@ -360,6 +361,31 @@ namespace SpawnManager
             {
                 _missileRareCount++;
             }
+        }
+
+        private void SpawnLifeStealerPowerup()
+        {
+            Debug.Break();
+            bool noInactiveLifeStealer = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _missilePowerupPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    noInactiveLifeStealer = false;
+                    break;
+                }
+            }
+            if (noInactiveLifeStealer)
+            {
+                GameObject powerup =
+                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _missilePowerupPool.Add(powerup);
+            }
+
         }
     }
 }

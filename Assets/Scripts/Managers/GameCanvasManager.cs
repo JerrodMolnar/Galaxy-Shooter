@@ -1,3 +1,4 @@
+using ProjectileFire;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,7 @@ namespace GameCanvas
         private GameManager _gameManager;
         private GameObject _escapeMenu;
         private Slider _thrustBar;
+        private Text _ammoText;
 
         void Start()
         {
@@ -65,6 +67,12 @@ namespace GameCanvas
             if (_thrustBar == null)
             {
                 Debug.LogError("Thrust Bar not found on GameCanvasManager Script on " + name);
+            }
+
+            _ammoText = transform.GetChild(7).GetComponent<Text>();
+            if (_ammoText == null)
+            {
+                Debug.LogError("Ammo Text not found on GameCanvasManager Script on " + name);
             }
         }
 
@@ -182,6 +190,12 @@ namespace GameCanvas
         {
             _gameOverText.transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(ShowTextOnScreen("End of Wave " + wave + "...", 3f));
+            GameObject.FindGameObjectWithTag("Player").GetComponent<FireProjectiles>().AmmoPickup();
+        }
+
+        public void UpdateAmmoText(int ammo, int maxAmmo)
+        {
+            _ammoText.text = "Ammo: " + ammo + "/" + maxAmmo;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Powerup
 {
     public class Powerup : MonoBehaviour
     {
-        [SerializeField] private float _speed = 3.0f;
+        private float _speed = 1.5f;
         [SerializeField] private _powerupID _currentID;
         [SerializeField] private AudioClip _powerupClip;
         private enum _powerupID
@@ -16,7 +16,8 @@ namespace Powerup
             Shield,
             Ammo,
             Health,
-            MissileShot
+            MissileShot,
+            LifeSteal
         }
 
 
@@ -38,7 +39,7 @@ namespace Powerup
         {
             if (collision.CompareTag("Player"))
             {
-                AudioSource.PlayClipAtPoint(_powerupClip, transform.position);
+                
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:
@@ -65,10 +66,16 @@ namespace Powerup
                         collision.GetComponent<FireProjectiles>().MissileEnable();
                         gameObject.SetActive(false);
                         break;
+                    case _powerupID.LifeSteal:
+                        collision.GetComponent<Health.Health>().TakeLife();
+
+                        gameObject.SetActive(false);
+                        break;
                     default:
                         Debug.LogError("No Powerup ID match found.");
                         break;
                 }
+                AudioSource.PlayClipAtPoint(_powerupClip, transform.position);
             }
         }
     }

@@ -1,4 +1,5 @@
 using GameCanvas;
+using ProjectileFire;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -208,11 +209,8 @@ namespace Health
                             _leftEngineFire.gameObject.SetActive(false);
                             break;
                     }
-
                 }
             }
-
-
         }
 
         public void TakeLife()
@@ -226,7 +224,7 @@ namespace Health
                 transform.GetChild(1).gameObject.SetActive(false);
                 _leftEngineFire.SetActive(false);
                 _rightEngineFire.SetActive(false);
-                _animator.SetTrigger("IsDead");
+                _animator.SetTrigger("IsDead"); 
             }
             else
             {
@@ -345,6 +343,7 @@ namespace Health
                 _fireNumber = 0;
                 _leftEngineFire.SetActive(false);
                 _rightEngineFire.SetActive(false);
+                GetComponent<FireProjectiles>().AmmoPickup();
             }
             else
             {

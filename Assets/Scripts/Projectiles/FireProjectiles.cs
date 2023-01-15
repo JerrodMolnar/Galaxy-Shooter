@@ -1,6 +1,7 @@
 using UnityEngine;
 using ProjectilePool;
 using Unity.VisualScripting;
+using GameCanvas;
 
 namespace ProjectileFire
 {
@@ -17,10 +18,11 @@ namespace ProjectileFire
         [SerializeField] private AudioClip _laserSoundClip;
         [SerializeField] private AudioClip _outOfAmmoClip;
         [SerializeField] private AudioClip _missileClip;
-        private int _ammoCount = 0;
-        private int _maxAmmoCount = 15;
+        private static int _ammoCount = 0;
+        private static int _maxAmmoCount = 15;
         private float _tripleShotCoolDownWait = 5f;
         private float _tripleShotCoolDown = -1;
+        private GameCanvasManager _gameCanvas;
 
         void Start()
         {
@@ -51,7 +53,17 @@ namespace ProjectileFire
             _audioSource.volume = 0.1f;
             _audioSource.priority = 20;
 
-            _ammoCount = _maxAmmoCount;
+            if (tag == "Player")
+            {
+                _ammoCount = _maxAmmoCount;
+
+                _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
+                if (_gameCanvas == null)
+                {
+                    Debug.LogError("Game Canvas not found on FireProjectiles on " + name);
+                }
+                _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
+            }
         }
 
         public void ShootProjectile()
@@ -86,19 +98,20 @@ namespace ProjectileFire
             _isMissileEnabled = true;
         }
 
-        public void AmmoPickup()
-        {
-            _ammoCount = _maxAmmoCount;
-        }
-
         private void FireTripleShot()
         {
             _tripleShotPool.ShootTripleShot(true, transform.position);
         }
 
+        public void AmmoPickup()
+        {
+            _ammoCount = _maxAmmoCount;
+            _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
+        }       
+
         private void FireLaser()
         {
-            if (tag == "Player")
+            if (tag == "Player" && gameObject.activeInHierarchy)
             {
                 if (_ammoCount > 0)
                 {
@@ -107,10 +120,13 @@ namespace ProjectileFire
                     _isPlayerShot = true;
                     _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.25f, 0);
                     _ammoCount--;
+                    _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
                     _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
                 }
                 else
                 {
+
+                    _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
                     _audioSource.clip = _outOfAmmoClip;
                     _audioSource.Play();
                 }

@@ -143,7 +143,6 @@ public class Enemy : MonoBehaviour
 
     public static int GetEnemyCount()
     {
-        Debug.Log("Enemy Count is " + _enemyCount);
         return _enemyCount;
     }
 }
