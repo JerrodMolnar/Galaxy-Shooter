@@ -86,7 +86,7 @@ namespace GameCanvas
             _scoreText.text = "Score: " + score;
             if (GameObject.FindGameObjectsWithTag("Enemy").Length == 0 && !_isGameOver)
             {
-                
+
             }
         }
 
@@ -118,20 +118,23 @@ namespace GameCanvas
             if (_isGameOver)
             {
                 _gameManager.SetGameOver(_isGameOver);
-                _gameOverText.gameObject.SetActive(true);
-                StartCoroutine(GameOver());
+                StartCoroutine(ShowTextOnScreen("Game Over!!!", Mathf.Infinity));
+                _gameOverText.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
 
-        private IEnumerator GameOver()
+        private IEnumerator ShowTextOnScreen(string textToShow, float timeLimit)
         {
-            while(_gameOverText.gameObject.activeSelf)
+            _gameOverText.gameObject.SetActive(true);
+            float lengthOfTimeToShow = Time.time + timeLimit;
+            while (lengthOfTimeToShow > Time.time)
             {
-                _gameOverText.text = "Game Over";
-                yield return new WaitForSeconds(0.5f);
+                _gameOverText.text = textToShow;
+                yield return new WaitForSeconds(0.25f);
                 _gameOverText.text = "";
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.25f);
             }
+            _gameOverText.gameObject.SetActive(true);
         }
 
         private void PauseMenu()
@@ -145,8 +148,8 @@ namespace GameCanvas
             {
                 Time.timeScale = 1f;
                 _escapeMenu.SetActive(false);
-            }            
-        }    
+            }
+        }
 
         public void QuitGame()
         {
@@ -171,7 +174,14 @@ namespace GameCanvas
 
         public void UpdateWave(int wave)
         {
+            _gameOverText.transform.GetChild(0).gameObject.SetActive(false);
+            StartCoroutine(ShowTextOnScreen("Wave " + wave + " Beginning...", 5f));
+        }
 
+        public void EndWave(int wave)
+        {
+            _gameOverText.transform.GetChild(0).gameObject.SetActive(false);
+            StartCoroutine(ShowTextOnScreen("End of Wave " + wave + "...", 3f));
         }
     }
 }

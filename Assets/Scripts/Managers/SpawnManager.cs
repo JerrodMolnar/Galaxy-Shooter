@@ -1,3 +1,5 @@
+using GameCanvas;
+using ProjectileFire;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -13,8 +15,8 @@ namespace SpawnManager
         private int _lastPowerup = -1;
         private int _secondLastPowerup = -1;
         private int _missileRareCount = 0;
-        private int _waveCount = 0;
-        private int _enemyCount = 0;
+        [SerializeField] private int _waveCount = 0;
+        private int _enemySpawnCount = 0;
         private const int _MAX_ENEMIES_PER_WAVE = 5;
         private List<GameObject> _speedPowerupsPool = new List<GameObject>();
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
@@ -29,7 +31,8 @@ namespace SpawnManager
         private float _spawnWait;
         private GameObject _enemyParent;
         private GameObject _powerupParent;
-        [SerializeField] private GameObject _asteroid;
+        private GameObject _asteroid;
+        private GameCanvasManager _gameCanvas;
 
 
         void Start()
@@ -52,9 +55,15 @@ namespace SpawnManager
             {
                 Debug.LogError("Powerups are null on SpawnManager");
             }
+            _asteroid = GameObject.Find("Asteroid");
             if (_asteroid == null)
             {
-                _asteroid = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Asteroid.prefab", typeof(GameObject));
+                Debug.LogError("Asteroid not found on SpawnManager");
+            }
+            _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>(); 
+            if (_gameCanvas == null)
+            {
+                Debug.LogError("Game Canvas not found on SpawnManager");
             }
         }
 
@@ -64,6 +73,7 @@ namespace SpawnManager
             if (_canSpawn)
             {
                 _waveCount++;
+                _gameCanvas.UpdateWave(_waveCount);
                 StartCoroutine(SpawnEnemies());
                 StartCoroutine(SpawnPowerups());
             }
@@ -71,8 +81,9 @@ namespace SpawnManager
 
         private IEnumerator SpawnEnemies()
         {
-            yield return new WaitForSeconds(1f);
-            while (_canSpawn)
+            yield return new WaitForSeconds(5f);
+            bool canSpawnEnemies = _canSpawn;
+            while (canSpawnEnemies)
             {
                 yield return new WaitForSeconds(_spawnWait);
                 int randomEnemy = Random.Range(0, _enemy.Length);
@@ -80,24 +91,35 @@ namespace SpawnManager
                 if (_waveCount == 1 || randomEnemy == 0)
                 {
                     SpawnRegularEnemy();
+                    _enemySpawnCount++;
                 }
                 else if (randomEnemy == 1)
                 {
                     SpawnRandomEnemy();
+                    _enemySpawnCount++;
                 }
                 else if (_waveCount % 5 == 0 && randomEnemy == 2)
                 {
-                    _enemyCount += 5;
+                    _enemySpawnCount += 5;
                     SpawnBossEnemy();
                 }
-                _enemyCount++;
-                if (_MAX_ENEMIES_PER_WAVE * _waveCount <= _enemyCount)
+                if (_MAX_ENEMIES_PER_WAVE * _waveCount <= _enemySpawnCount)
                 {
-                    StartSpawn(false);
-                    _enemyCount = 0;
-                    yield return new WaitForSeconds(5f * _waveCount);
-                    Instantiate(_asteroid, new Vector3(0f, 4.6f, 0f), Quaternion.identity);
-
+                    canSpawnEnemies = false;
+                    _enemySpawnCount = 0;
+                    IEnumerator WaitForNoEnemies()
+                    {
+                        while (Enemy.GetEnemyCount() > 0)
+                        {
+                            yield return new WaitForSeconds(0.5f);
+                        }
+                        StartSpawn(false);                        
+                        _gameCanvas.EndWave(_waveCount);
+                        yield return new WaitForSeconds(3f);
+                        _asteroid.SetActive(true);
+                    }
+                    StartCoroutine(WaitForNoEnemies());
+                    GameObject.FindGameObjectWithTag("Player").GetComponent<FireProjectiles>().AmmoPickup();
                 }
             }
         }
@@ -155,6 +177,7 @@ namespace SpawnManager
 
         private IEnumerator SpawnPowerups()
         {
+            yield return new WaitForSeconds(5f);
             while (_canSpawn)
             {
                 int randomIndexPowerup = Random.Range(0, _powerups.Length);

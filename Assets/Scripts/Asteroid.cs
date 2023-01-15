@@ -12,7 +12,7 @@ public class Asteroid : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
         _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager.SpawnManager>();
         if (_spawnManager == null)
         {
@@ -44,11 +44,20 @@ public class Asteroid : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (_collider != null)
+        {
+            _collider.enabled = true;
+            _rotationSpeed = 25f;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         transform.Rotate(0, 0, 1 * _rotationSpeed * Time.deltaTime);
-        if (Input.GetKeyDown(KeyCode.Alpha0)) 
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             _rotationSpeed = 0;
             _collider.enabled = false;

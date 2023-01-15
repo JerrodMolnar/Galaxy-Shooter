@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private float _nextFire = -1;
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
+    private static int _enemyCount;
 
     private enum EnemyTypes
     {
@@ -26,6 +27,12 @@ public class Enemy : MonoBehaviour
         transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
         _randomXTranslate = Random.Range(-1f, 1f);
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
+        _enemyCount++;
+    }
+
+    private void OnDisable()
+    {
+        _enemyCount--;
     }
 
     void Update()
@@ -131,5 +138,12 @@ public class Enemy : MonoBehaviour
     {
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
         GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
+    }
+
+
+    public static int GetEnemyCount()
+    {
+        Debug.Log("Enemy Count is " + _enemyCount);
+        return _enemyCount;
     }
 }

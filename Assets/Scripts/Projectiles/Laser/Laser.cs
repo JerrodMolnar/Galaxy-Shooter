@@ -9,6 +9,7 @@ namespace ProjectileType
     {
         [SerializeField] private float _moveSpeed = 8.0f;
         private bool _isPlayerLaser = false;
+        [SerializeField] private int _damageAmount = 5;
 
         private void Update()
         {
@@ -54,12 +55,12 @@ namespace ProjectileType
             {
                 if (other.CompareTag("Enemy"))
                 {                    
-                    other.GetComponent<Health.Health>()?.DamageTaken(5);
+                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount);
                     gameObject.SetActive(false);
                 }
                 else if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(15);
+                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2);
                     gameObject.SetActive(false);
                 }
             }

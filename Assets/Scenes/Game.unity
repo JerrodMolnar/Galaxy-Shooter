@@ -1708,8 +1708,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemy:
-  - {fileID: 1181681802453169286, guid: 03da59f2ed91fe0429b936e762d55a64, type: 3}
-  - {fileID: 858816468978005798, guid: aa5acfbb1668abe42a4719c097b9ca61, type: 3}
+  - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
+  - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
   _powerups:
   - {fileID: 2451187821556118806, guid: 7272c434024052c4a802d2b4586b99f6, type: 3}
   - {fileID: 2361147744037969484, guid: 229b028c3d8f60e42ac717c8f5a9dcbc, type: 3}
