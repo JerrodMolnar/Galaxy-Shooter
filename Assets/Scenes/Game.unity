@@ -1660,9 +1660,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d991838024f7bb14b810808394e2ab0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shakeMultiplier: 0.25
   _shakeTime: 0.5
   _shakeDuration: 0.5
-  _shakeMultiplier: 0.25
 --- !u!1 &967176038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,6 +1710,7 @@ MonoBehaviour:
   _enemy:
   - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
   - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
+  - {fileID: 252246562409824032, guid: dc8ad99579f521b439784ff82c6ada5f, type: 3}
   _powerups:
   - {fileID: 2451187821556118806, guid: 7272c434024052c4a802d2b4586b99f6, type: 3}
   - {fileID: 2361147744037969484, guid: 229b028c3d8f60e42ac717c8f5a9dcbc, type: 3}
@@ -1718,7 +1719,7 @@ MonoBehaviour:
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 2694640153111207537, guid: 0e46263fb891af44cbcd8037c4356052, type: 3}
-  _waveCount: 0
+  _waveCount: 2
 --- !u!1 &975127556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3174,7 +3175,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997555722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -2.72, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3212,12 +3213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerHurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
+  _mainCamera: {fileID: 963194225}
   _maxHealth: 100
   _lives: 3
   _maxLives: 5
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
-  _playerHurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
-  _mainCamera: {fileID: 963194225}
 --- !u!114 &1997555729
 MonoBehaviour:
   m_ObjectHideFlags: 0

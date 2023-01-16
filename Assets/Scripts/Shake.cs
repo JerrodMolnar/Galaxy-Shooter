@@ -5,8 +5,16 @@ public class Shake : MonoBehaviour
     [SerializeField] private float _shakeMultiplier = 0.25f;
     [SerializeField] private float _shakeTime = 1f;
     [SerializeField] private float _shakeDuration = 1f;
+    private float _originalTime, _originalDuration, _originalMultiplier;
     private bool _shakeEnabled = false;
     private Vector3 originalPosition;
+
+    private void Start()
+    {
+        _originalDuration = _shakeDuration;
+        _originalMultiplier = _shakeMultiplier;
+        _originalTime = _shakeTime;
+    }
 
     private void OnEnable()
     {
@@ -26,7 +34,10 @@ public class Shake : MonoBehaviour
             {
                 _shakeTime = _shakeDuration;
                 transform.localPosition = originalPosition;
-                _shakeEnabled= false;
+                _shakeEnabled = false;
+                _shakeTime = _originalTime;
+                _shakeMultiplier = _originalMultiplier;
+                _shakeDuration = _originalDuration;
             }
         }
     }
@@ -34,5 +45,14 @@ public class Shake : MonoBehaviour
     public void EnableShake()
     {
         _shakeEnabled = true;
+    }
+
+    public void EnableShake(float shakeTime, float shakeDuration, float shakeMultiplier)
+    {
+        _shakeDuration = shakeDuration;
+        _shakeMultiplier = shakeMultiplier;
+        _shakeTime = shakeTime;
+        _shakeEnabled = true;
+
     }
 }

@@ -82,8 +82,9 @@ namespace Health
             {
                 _audioSource = this.AddComponent<AudioSource>();
             }
-
             _audioSource.playOnAwake = false;
+
+
             if (_mainCamera == null)
             {
                 _mainCamera = GameObject.Find("Main Camera");
@@ -119,6 +120,7 @@ namespace Health
                     else
                     {
                         _mainCamera.GetComponent<Shake>().EnableShake();
+                        StartCoroutine(ColorFlasher(_HITWAIT / 8));
                         _health -= damageAmount;
 
                         if (_health < 0)
@@ -131,7 +133,7 @@ namespace Health
                 }
                 else
                 {
-                    StartCoroutine(ColorFlasher());
+                    StartCoroutine(ColorFlasher(0.5f));
                     _health -= damageAmount;
                     _score += damageAmount;
                     _gameCanvasManager.UpdateScore(_score);
@@ -264,6 +266,11 @@ namespace Health
                 }
                 else
                 {
+                    Debug.Log(name);
+                    if (name == "Alien Enemy(Clone)")
+                    {
+                        transform.GetChild(0).gameObject.SetActive(false);
+                    }
                     _animator.SetTrigger("IsDead");
                 }
             }
@@ -355,10 +362,9 @@ namespace Health
             }
         }
 
-        private IEnumerator ColorFlasher()
+        private IEnumerator ColorFlasher(float flashTime)
         {
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-            float flashTime = 0.1f;
             spriteRenderer.color = Color.red;
             yield return new WaitForSeconds(flashTime);
             spriteRenderer.color = Color.white;

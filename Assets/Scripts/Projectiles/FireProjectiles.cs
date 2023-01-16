@@ -2,6 +2,7 @@ using UnityEngine;
 using ProjectilePool;
 using Unity.VisualScripting;
 using GameCanvas;
+using System.Collections;
 
 namespace ProjectileFire
 {
@@ -17,7 +18,9 @@ namespace ProjectileFire
         private static int _maxAmmoCount = 15;
         private float _tripleShotCoolDownWait = 5f;
         private float _tripleShotCoolDown = -1;
+        private bool _tractorBeamActive = false;
         private GameCanvasManager _gameCanvas;
+        private GameObject _tractorBeam;
         [SerializeField] private bool _isTripleShotActive = false;
         [SerializeField] private bool _isMissileEnabled = false;
         [SerializeField] private AudioClip _laserSoundClip;
@@ -63,6 +66,22 @@ namespace ProjectileFire
                     Debug.LogError("Game Canvas not found on FireProjectiles on " + name);
                 }
                 _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
+            } 
+            
+            if (transform.childCount > 0)
+            {
+                if (transform.GetChild(0).name == "Alien Shot")
+                {
+                    _tractorBeam = transform.GetChild(0).gameObject;
+                }
+            }
+        }
+
+        private void OnEnable()
+        {
+            if (_tractorBeam != null)
+            {
+                _tractorBeamActive = false;
             }
         }
 
@@ -144,7 +163,13 @@ namespace ProjectileFire
                         _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
                         _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
                         break;
-                    case 2:
+                    case 2:                       
+                        if (!_tractorBeamActive)
+                        {                            
+                            _tractorBeam.SetActive(true);
+                            _tractorBeamActive = true;
+                            StartCoroutine(DisableTractorBeam());
+                        }
                         break;
                 }
 
@@ -152,6 +177,14 @@ namespace ProjectileFire
                 _audioSource.Play();
                 _isPlayerShot = false;
             }
+        }
+
+        private IEnumerator DisableTractorBeam()
+        {
+            yield return new WaitForSeconds(Random.Range(0.5f,5f));
+            _tractorBeam.SetActive(false);
+            yield return new WaitForSeconds(Random.Range(0.5f, 5f));
+            _tractorBeamActive = false;
         }
 
         private void FireMissile()

@@ -12,18 +12,29 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
     [SerializeField] private float _moveSpeed = 3f;
+    [SerializeField] private float _amplitude = 2f;
+    [SerializeField] private float _frequency = 0.1f;
 
     private enum EnemyTypes
     {
         Regular,
         RandomEnemy,
+        Alien,
         Boss
     };
     [SerializeField] private EnemyTypes CurrentEnemyType;
 
     private void OnEnable()
     {
-        transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
+        if (CurrentEnemyType.Equals(EnemyTypes.Alien))
+        {
+            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), 3, 0);
+        }
+        else
+        {
+            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
+        }
+        
         _randomXTranslate = Random.Range(-1f, 1f);
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
         _enemyCount++;
@@ -87,7 +98,30 @@ public class Enemy : MonoBehaviour
                     if (_changeDirection)
                     {
                         _changeDirection = false;
-                        StartCoroutine(MovementCooldown());
+                        StartCoroutine(RandomMove());
+                    }
+                    break;
+                }
+
+            case EnemyTypes.Alien:
+                {
+                    float x = (_randomXTranslate * _moveSpeed), y = (Mathf.Sin(Time.time * _frequency) * _amplitude);
+                    move = new Vector3(x, y, 0);
+
+                    transform.Translate(move * Time.deltaTime);
+                    if (transform.position.x >= Helper.GetXPositionBounds() + 2.5)
+                    {
+                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                        transform.position = new Vector3(transform.position.x, transform.position.y - 1, 0);
+                    }
+                    if (transform.position.x <= -(Helper.GetXPositionBounds()) - 2.5)
+                    {
+                        _randomXTranslate = Random.Range(0.01f, 1f);
+                        transform.position = new Vector3(transform.position.x, transform.position.y - 1, 0);
+                    }
+                    if (transform.position.y < Helper.GetYLowerBounds() - 2)
+                    {
+                        transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
                     }
                     break;
                 }
@@ -115,7 +149,7 @@ public class Enemy : MonoBehaviour
         return (int)CurrentEnemyType;
     }
 
-    private IEnumerator MovementCooldown()
+    private IEnumerator RandomMove()
     {
         yield return new WaitForSeconds(_movementWait);
         _moveSpeed = Random.Range(3f, 6f);
@@ -125,7 +159,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && CurrentEnemyType != EnemyTypes.Alien)
         {
             other.GetComponent<Health.Health>().DamageTaken(100);
             this.GetComponent<Health.Health>().DamageTaken(100);
