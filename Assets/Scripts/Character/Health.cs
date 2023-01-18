@@ -301,14 +301,20 @@ namespace Health
                     GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
                     foreach (GameObject enemy in enemies)
                     {
+                        if (enemy.activeInHierarchy == true)
+                        {
                         enemy.GetComponent<Enemy>().enabled = false;
                         enemy.GetComponent<Animator>().SetTrigger("IsDead");
                         _audioSource.Play();
+                        }
                     }
                     GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
                     foreach (GameObject powerup in powerups)
                     {
-                        powerup.SetActive(false);
+                        if (powerup.activeInHierarchy == true)
+                        {
+                            powerup.SetActive(false);
+                        }
                     }
                 }
                 else

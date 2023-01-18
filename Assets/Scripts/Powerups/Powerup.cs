@@ -9,6 +9,8 @@ namespace Powerup
         private float _speed = 1.5f;
         [SerializeField] private _powerupID _currentID;
         [SerializeField] private AudioClip _powerupClip;
+        private GameObject _player;
+
         private enum _powerupID
         {
             TripleShot,
@@ -21,9 +23,27 @@ namespace Powerup
             ExtraLife
         }
 
+        private void Start()
+        {
+            _player = GameObject.FindGameObjectWithTag("Player");
+            if (_player== null )
+            {
+                Debug.LogError("Player is null on Powerup Script on " + name);
+            }
+        }
+
         void Update()
         {
-            Movement();
+            if (Input.GetKey(KeyCode.C))
+            {
+                Vector2 direction = _player.transform.position - transform.position;
+                direction.Normalize(); 
+                transform.Translate(direction * _speed * 5 * Time.deltaTime);
+            }
+            else
+            {
+                Movement();
+            }
         }
 
         private void Movement()

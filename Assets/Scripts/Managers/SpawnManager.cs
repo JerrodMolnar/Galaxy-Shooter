@@ -70,6 +70,19 @@ namespace SpawnManager
             }
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                _canSpawn = true;
+                StartCoroutine(SpawnPowerups());
+            }
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                _canSpawn = false;
+            }
+        }
+
         public void StartSpawn(bool canSpawn)
         {
             _canSpawn = canSpawn;
