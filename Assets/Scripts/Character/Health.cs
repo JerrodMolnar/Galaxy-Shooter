@@ -337,7 +337,6 @@ namespace Health
             _hitsOnShield = hitsOnShield;
             HitShield();
             _shieldsVisualizer.SetActive(true);
-            _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
         }
 
         private void HitShield()
