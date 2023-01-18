@@ -15,7 +15,6 @@ namespace Health
         private SpawnManager.SpawnManager _spawnManager;
         private const float _REAPPEAR_WAIT_TIME = 2f;
         private int _hitsOnShield = 0;
-        private int _maxShieldHits = 3;
         private GameObject _shieldsVisualizer;
         private GameCanvasManager _gameCanvasManager;
         private Animator _animator;
@@ -31,6 +30,7 @@ namespace Health
         [SerializeField] private int _lives = 3;
         [SerializeField] private int _maxLives = 5;
         [SerializeField] private AudioClip _explosionClip;
+        [SerializeField] private GameObject _shieldPrefab;
 
         private void Start()
         {
@@ -87,7 +87,35 @@ namespace Health
 
             if (_mainCamera == null)
             {
-                _mainCamera = GameObject.Find("Main Camera");
+                _mainCamera = GameObject.Find("Main Camera not fount on Health script on " + name);
+            }
+
+            if (_shieldPrefab == null)
+            {
+                Debug.LogError("Shield prefab not fount on Health script on " + name);
+            }
+        }
+
+        private void OnEnable()
+        {
+            if (_shieldsVisualizer == null)
+            {
+                bool foundShield = false;
+                int childCount = transform.childCount;
+                int indexForChild = -1;
+                for (int i = 0; i < childCount; i++)
+                {
+                    if (transform.GetChild(i).name == "Shield")
+                    {
+                        foundShield= true;
+                        indexForChild= i;
+                        break;
+                    }
+                }
+                if (foundShield && indexForChild >= 0)
+                {
+                    _shieldsVisualizer = transform.GetChild(indexForChild).gameObject;                    
+                }
             }
         }
 
@@ -115,7 +143,7 @@ namespace Health
 
                     if (_hitsOnShield > 0)
                     {
-                        ShieldEnabled();
+                        HitShield();
                     }
                     else
                     {
@@ -134,9 +162,16 @@ namespace Health
                 else
                 {
                     StartCoroutine(ColorFlasher(0.5f));
-                    _health -= damageAmount;
-                    _score += damageAmount;
-                    _gameCanvasManager.UpdateScore(_score);
+                    if (_hitsOnShield == 0)
+                    {
+                        _health -= damageAmount;
+                        _score += damageAmount;
+                        _gameCanvasManager.UpdateScore(_score);
+                    }
+                    else
+                    {
+                        HitShield();
+                    }
                 }
 
                 if (_health <= 0)
@@ -216,6 +251,18 @@ namespace Health
             }
         }
 
+        public void ExtraLife()
+        {
+            if (_lives < _maxLives)
+            {
+                _lives++;
+                if (tag == "Player")
+                {
+                    _gameCanvasManager.UpdateLives(_lives);
+                }
+            }
+        }
+
         public void TakeLife()
         {
             _lives -= 1;
@@ -227,7 +274,7 @@ namespace Health
                 transform.GetChild(1).gameObject.SetActive(false);
                 _leftEngineFire.SetActive(false);
                 _rightEngineFire.SetActive(false);
-                _animator.SetTrigger("IsDead"); 
+                _animator.SetTrigger("IsDead");
             }
             else
             {
@@ -266,7 +313,6 @@ namespace Health
                 }
                 else
                 {
-                    Debug.Log(name);
                     if (name == "Alien Enemy(Clone)")
                     {
                         transform.GetChild(0).gameObject.SetActive(false);
@@ -276,14 +322,19 @@ namespace Health
             }
         }
 
-        public void EnableShield()
+        public void EnableShield(int hitsOnShield)
         {
-            _hitsOnShield = _maxShieldHits;
+            if (_shieldsVisualizer == null)
+            {
+                _shieldsVisualizer = Instantiate(_shieldPrefab, transform.position, Quaternion.identity, transform);
+            }
+            _hitsOnShield = hitsOnShield;
+            HitShield();
             _shieldsVisualizer.SetActive(true);
             _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
         }
 
-        private void ShieldEnabled()
+        private void HitShield()
         {
             Color color;
             switch (_hitsOnShield)
@@ -345,9 +396,9 @@ namespace Health
                 _gameCanvasManager.UpdateHealth(_health);
                 _gameCanvasManager.UpdateLives(_lives);
                 _hitsOnShield = 2;
-                ShieldEnabled();
+                HitShield();
                 yield return new WaitForSeconds(1f);
-                ShieldEnabled();
+                HitShield();
                 _fireNumber = 0;
                 _leftEngineFire.SetActive(false);
                 _rightEngineFire.SetActive(false);

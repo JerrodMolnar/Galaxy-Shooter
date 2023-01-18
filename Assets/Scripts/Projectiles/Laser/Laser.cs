@@ -63,7 +63,7 @@ namespace ProjectileType
                     gameObject.SetActive(false);
                 }
             }
-            if (other.tag == "Laser")
+            if (other.tag == "Projectile")
             {
                 other.gameObject.SetActive(false); 
                 gameObject.SetActive(false);

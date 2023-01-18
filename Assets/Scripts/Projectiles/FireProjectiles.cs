@@ -58,6 +58,7 @@ namespace ProjectileFire
 
             if (tag == "Player")
             {
+                _isPlayerShot= true;
                 _ammoCount = _maxAmmoCount;
 
                 _gameCanvas = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
@@ -66,7 +67,11 @@ namespace ProjectileFire
                     Debug.LogError("Game Canvas not found on FireProjectiles on " + name);
                 }
                 _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
-            } 
+            }
+            else
+            {
+                _isPlayerShot= false;
+            }
             
             if (transform.childCount > 0)
             {
@@ -88,7 +93,7 @@ namespace ProjectileFire
         public void ShootProjectile()
         {
 
-            if (_isTripleShotActive && tag == "Player" && !_isMissileEnabled)
+            if (_isTripleShotActive && _isPlayerShot && !_isMissileEnabled)
             {
                 FireTripleShot();
                 if (_tripleShotCoolDown < Time.time)
@@ -119,7 +124,7 @@ namespace ProjectileFire
 
         private void FireTripleShot()
         {
-            _tripleShotPool.ShootTripleShot(true, transform.position);
+                _tripleShotPool.ShootTripleShot(_isPlayerShot, transform.position);
         }
 
         public void AmmoPickup()
@@ -130,13 +135,12 @@ namespace ProjectileFire
 
         private void FireLaser()
         {
-            if (tag == "Player" && gameObject.activeInHierarchy)
+            if (_isPlayerShot && gameObject.activeInHierarchy)
             {
                 if (_ammoCount > 0)
                 {
                     _audioSource.clip = _laserSoundClip;
                     _audioSource.Play();
-                    _isPlayerShot = true;
                     _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.25f, 0);
                     _ammoCount--;
                     _gameCanvas.UpdateAmmoText(_ammoCount, _maxAmmoCount);
@@ -189,17 +193,20 @@ namespace ProjectileFire
 
         private void FireMissile()
         {
-            if (tag == "Player")
+            if (_isPlayerShot)
             {
-                _audioSource.clip = _missileClip;
-                _audioSource.volume = 1f;
-                _audioSource.Play();
-                _audioSource.volume = 0.1f;
-                _isPlayerShot = true;
-                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.85f, 0);
-                _missilePool.ShootMissileFromPool(_isPlayerShot, _laserShootPosition);
-                _isMissileEnabled = false;
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.85f, 0);                                
             }
+            else
+            {
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1f, 0);
+            }
+            _audioSource.clip = _missileClip;
+            _audioSource.volume = 1f;
+            _audioSource.Play();
+            _audioSource.volume = 0.1f;
+            _isMissileEnabled = false;
+            _missilePool.ShootMissileFromPool(_isPlayerShot, _laserShootPosition);
         }
     }
 }

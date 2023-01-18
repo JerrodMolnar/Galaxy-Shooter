@@ -10,11 +10,17 @@ namespace ProjectileType
         private float _missileTime = -1f;
         private float _missileCoolDown = 10f;
         private GameObject _enemyFound;
+        private GameObject _player;
         Rigidbody2D rb;
 
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
+            _player = GameObject.FindGameObjectWithTag("Player");
+            if (_player != null )
+            {
+                Debug.LogError("Player not found on Missile Script on " + name);
+            }
         }
 
         private void Update()
@@ -67,7 +73,15 @@ namespace ProjectileType
                     gameObject.SetActive(false);
                     transform.position = Vector3.zero;
                 }
-            }           
+            }
+            else
+            {
+                Vector2 direction = _player.transform.position - transform.position;
+                direction.Normalize();
+                float rotateAmount = Vector3.Cross(direction, transform.up).z;
+                rb.angularVelocity = -rotateAmount * 200f;
+                rb.velocity = transform.up * _moveSpeed;
+            }
         }
 
         private GameObject CheckForEnemy()
@@ -103,6 +117,11 @@ namespace ProjectileType
                     other.GetComponent<Health.Health>()?.DamageTaken(25);
                     transform.rotation = Quaternion.identity;
                     _enemyFound = CheckForEnemy();
+                }
+                else if (other.CompareTag("Player") && !_isPlayerMissile)
+                {
+                    other.GetComponent<Health.Health>()?.DamageTaken(25);
+                    gameObject.SetActive(false);
                 }
             }
         }

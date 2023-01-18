@@ -17,9 +17,9 @@ namespace Powerup
             Ammo,
             Health,
             MissileShot,
-            LifeSteal
+            LifeSteal,
+            ExtraLife
         }
-
 
         void Update()
         {
@@ -31,14 +31,14 @@ namespace Powerup
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
             if (transform.position.y < Helper.GetYLowerBounds() - 3f)
             {
-                gameObject.SetActive(false);
+                transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 3f, 0);
             }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("Player"))
-            {                
+            if (collision.CompareTag("Player") || collision.CompareTag("Enemy"))
+            {
                 switch (_currentID)
                 {
                     case _powerupID.TripleShot:
@@ -46,16 +46,31 @@ namespace Powerup
                         gameObject.SetActive(false);
                         break;
                     case _powerupID.Speed:
-                        collision.GetComponent<Player>().SpeedPowerup();
-                        gameObject.SetActive(false);
+                        if (collision.CompareTag("Player"))
+                        {
+                            collision.GetComponent<Player>().SpeedPowerup();
+                            gameObject.SetActive(false);
+                        }
                         break;
                     case _powerupID.Shield:
-                        collision.GetComponent<Health.Health>().EnableShield();
+                        int hitsOnShield;
+                        if (collision.CompareTag("Player"))
+                        {
+                            hitsOnShield = 4;
+                        }
+                        else
+                        {
+                            hitsOnShield = 2;
+                        }
+                        collision.GetComponent<Health.Health>().EnableShield(hitsOnShield);
                         gameObject.SetActive(false);
                         break;
                     case _powerupID.Ammo:
-                        collision.GetComponent<FireProjectiles>().AmmoPickup();
-                        gameObject.SetActive(false);
+                        if (collision.CompareTag("Player"))
+                        {
+                            collision.GetComponent<FireProjectiles>().AmmoPickup();
+                            gameObject.SetActive(false);
+                        }
                         break;
                     case _powerupID.Health:
                         collision.GetComponent<Health.Health>().DamageHealed(33);
@@ -67,6 +82,10 @@ namespace Powerup
                         break;
                     case _powerupID.LifeSteal:
                         collision.GetComponent<Health.Health>().TakeLife();
+                        gameObject.SetActive(false);
+                        break;
+                    case _powerupID.ExtraLife:
+                        collision.GetComponent<Health.Health>().ExtraLife();
                         gameObject.SetActive(false);
                         break;
                     default:

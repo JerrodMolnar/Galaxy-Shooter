@@ -1,3 +1,4 @@
+using ProjectileType;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace ProjectilePool
                         tripleShot.transform.GetChild(i).gameObject.SetActive(true);
                     }
                     tripleShot.transform.position = shotPosition;
+                    tripleShot.GetComponent<TripleShot>().SetPlayerShot(isShotByPlayer);
                     isNoActiveTripleShot = false;
                     break;
                 }
@@ -36,6 +38,7 @@ namespace ProjectilePool
             if (isNoActiveTripleShot)
             {
                 GameObject newTripleShot = Instantiate(_tripleShotPrefab, shotPosition, Quaternion.identity, transform);
+                newTripleShot.GetComponent<TripleShot>().SetPlayerShot(isShotByPlayer);
                 _tripleShotList.Add(newTripleShot);
             }
         }
