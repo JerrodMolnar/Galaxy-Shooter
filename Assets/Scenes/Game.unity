@@ -1619,7 +1619,7 @@ MonoBehaviour:
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 2694640153111207537, guid: 0e46263fb891af44cbcd8037c4356052, type: 3}
-  _waveCount: 2
+  _waveCount: 0
 --- !u!1 &975127556
 GameObject:
   m_ObjectHideFlags: 0
