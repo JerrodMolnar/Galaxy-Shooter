@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerHurtClip: {fileID: 0}
+  _hurtClip: {fileID: 8300000, guid: c6fb5a1415568b1439752d81ef563733, type: 3}
   _mainCamera: {fileID: 0}
   _maxHealth: 5
   _lives: 1

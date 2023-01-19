@@ -14,7 +14,7 @@ namespace Health
         private int _health;
         private SpawnManager.SpawnManager _spawnManager;
         private const float _REAPPEAR_WAIT_TIME = 2f;
-        private int _hitsOnShield = 0;
+        [SerializeField] private int _hitsOnShield = 0;
         private GameObject _shieldsVisualizer;
         private GameCanvasManager _gameCanvasManager;
         private Animator _animator;
@@ -24,8 +24,8 @@ namespace Health
         private GameObject _leftEngineFire;
         private int _fireNumber = 0;
         private AudioSource _audioSource;
-        [SerializeField] private AudioClip _playerHurtClip;
-        [SerializeField] private GameObject _mainCamera;
+        [SerializeField] private AudioClip _hurtClip;
+        private Shake _shaker;
         [SerializeField] private int _maxHealth = 100;
         [SerializeField] private int _lives = 3;
         [SerializeField] private int _maxLives = 5;
@@ -84,15 +84,20 @@ namespace Health
             }
             _audioSource.playOnAwake = false;
 
-
-            if (_mainCamera == null)
+            _shaker = GameObject.Find("Main Camera").GetComponent<Shake>();
+            if (_shaker == null)
             {
-                _mainCamera = GameObject.Find("Main Camera not fount on Health script on " + name);
+                Debug.LogError("Shake not found on Health script on " + name);
             }
 
             if (_shieldPrefab == null)
             {
                 Debug.LogError("Shield prefab not fount on Health script on " + name);
+            }
+
+            if (_hurtClip == null)
+            {
+                Debug.LogError("Hurt clip not found on Health script on " + name);
             }
         }
 
@@ -100,21 +105,14 @@ namespace Health
         {
             if (_shieldsVisualizer == null)
             {
-                bool foundShield = false;
                 int childCount = transform.childCount;
-                int indexForChild = -1;
                 for (int i = 0; i < childCount; i++)
                 {
                     if (transform.GetChild(i).name == "Shield")
                     {
-                        foundShield= true;
-                        indexForChild= i;
+                        _shieldsVisualizer = transform.GetChild(i).gameObject;
                         break;
                     }
-                }
-                if (foundShield && indexForChild >= 0)
-                {
-                    _shieldsVisualizer = transform.GetChild(indexForChild).gameObject;                    
                 }
             }
         }
@@ -130,16 +128,17 @@ namespace Health
             }
         }
 
-        public void DamageTaken(int damageAmount)
+        public void DamageTaken(int damageAmount, bool isFromPlayer)
         {
             if (_nextHit < Time.time)
             {
                 _nextHit = Time.time + _HITWAIT;
                 if (tag == "Player")
                 {
-                    _audioSource.clip = _playerHurtClip;
+                    _audioSource.clip = _hurtClip;
                     _audioSource.volume = 0.075f;
                     _audioSource.Play();
+                    _shaker.EnableShake();
 
                     if (_hitsOnShield > 0)
                     {
@@ -147,8 +146,7 @@ namespace Health
                     }
                     else
                     {
-                        _mainCamera.GetComponent<Shake>().EnableShake();
-                        StartCoroutine(ColorFlasher(_HITWAIT / 8));
+                        StartCoroutine(ColorFlasher(0.5f));
                         _health -= damageAmount;
 
                         if (_health < 0)
@@ -161,16 +159,22 @@ namespace Health
                 }
                 else
                 {
-                    StartCoroutine(ColorFlasher(0.5f));
-                    if (_hitsOnShield == 0)
+                    StartCoroutine(ColorFlasher(_HITWAIT / 8));
+                    if (_hitsOnShield > 0)
                     {
-                        _health -= damageAmount;
-                        _score += damageAmount;
-                        _gameCanvasManager.UpdateScore(_score);
+                        HitShield();
                     }
                     else
                     {
-                        HitShield();
+                        _audioSource.clip = _hurtClip;
+                        _audioSource.volume = 0.075f;
+                        _audioSource.Play();
+                        _health -= damageAmount;
+                        if (isFromPlayer)
+                        {
+                            _score += damageAmount;
+                            _gameCanvasManager.UpdateScore(_score);
+                        }
                     }
                 }
 
@@ -303,9 +307,9 @@ namespace Health
                     {
                         if (enemy.activeInHierarchy == true)
                         {
-                        enemy.GetComponent<Enemy>().enabled = false;
-                        enemy.GetComponent<Animator>().SetTrigger("IsDead");
-                        _audioSource.Play();
+                            enemy.GetComponent<Enemy>().enabled = false;
+                            enemy.GetComponent<Animator>().SetTrigger("IsDead");
+                            _audioSource.Play();
                         }
                     }
                     GameObject[] powerups = GameObject.FindGameObjectsWithTag("Powerup");
@@ -334,6 +338,7 @@ namespace Health
             {
                 _shieldsVisualizer = Instantiate(_shieldPrefab, transform.position, Quaternion.identity, transform);
             }
+            _shieldsVisualizer.SetActive(false);
             _hitsOnShield = hitsOnShield;
             HitShield();
             _shieldsVisualizer.SetActive(true);
@@ -341,24 +346,20 @@ namespace Health
 
         private void HitShield()
         {
-            Color color;
+            _hitsOnShield--;
             switch (_hitsOnShield)
             {
                 case 3:
-                    color = new Color(255, 255, 0);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _hitsOnShield--;
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.white;
                     break;
                 case 2:
-                    color = new Color(255, 0, 0);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _hitsOnShield--;
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.green;
                     break;
                 case 1:
-                    _hitsOnShield--;
-                    color = new Color(255, 255, 255);
-                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = color;
-                    _shieldsVisualizer.SetActive(false);
+                    _shieldsVisualizer.GetComponent<SpriteRenderer>().color = Color.red;
+                    break;
+                default:
+                    _shieldsVisualizer.gameObject.SetActive(false);
                     break;
             }
         }

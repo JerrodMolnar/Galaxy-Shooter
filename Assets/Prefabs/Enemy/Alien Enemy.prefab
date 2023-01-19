@@ -332,8 +332,6 @@ MonoBehaviour:
   _laserWaitTimeMin: 0.5
   _laserWaitTimeMax: 3
   _moveSpeed: 3
-  _amplitude: 1
-  _frequency: 0.5
   CurrentEnemyType: 2
 --- !u!114 &252246562409824034
 MonoBehaviour:
@@ -347,9 +345,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerHurtClip: {fileID: 0}
-  _mainCamera: {fileID: 0}
-  _maxHealth: 5
+  _hurtClip: {fileID: 8300000, guid: c6fb5a1415568b1439752d81ef563733, type: 3}
+  _maxHealth: 15
   _lives: 1
   _maxLives: 1
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}

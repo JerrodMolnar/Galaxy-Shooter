@@ -101,8 +101,12 @@ namespace Powerup
                         gameObject.SetActive(false);
                         break;
                     case _powerupID.LifeSteal:
-                        collision.GetComponent<Health.Health>().TakeLife();
-                        gameObject.SetActive(false);
+                        if ((collision.CompareTag("Enemy") && collision.GetComponent<Enemy>().GetEnemyType() != 3) || 
+                            collision.CompareTag("Player"))
+                        {
+                            collision.GetComponent<Health.Health>().TakeLife();
+                            gameObject.SetActive(false);
+                        }
                         break;
                     case _powerupID.ExtraLife:
                         collision.GetComponent<Health.Health>().ExtraLife();

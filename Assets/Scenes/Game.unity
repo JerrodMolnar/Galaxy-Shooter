@@ -1611,6 +1611,7 @@ MonoBehaviour:
   - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
   - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
   - {fileID: 252246562409824032, guid: dc8ad99579f521b439784ff82c6ada5f, type: 3}
+  - {fileID: 530951429178851873, guid: 3e6380715f1ec2d47bc33e5f744df373, type: 3}
   _powerups:
   - {fileID: 2451187821556118806, guid: 7272c434024052c4a802d2b4586b99f6, type: 3}
   - {fileID: 2361147744037969484, guid: 229b028c3d8f60e42ac717c8f5a9dcbc, type: 3}
@@ -1619,7 +1620,7 @@ MonoBehaviour:
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 2694640153111207537, guid: 0e46263fb891af44cbcd8037c4356052, type: 3}
-  _waveCount: 0
+  _waveCount: 4
 --- !u!1 &975127556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3113,8 +3114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerHurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
-  _mainCamera: {fileID: 963194225}
+  _hitsOnShield: 0
+  _hurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
   _maxHealth: 100
   _lives: 3
   _maxLives: 5

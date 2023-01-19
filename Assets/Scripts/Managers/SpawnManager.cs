@@ -22,7 +22,7 @@ namespace SpawnManager
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyRandomPool = new List<GameObject>();
         private List<GameObject> _enemyAlienPool = new List<GameObject>();
-        private List<GameObject> _enemyBossPool = new List<GameObject>();
+        private List<GameObject> _enemyRedFighterPool = new List<GameObject>();
         private List<GameObject> _lifeStealerPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyRegularPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
@@ -34,6 +34,7 @@ namespace SpawnManager
         private GameObject _powerupParent;
         private GameObject _asteroid;
         private GameCanvasManager _gameCanvas;
+        private Shake _shaker;
 
         void Start()
         {
@@ -68,6 +69,12 @@ namespace SpawnManager
             {
                 Debug.LogError("Game Canvas not found on SpawnManager");
             }
+
+            _shaker = GameObject.Find("Main Camera").GetComponent<Shake>();
+            if (_shaker == null)
+            {
+                Debug.LogError("Shake not found on SpawnManager");
+            }
         }
 
         private void Update()
@@ -80,6 +87,11 @@ namespace SpawnManager
             else if (Input.GetKeyDown(KeyCode.L))
             {
                 _canSpawn = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                SpawnBossEnemy();
             }
         }
 
@@ -99,6 +111,7 @@ namespace SpawnManager
         {
             yield return new WaitForSeconds(5f);
             bool canSpawnEnemies = _canSpawn;
+            bool canSpawnBoss = true;
             while (canSpawnEnemies)
             {
                 yield return new WaitForSeconds(_spawnWait);
@@ -109,20 +122,20 @@ namespace SpawnManager
                     SpawnRegularEnemy();
                     _enemySpawnCount++;
                 }
-                else if (_randomEnemy == 1 && _waveCount > 1)
+                else if (_randomEnemy == 1 && _waveCount > 2)
                 {
                     SpawnRandomEnemy();
                     _enemySpawnCount++;
                 }
-                else if (_randomEnemy == 2 && _waveCount > 2)
+                else if (_randomEnemy == 2 && _waveCount > 4)
                 {
                     SpawnAlienEnemy();
                     _enemySpawnCount += 2;
                 }
-                else if (_waveCount % 5 == 0 && _randomEnemy == 3)
+                else if (_waveCount % 5 == 0 && _randomEnemy == 3 && canSpawnBoss)
                 {
                     _enemySpawnCount += 5;
-                    SpawnBossEnemy();
+                    canSpawnBoss = SpawnBossEnemy();
                 }
                 if (_MAX_ENEMIES_PER_WAVE * _waveCount <= _enemySpawnCount)
                 {
@@ -161,7 +174,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[_randomEnemy], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemy[0], _enemyParent.transform);
                 _enemyRegularPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
@@ -184,7 +197,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[_randomEnemy], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemy[1], _enemyParent.transform);
                 _enemyRandomPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
@@ -207,15 +220,35 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[_randomEnemy], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemy[2], _enemyParent.transform);
                 _enemyAlienPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
         }
 
-        private void SpawnBossEnemy()
+        private bool SpawnBossEnemy()
         {
+            bool isActiveEnemy = true;
 
+            foreach (GameObject itemInPool in _enemyRedFighterPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.SetActive(true);
+                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    isActiveEnemy = false;
+                    break;
+                }
+            }
+            if (isActiveEnemy)
+            {
+                GameObject newEnemy = Instantiate(_enemy[3], _enemyParent.transform);
+                _enemyRedFighterPool.Add(newEnemy);
+            }
+            _shaker.EnableShake(3f, 3f, 3f);
+            _spawnWait = Random.Range(1f, 5f);
+            return false;
         }
 
         private IEnumerator SpawnPowerups()

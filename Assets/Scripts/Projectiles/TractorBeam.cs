@@ -28,11 +28,7 @@ public class TractorBeam : MonoBehaviour
         Health.Health health = collision.GetComponent<Health.Health>();
         if (health != null)
         {
-            if (health.name == "Player")
-            {
-                GameObject.Find("Main Camera").GetComponent<Shake>().EnableShake(1f, 1f, .5f);
-            }
-            health.DamageTaken(25);
+            health.DamageTaken(25, false);
         }
     }
 }

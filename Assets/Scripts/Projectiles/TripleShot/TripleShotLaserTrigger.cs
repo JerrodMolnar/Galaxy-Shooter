@@ -6,7 +6,7 @@ public class TripleShotLaserTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<Health.Health>().DamageTaken(5);
+            collision.GetComponent<Health.Health>().DamageTaken(5, true);
             gameObject.SetActive(false);
         }
         else if (collision.CompareTag("Projectile"))

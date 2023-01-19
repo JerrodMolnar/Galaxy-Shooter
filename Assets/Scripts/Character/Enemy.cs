@@ -12,15 +12,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float _laserWaitTimeMin = 0.5f;
     [SerializeField] private float _laserWaitTimeMax = 3f;
     [SerializeField] private float _moveSpeed = 3f;
-    [SerializeField] private float _amplitude = 2f;
-    [SerializeField] private float _frequency = 0.1f;
+    private float _alienAmplitude = 1f;
+    private float _alienFrequency = 0.5f;
 
     private enum EnemyTypes
     {
         Regular,
         RandomEnemy,
         Alien,
-        Boss
+        RedFighter
     };
     [SerializeField] private EnemyTypes CurrentEnemyType;
 
@@ -29,13 +29,20 @@ public class Enemy : MonoBehaviour
         if (CurrentEnemyType.Equals(EnemyTypes.Alien))
         {
             transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), 3, 0);
+            _randomXTranslate = Random.Range(-1f, 1f);
+        }
+        else if (CurrentEnemyType.Equals(EnemyTypes.RedFighter))
+        {
+            transform.position = new Vector3(Random.Range(-6f, 6f), 15, 0);
+            _randomXTranslate = 1f;
         }
         else
         {
-            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
+            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0); 
+            _randomXTranslate = Random.Range(-1f, 1f);
         }
         
-        _randomXTranslate = Random.Range(-1f, 1f);
+        
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
         _enemyCount++;
     }
@@ -105,7 +112,7 @@ public class Enemy : MonoBehaviour
 
             case EnemyTypes.Alien:
                 {
-                    float x = (_randomXTranslate * _moveSpeed), y = (Mathf.Sin(Time.time * _frequency) * _amplitude);
+                    float x = (_randomXTranslate * _moveSpeed), y = (Mathf.Sin(Time.time * _alienFrequency) * _alienAmplitude);
                     move = new Vector3(x, y, 0);
 
                     transform.Translate(move * Time.deltaTime);
@@ -123,22 +130,30 @@ public class Enemy : MonoBehaviour
                     {
                         transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
                     }
+                    if (_changeDirection)
+                    {
+                        _changeDirection = false;
+                        StartCoroutine(RandomMove());
+                    }
                     break;
                 }
 
-            case EnemyTypes.Boss:
-                {
-                    move = new Vector3(_randomXTranslate, 0, 0);
-                    transform.Translate(move * _moveSpeed * Time.deltaTime);
-                    if (transform.position.x >= Helper.GetXPositionBounds() || transform.position.x <= -(Helper.GetXPositionBounds()))
+            case EnemyTypes.RedFighter:
+                {                    
+                    if (transform.position.x >= 6 || transform.position.x <= -6)
                     {
                         _randomXTranslate *= -1;
                     }
 
-                    if (transform.position.y < Helper.GetYLowerBounds() - 2)
+                    if (transform.position.y >= 6)
                     {
-                        transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
+                        move = Vector3.down;
                     }
+                    else
+                    {
+                        move = new Vector3(_randomXTranslate, 0, 0);
+                    }
+                    transform.Translate(move * _moveSpeed * Time.deltaTime);
                     break;
                 }
         }
@@ -161,8 +176,8 @@ public class Enemy : MonoBehaviour
     {
         if (other.CompareTag("Player") && CurrentEnemyType != EnemyTypes.Alien)
         {
-            other.GetComponent<Health.Health>().DamageTaken(100);
-            this.GetComponent<Health.Health>().DamageTaken(100);
+            other.GetComponent<Health.Health>().DamageTaken(100, false);
+            this.GetComponent<Health.Health>().DamageTaken(100, true);
         }
     }
 

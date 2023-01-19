@@ -114,14 +114,18 @@ namespace ProjectileType
             {
                 if (other.CompareTag("Enemy") && _isPlayerMissile)
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(25);
+                    other.GetComponent<Health.Health>()?.DamageTaken(25, true);
                     transform.rotation = Quaternion.identity;
                     _enemyFound = CheckForEnemy();
                 }
                 else if (other.CompareTag("Player") && !_isPlayerMissile)
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(25);
+                    other.GetComponent<Health.Health>()?.DamageTaken(25, false);
                     gameObject.SetActive(false);
+                }
+                else if (other.CompareTag("Enemy"))
+                {
+                    other.GetComponent<Health.Health>()?.DamageTaken(25, false);
                 }
             }
         }

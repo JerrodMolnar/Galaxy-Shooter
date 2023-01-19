@@ -52,20 +52,23 @@ namespace ProjectileType
         {
             if (other.gameObject.activeSelf)
             {
-                if (other.CompareTag("Enemy"))
+                if (other.CompareTag("Enemy") && _isPlayerLaser)
                 {                    
-                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount);
-                    gameObject.SetActive(false);
+                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, true);
                 }
                 else if (other.CompareTag("Player"))
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2);
-                    gameObject.SetActive(false);
+                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2, false);
                 }
+                else if (other.CompareTag("Enemy"))
+                {
+                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, false);
+                }
+                gameObject.SetActive(false);
             }
             if (other.tag == "Projectile")
             {
-                other.gameObject.SetActive(false); 
+                other.gameObject.SetActive(false);
                 gameObject.SetActive(false);
             }
         }
