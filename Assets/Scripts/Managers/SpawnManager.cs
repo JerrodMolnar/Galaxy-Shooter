@@ -8,12 +8,14 @@ namespace SpawnManager
 {
     public class SpawnManager : MonoBehaviour
     {
-        [SerializeField] private GameObject[] _enemy;
+        [SerializeField] private GameObject[] _enemies;
         [SerializeField] private GameObject[] _powerups;
         private int _lastPowerup = -1;
         private int _secondLastPowerup = -1;
         private int _missileRareCount = 0;
-        [SerializeField] private int _waveCount = 0;
+        private int _extraLifeRareCount = 0;
+        private int _healthRareCount = 0;
+        [Range(0, 100)][SerializeField] private int _waveCount = 0;
         private int _enemySpawnCount = 0;
         private int _randomEnemy;
         private const int _MAX_ENEMIES_PER_WAVE = 5;
@@ -38,7 +40,7 @@ namespace SpawnManager
 
         void Start()
         {
-            if (_enemy == null)
+            if (_enemies == null)
             {
                 Debug.LogError("Enemy not found on SpawnManager script.");
             }
@@ -115,19 +117,37 @@ namespace SpawnManager
             while (canSpawnEnemies)
             {
                 yield return new WaitForSeconds(_spawnWait);
-                _randomEnemy = Random.Range(0, _enemy.Length);
+
+                switch (_waveCount)
+                {
+                    case 1:
+                        _randomEnemy = 0;
+                        break;
+                    case 2 or 3:
+                        _randomEnemy = Random.Range(0, 2);
+                        break;
+                    case 4:
+                        _randomEnemy = Random.Range(0, 3);
+                        break;
+                    case 5:
+                        _randomEnemy = Random.Range(0, 4);
+                        break;
+                    default:
+                        _randomEnemy = Random.Range(0, _enemies.Length);
+                        break;
+                }
 
                 if (_randomEnemy == 0)
                 {
                     SpawnRegularEnemy();
                     _enemySpawnCount++;
                 }
-                else if (_randomEnemy == 1 && _waveCount > 2)
+                else if (_randomEnemy == 1)
                 {
                     SpawnRandomEnemy();
                     _enemySpawnCount++;
                 }
-                else if (_randomEnemy == 2 && _waveCount > 4)
+                else if (_randomEnemy == 2)
                 {
                     SpawnAlienEnemy();
                     _enemySpawnCount += 2;
@@ -174,7 +194,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[0], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemies[0], _enemyParent.transform);
                 _enemyRegularPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
@@ -197,7 +217,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[1], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemies[1], _enemyParent.transform);
                 _enemyRandomPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
@@ -220,7 +240,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[2], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemies[2], _enemyParent.transform);
                 _enemyAlienPool.Add(newEnemy);
             }
             _spawnWait = Random.Range(1f, 5f);
@@ -243,7 +263,7 @@ namespace SpawnManager
             }
             if (isActiveEnemy)
             {
-                GameObject newEnemy = Instantiate(_enemy[3], _enemyParent.transform);
+                GameObject newEnemy = Instantiate(_enemies[3], _enemyParent.transform);
                 _enemyRedFighterPool.Add(newEnemy);
             }
             _shaker.EnableShake(3f, 3f, 3f);
@@ -294,6 +314,9 @@ namespace SpawnManager
                     case 6:
                         SpawnLifeStealerPowerup();
                         break;
+                    case 7:
+                        SpawnExtraLifePowerup();
+                        break;
                 }
                 yield return new WaitForSeconds(Random.Range(5f, 10f));
             }
@@ -301,29 +324,38 @@ namespace SpawnManager
 
         private void SpawnHealthPowerup()
         {
-            bool noInactiveHealth = true;
-            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+            if (_healthRareCount > 1)
+            {
+                bool noInactivePowerup = true;
+                Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
-            foreach (GameObject itemInPool in _healthPowerupPool)
-            {
-                if (itemInPool.activeSelf == false)
+                foreach (GameObject itemInPool in _healthPowerupPool)
                 {
-                    itemInPool.SetActive(true);
-                    itemInPool.transform.position = posToSpawn;
-                    noInactiveHealth = false;
-                    break;
+                    if (itemInPool.activeSelf == false)
+                    {
+                        itemInPool.SetActive(true);
+                        itemInPool.transform.position = posToSpawn;
+                        noInactivePowerup = false;
+                        break;
+                    }
                 }
+                if (noInactivePowerup)
+                {
+                    GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                    _healthPowerupPool.Add(powerup);
+                }
+                _healthRareCount = 0;
             }
-            if (noInactiveHealth)
+            else
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
-                _healthPowerupPool.Add(powerup);
+                _healthRareCount++;
             }
+
         }
 
         private void SpawnTripleShotPowerup()
         {
-            bool noInactiveTripleShot = true;
+            bool noInactivePowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _tripleShotPowerupsPool)
@@ -332,11 +364,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    noInactiveTripleShot = false;
+                    noInactivePowerup = false;
                     break;
                 }
             }
-            if (noInactiveTripleShot)
+            if (noInactivePowerup)
             {
                 GameObject powerup =
                 Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
@@ -346,7 +378,7 @@ namespace SpawnManager
 
         private void SpawnSpeedPowerup()
         {
-            bool noInactiveSpeed = true;
+            bool noInactivePowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _speedPowerupsPool)
@@ -355,11 +387,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    noInactiveSpeed = false;
+                    noInactivePowerup = false;
                     break;
                 }
             }
-            if (noInactiveSpeed)
+            if (noInactivePowerup)
             {
                 GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _speedPowerupsPool.Add(powerup);
@@ -368,7 +400,7 @@ namespace SpawnManager
 
         private void SpawnShieldPowerup()
         {
-            bool noInactiveShield = true;
+            bool noInactivePowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _shieldPowerupPool)
@@ -377,11 +409,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    noInactiveShield = false;
+                    noInactivePowerup = false;
                     break;
                 }
             }
-            if (noInactiveShield)
+            if (noInactivePowerup)
             {
                 GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
@@ -390,7 +422,7 @@ namespace SpawnManager
 
         private void SpawnAmmoPowerup()
         {
-            bool noInactiveAmmo = true;
+            bool noInactivePowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _ammoPowerupPool)
@@ -399,11 +431,11 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    noInactiveAmmo = false;
+                    noInactivePowerup = false;
                     break;
                 }
             }
-            if (noInactiveAmmo)
+            if (noInactivePowerup)
             {
                 GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _ammoPowerupPool.Add(powerup);
@@ -414,7 +446,7 @@ namespace SpawnManager
         {
             if (_missileRareCount > 1)
             {
-                bool noInactiveMissile = true;
+                bool noInactivePowerup = true;
                 Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
                 foreach (GameObject itemInPool in _missilePowerupPool)
@@ -423,11 +455,11 @@ namespace SpawnManager
                     {
                         itemInPool.SetActive(true);
                         itemInPool.transform.position = posToSpawn;
-                        noInactiveMissile = false;
+                        noInactivePowerup = false;
                         break;
                     }
                 }
-                if (noInactiveMissile)
+                if (noInactivePowerup)
                 {
                     GameObject powerup =
                     Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
@@ -443,7 +475,7 @@ namespace SpawnManager
 
         private void SpawnLifeStealerPowerup()
         {
-            bool noInactiveLifeStealer = true;
+            bool noInactivePowerup = true;
             Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
 
             foreach (GameObject itemInPool in _lifeStealerPowerupPool)
@@ -452,15 +484,45 @@ namespace SpawnManager
                 {
                     itemInPool.SetActive(true);
                     itemInPool.transform.position = posToSpawn;
-                    noInactiveLifeStealer = false;
+                    noInactivePowerup = false;
                     break;
                 }
             }
-            if (noInactiveLifeStealer)
+            if (noInactivePowerup)
             {
                 GameObject powerup =
                 Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _lifeStealerPowerupPool.Add(powerup);
+            }
+        }
+        private void SpawnExtraLifePowerup()
+        {
+            if (_extraLifeRareCount > 1)
+            {
+                bool noInactivePowerup = true;
+                Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+                foreach (GameObject itemInPool in _lifeStealerPowerupPool)
+                {
+                    if (itemInPool.activeSelf == false)
+                    {
+                        itemInPool.SetActive(true);
+                        itemInPool.transform.position = posToSpawn;
+                        noInactivePowerup = false;
+                        break;
+                    }
+                }
+                if (noInactivePowerup)
+                {
+                    GameObject powerup =
+                    Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                    _lifeStealerPowerupPool.Add(powerup);
+                }
+                _extraLifeRareCount = 0;
+            }
+            else
+            {
+                _extraLifeRareCount++;
             }
         }
     }

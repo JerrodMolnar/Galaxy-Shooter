@@ -118,6 +118,11 @@ namespace Powerup
                 }
                 AudioSource.PlayClipAtPoint(_powerupClip, transform.position);
             }
+            else
+            {
+                collision.gameObject.SetActive(false);
+                gameObject.SetActive(false);
+            }
         }
     }
 }

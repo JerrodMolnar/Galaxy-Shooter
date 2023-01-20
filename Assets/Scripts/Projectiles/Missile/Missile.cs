@@ -17,7 +17,7 @@ namespace ProjectileType
         {
             rb = GetComponent<Rigidbody2D>();
             _player = GameObject.FindGameObjectWithTag("Player");
-            if (_player != null )
+            if (_player == null )
             {
                 Debug.LogError("Player not found on Missile Script on " + name);
             }

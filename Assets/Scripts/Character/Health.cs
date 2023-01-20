@@ -34,8 +34,6 @@ namespace Health
 
         private void Start()
         {
-            _health = _maxHealth;
-
             _gameCanvasManager = GameObject.Find("Canvas").GetComponent<GameCanvasManager>();
             if (_gameCanvasManager == null)
             {
@@ -103,6 +101,7 @@ namespace Health
 
         private void OnEnable()
         {
+            _health = _maxHealth;
             if (_shieldsVisualizer == null)
             {
                 int childCount = transform.childCount;
@@ -422,14 +421,14 @@ namespace Health
         private IEnumerator ColorFlasher(float flashTime)
         {
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.color = Color.red;
-            yield return new WaitForSeconds(flashTime);
-            spriteRenderer.color = Color.white;
-            yield return new WaitForSeconds(flashTime);
-            spriteRenderer.color = Color.red;
-            yield return new WaitForSeconds(flashTime);
-            spriteRenderer.color = Color.white;
-            yield return new WaitForSeconds(flashTime);
+            for (int i = 0; i < 4; i++)
+            {
+                spriteRenderer.color = Color.red;
+                yield return new WaitForSeconds(flashTime);
+                spriteRenderer.color = Color.white;
+                yield return new WaitForSeconds(flashTime);
+            }
+
         }
     }
 }
