@@ -312,11 +312,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6cd9fc740a2f64d990ce06197c56f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTripleShotActive: 0
-  _isMissileEnabled: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
-  _missileClip: {fileID: 0}
+  _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}
 --- !u!114 &252246562409824035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,6 +330,7 @@ MonoBehaviour:
   _laserWaitTimeMin: 0.5
   _laserWaitTimeMax: 3
   _moveSpeed: 3
+  _canShoot: 1
   CurrentEnemyType: 2
 --- !u!114 &252246562409824034
 MonoBehaviour:
@@ -345,11 +344,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hurtClip: {fileID: 8300000, guid: c6fb5a1415568b1439752d81ef563733, type: 3}
   _maxHealth: 15
   _lives: 1
   _maxLives: 1
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _hurtClip: {fileID: 8300000, guid: c6fb5a1415568b1439752d81ef563733, type: 3}
   _shieldPrefab: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
 --- !u!95 &1051039615
 Animator:

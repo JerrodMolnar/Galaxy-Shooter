@@ -945,7 +945,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0.76, y: 7.89, z: 0}
+  m_LocalPosition: {x: 1.54, y: 7.82, z: 0.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1560,9 +1560,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d991838024f7bb14b810808394e2ab0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shakeDuration: 0.5
   _shakeMultiplier: 0.25
   _shakeTime: 0.5
-  _shakeDuration: 0.5
 --- !u!1 &967176038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1607,6 +1607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ddfc349d4492f4eba6501ab5ae93bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _waveCount: 0
   _enemies:
   - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
   - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
@@ -1621,7 +1622,6 @@ MonoBehaviour:
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 2694640153111207537, guid: 0e46263fb891af44cbcd8037c4356052, type: 3}
   - {fileID: 4658790684078569200, guid: 2fd76609d7a9043408e2faeef2867923, type: 3}
-  _waveCount: 0
 --- !u!1 &975127556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3115,12 +3115,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hitsOnShield: 0
-  _hurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
   _maxHealth: 100
   _lives: 3
   _maxLives: 5
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _hurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
   _shieldPrefab: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
 --- !u!114 &1997555729
 MonoBehaviour:
@@ -3134,8 +3133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6cd9fc740a2f64d990ce06197c56f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTripleShotActive: 0
-  _isMissileEnabled: 0
+  _isTripleShotActive: 1
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
   _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}
@@ -3621,6 +3619,10 @@ PrefabInstance:
     - target: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
       propertyPath: m_Name
       value: Shield
+      objectReference: {fileID: 0}
+    - target: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6462143679871300983, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
       propertyPath: m_RootOrder

@@ -5,6 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
+  - _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
+  - _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -440,8 +440,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _hitsOnShield: 0
   _hurtClip: {fileID: 8300000, guid: 7029b51f2511ab744b5a67a727ab0116, type: 3}
-  _mainCamera: {fileID: 0}
   _maxHealth: 100
   _lives: 1
   _maxLives: 1

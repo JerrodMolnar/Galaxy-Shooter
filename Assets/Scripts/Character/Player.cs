@@ -5,16 +5,16 @@ using Utility;
 public class Player : MonoBehaviour
 {
 
-    [SerializeField] private float _moveSpeed = 4.0f;
     private const float _LASER_WAIT_TIME = 0.25f;
     private float _nextFire = 0.0f;
-    private Thruster _thruster;
-    private Animator _animator;
-    [SerializeField] private float _thrusterTime = 100.0f;
     private float _thrustMaxTime = 100f;
-    [SerializeField] private float _thrustUsageDecreasedTime = 15f;
     private bool _isThrustersActive = false;
     private GameCanvasManager _gameCanvasManager;
+    private Thruster _thruster;
+    private Animator _animator;
+    [Range(0, 10f)] [SerializeField] private float _moveSpeed = 4.0f;
+    [Range(0, 100f)] [SerializeField] private float _thrusterTime = 100.0f;
+    [Range(0, 50f)] [SerializeField] private float _thrustUsageDecreasedTime = 15f;
 
     void Start()
     {

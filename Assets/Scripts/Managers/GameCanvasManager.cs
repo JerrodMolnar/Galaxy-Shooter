@@ -9,16 +9,16 @@ namespace GameCanvas
     public class GameCanvasManager : MonoBehaviour
     {
         [SerializeField] private Sprite[] _livesSprites;
+        private Text _ammoText;
+        private Text _gameOverText;
         private Text _healthText;
         private Text _livesText;
         private Text _scoreText;
-        private Image _livesImage;
-        private Text _gameOverText;
         private bool _isGameOver = false;
         private GameManager _gameManager;
         private GameObject _escapeMenu;
         private Slider _thrustBar;
-        private Text _ammoText;
+        private Image _livesImage;
 
         void Start()
         {

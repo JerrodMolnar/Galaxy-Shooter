@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class RotateItem : MonoBehaviour
 {
-    [SerializeField] private float _rotationSpeed = 25f;
+    [Range(0, 100f)] [SerializeField] private float _rotationSpeed = 25f;
 
     // Update is called once per frame
     void Update()

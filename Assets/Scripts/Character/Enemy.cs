@@ -4,16 +4,19 @@ using Utility;
 
 public class Enemy : MonoBehaviour
 {
+    private static int _enemyCount;
     private float _movementWait = 3f;
-    private bool _changeDirection = true;
+    private float _originalMoveSpeed;
     private float _randomXTranslate;
     private float _nextFire = -1;
-    private static int _enemyCount;
-    [SerializeField] private float _laserWaitTimeMin = 0.5f;
-    [SerializeField] private float _laserWaitTimeMax = 3f;
-    [SerializeField] private float _moveSpeed = 3f;
     private float _alienAmplitude = 1f;
     private float _alienFrequency = 0.5f;
+    private bool _changeDirection = true;
+    [Range(0, 10)] [SerializeField] private float _laserWaitTimeMin = 0.5f;
+    [Range(0, 10)] [SerializeField] private float _laserWaitTimeMax = 3f;
+    [Range(0, 10)] [SerializeField] private float _moveSpeed = 3f;
+    [Range(0, 5f)] [SerializeField] private float _speedMultiplier = 1.5f;
+    [SerializeField] private bool _canShoot = true;
 
     private enum EnemyTypes
     {
@@ -33,18 +36,18 @@ public class Enemy : MonoBehaviour
         }
         else if (CurrentEnemyType.Equals(EnemyTypes.RedFighter))
         {
-            transform.position = new Vector3(Random.Range(-6f, 6f), 15, 0);
+            transform.position = new Vector3(Random.Range(-6f, 6f), 10, 0);
             _randomXTranslate = 1f;
         }
         else
         {
-            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0); 
+            transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
             _randomXTranslate = Random.Range(-1f, 1f);
         }
-        
-        
+
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
         _enemyCount++;
+        _originalMoveSpeed = _moveSpeed;
     }
 
     private void OnDisable()
@@ -139,9 +142,15 @@ public class Enemy : MonoBehaviour
                 }
 
             case EnemyTypes.RedFighter:
-                {                    
-                    if (transform.position.x >= 6 || transform.position.x <= -6)
+                {
+                    if (transform.position.x >= 6) 
                     {
+                        transform.Translate(Vector3.left * _moveSpeed * Time.deltaTime);
+                        _randomXTranslate *= -1;
+                    }
+                    else if (transform.position.x <= -6)
+                    {
+                        transform.Translate(Vector3.right * _moveSpeed * Time.deltaTime);
                         _randomXTranslate *= -1;
                     }
 
@@ -159,6 +168,18 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void SpeedPowerup()
+    {
+        StartCoroutine(SpeedCooldownSequence());
+    }
+
+    private IEnumerator SpeedCooldownSequence()
+    {
+        _moveSpeed *= _speedMultiplier;
+        yield return new WaitForSeconds(5f);
+        _moveSpeed = _originalMoveSpeed;
+    }
+
     public int GetEnemyType()
     {
         return (int)CurrentEnemyType;
@@ -166,7 +187,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator RandomMove()
     {
-        yield return new WaitForSeconds(_movementWait);
+        yield return new WaitForSeconds(Random.Range(0.5f, _movementWait));
         _moveSpeed = Random.Range(3f, 6f);
         _randomXTranslate = Random.Range(-1f, 1f);
         _changeDirection = true;
@@ -183,8 +204,11 @@ public class Enemy : MonoBehaviour
 
     private void ShootLasers()
     {
-        _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
-        GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
+        if (_canShoot)
+        {
+            _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
+            GetComponent<ProjectileFire.FireProjectiles>().ShootProjectile();
+        }
     }
 
     public static int GetEnemyCount()

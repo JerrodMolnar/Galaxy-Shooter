@@ -9,22 +9,22 @@ namespace ProjectileFire
 {
     public class FireProjectiles : MonoBehaviour
     {
-        private LaserPool _laserPool;
-        private TripleShotPool _tripleShotPool;
-        private MissilePool _missilePool;
-        private Vector3 _laserShootPosition;
-        private bool _isPlayerShot = false;
-        private AudioSource _audioSource;
         private static int _ammoCount = 0;
         private static int _maxAmmoCount = 15;
         private int _enemyType;
-        private float _tripleShotCoolDownWait = 5f;
         private float _tripleShotCoolDown = -1;
+        private float _tripleShotCoolDownWait = 8f;
+        private bool _isPlayerShot = false;
         private bool _tractorBeamActive = false;
+        private AudioSource _audioSource;
         private GameCanvasManager _gameCanvas;
         private GameObject _tractorBeam;
+        private LaserPool _laserPool;
+        private MissilePool _missilePool;
+        private TripleShotPool _tripleShotPool;
+        private Vector3 _laserShootPosition;
+        private bool _isMissileEnabled = false;
         [SerializeField] private bool _isTripleShotActive = false;
-        [SerializeField] private bool _isMissileEnabled = false;
         [SerializeField] private AudioClip _laserSoundClip;
         [SerializeField] private AudioClip _outOfAmmoClip;
         [SerializeField] private AudioClip _missileClip;
@@ -58,7 +58,7 @@ namespace ProjectileFire
             _audioSource.volume = 0.1f;
             _audioSource.priority = 20;
 
-            if (tag == "Player")
+            if (CompareTag("Player"))
             {
                 _isPlayerShot = true;
                 _ammoCount = _maxAmmoCount;
@@ -135,6 +135,8 @@ namespace ProjectileFire
         private void FireTripleShot()
         {
             _tripleShotPool.ShootTripleShot(_isPlayerShot, transform.position);
+            _audioSource.clip = _laserSoundClip;
+            _audioSource.Play();
         }
 
         public void AmmoPickup()

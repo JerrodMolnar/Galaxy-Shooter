@@ -20,6 +20,9 @@ namespace ProjectilePool
         public void ShootTripleShot(bool isShotByPlayer, Vector3 shotPosition)
         {
             bool isNoActiveTripleShot = true;
+            Vector3 playerAngle = new Vector3(0, 0, 0);
+            Vector3 enemyAngle = new Vector3(0, 0, 180);
+
             foreach (GameObject tripleShot in _tripleShotList)
             {
                 if (tripleShot.activeSelf == false)
@@ -28,8 +31,17 @@ namespace ProjectilePool
                     for (int i = 0; i < tripleShot.transform.childCount; i++)
                     {
                         tripleShot.transform.GetChild(i).gameObject.SetActive(true);
+
                     }
                     tripleShot.transform.position = shotPosition;
+                    if (!isShotByPlayer)
+                    {
+                        tripleShot.transform.eulerAngles = enemyAngle;
+                    }
+                    else
+                    {
+                        tripleShot.transform.eulerAngles = playerAngle;
+                    }
                     tripleShot.GetComponent<TripleShot>().SetPlayerShot(isShotByPlayer);
                     isNoActiveTripleShot = false;
                     break;
@@ -37,9 +49,17 @@ namespace ProjectilePool
             }
             if (isNoActiveTripleShot)
             {
-                GameObject newTripleShot = Instantiate(_tripleShotPrefab, shotPosition, Quaternion.identity, transform);
-                newTripleShot.GetComponent<TripleShot>().SetPlayerShot(isShotByPlayer);
-                _tripleShotList.Add(newTripleShot);
+                GameObject tripleShot;
+                if (!isShotByPlayer)
+                {
+                    tripleShot = Instantiate(_tripleShotPrefab, shotPosition, Quaternion.Euler(enemyAngle), transform);
+                }
+                else
+                {
+                    tripleShot = Instantiate(_tripleShotPrefab, shotPosition, Quaternion.Euler(playerAngle), transform);
+                }
+                tripleShot.GetComponent<TripleShot>().SetPlayerShot(isShotByPlayer);
+                _tripleShotList.Add(tripleShot);
             }
         }
     }

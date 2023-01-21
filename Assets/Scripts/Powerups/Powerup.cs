@@ -6,10 +6,10 @@ namespace Powerup
 {
     public class Powerup : MonoBehaviour
     {
-        private float _speed = 1.5f;
+        private float _moveSpeed = 1.5f;
+        private GameObject _player;
         [SerializeField] private _powerupID _currentID;
         [SerializeField] private AudioClip _powerupClip;
-        private GameObject _player;
 
         private enum _powerupID
         {
@@ -26,19 +26,18 @@ namespace Powerup
         private void Start()
         {
             _player = GameObject.FindGameObjectWithTag("Player");
-            if (_player== null )
-            {
-                Debug.LogError("Player is null on Powerup Script on " + name);
-            }
         }
 
         void Update()
         {
             if (Input.GetKey(KeyCode.C))
             {
-                Vector2 direction = _player.transform.position - transform.position;
-                direction.Normalize(); 
-                transform.Translate(direction * _speed * 5 * Time.deltaTime);
+                if (_player != null)
+                {
+                    Vector2 direction = _player.transform.position - transform.position;
+                    direction.Normalize();
+                    transform.Translate(direction * _moveSpeed * 5 * Time.deltaTime);
+                }
             }
             else
             {
@@ -48,7 +47,7 @@ namespace Powerup
 
         private void Movement()
         {
-            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+            transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
             if (transform.position.y < Helper.GetYLowerBounds() - 3f)
             {
                 transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 3f, 0);
@@ -69,18 +68,22 @@ namespace Powerup
                         if (collision.CompareTag("Player"))
                         {
                             collision.GetComponent<Player>().SpeedPowerup();
-                            gameObject.SetActive(false);
                         }
+                        else
+                        {
+                            collision.GetComponent<Enemy>().SpeedPowerup();
+                        }
+                        gameObject.SetActive(false);
                         break;
                     case _powerupID.Shield:
                         int hitsOnShield;
                         if (collision.CompareTag("Player"))
                         {
-                            hitsOnShield = 4;
+                            hitsOnShield = 3;
                         }
                         else
                         {
-                            hitsOnShield = 2;
+                            hitsOnShield = 1;
                         }
                         collision.GetComponent<Health.Health>().EnableShield(hitsOnShield);
                         gameObject.SetActive(false);

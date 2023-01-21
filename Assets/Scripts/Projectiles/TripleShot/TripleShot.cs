@@ -6,7 +6,7 @@ namespace ProjectileType
     public class TripleShot : MonoBehaviour
     {
         [SerializeField] private float _moveSpeed = 8.0f;
-        private bool _isPlayerShot;
+        private bool _isPlayerShot = false;
 
         void Update()
         {
@@ -15,45 +15,28 @@ namespace ProjectileType
 
         private void TripleShotMovement()
         {
-            if (_isPlayerShot)
+            transform.Translate(_moveSpeed * Time.deltaTime * Vector3.up);
+
+            if (transform.position.y > Helper.GetYUpperScreenBounds() + 5f || transform.position.y < Helper.GetYLowerBounds() - 5f)
             {
-                if (transform.position.y > Helper.GetYUpperScreenBounds() + 5f)
+                gameObject.GetComponentInChildren<Transform>().gameObject.SetActive(false);
+                for (int i = 0; i < transform.childCount; i++)
                 {
-                    gameObject.GetComponentInChildren<Transform>().gameObject.SetActive(false);
-                    for (int i = 0; i < transform.childCount; i++)
-                    {
-                        transform.GetChild(i).gameObject.SetActive(false);
-                    }
-                    gameObject.SetActive(false);
-                    transform.position = Vector3.zero;
+                    transform.GetChild(i).gameObject.SetActive(false);
                 }
-                else
-                {
-                    transform.Translate(Vector3.up * _moveSpeed * Time.deltaTime);
-                }
-            }
-            else
-            {
-                if (transform.position.y < Helper.GetYUpperScreenBounds() - 5f)
-                {
-                    gameObject.GetComponentInChildren<Transform>().gameObject.SetActive(false);
-                    for (int i = 0; i < transform.childCount; i++)
-                    {
-                        transform.GetChild(i).gameObject.SetActive(false);
-                    }
-                    gameObject.SetActive(false);
-                    transform.position = Vector3.zero;
-                }
-                else
-                {
-                    transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
-                }
+                gameObject.SetActive(false);
+                transform.position = Vector3.zero;
             }
         }
 
         public void SetPlayerShot(bool isPlayerShot)
         {
             _isPlayerShot = isPlayerShot;
+        }
+
+        public bool IsPlayerShot()
+        {
+            return _isPlayerShot;
         }
     }
 }

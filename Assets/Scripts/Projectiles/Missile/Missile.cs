@@ -5,13 +5,13 @@ namespace ProjectileType
 {
     public class Missile : MonoBehaviour
     {
-        [SerializeField] private float _moveSpeed = 5.0f;
-        private bool _isPlayerMissile = false;
+        [Range(0, 10f)] [SerializeField] private float _moveSpeed = 5.0f;
         private float _missileTime = -1f;
         private float _missileCoolDown = 10f;
+        private bool _isPlayerMissile = false;
         private GameObject _enemyFound;
         private GameObject _player;
-        Rigidbody2D rb;
+        private Rigidbody2D rb;
 
         private void Start()
         {

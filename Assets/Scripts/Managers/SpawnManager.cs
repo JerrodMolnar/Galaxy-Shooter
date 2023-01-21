@@ -8,17 +8,16 @@ namespace SpawnManager
 {
     public class SpawnManager : MonoBehaviour
     {
-        [SerializeField] private GameObject[] _enemies;
-        [SerializeField] private GameObject[] _powerups;
-        private int _lastPowerup = -1;
-        private int _secondLastPowerup = -1;
-        private int _missileRareCount = 0;
+        private int _enemySpawnCount = 0;
         private int _extraLifeRareCount = 0;
         private int _healthRareCount = 0;
-        [Range(0, 100)][SerializeField] private int _waveCount = 0;
-        private int _enemySpawnCount = 0;
-        private int _randomEnemy;
+        private int _lastPowerup = -1;
         private const int _MAX_ENEMIES_PER_WAVE = 5;
+        private int _missileRareCount = 0;        
+        private int _randomEnemy;
+        private int _secondLastPowerup = -1;
+        private float _spawnWait;
+        private bool _canSpawn = false;
         private List<GameObject> _speedPowerupsPool = new List<GameObject>();
         private List<GameObject> _tripleShotPowerupsPool = new List<GameObject>();
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
@@ -30,13 +29,14 @@ namespace SpawnManager
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private List<GameObject> _healthPowerupPool = new List<GameObject>();
         private List<GameObject> _missilePowerupPool = new List<GameObject>();
-        private bool _canSpawn = false;
-        private float _spawnWait;
         private GameObject _enemyParent;
         private GameObject _powerupParent;
         private GameObject _asteroid;
         private GameCanvasManager _gameCanvas;
         private Shake _shaker;
+        [Range(0, 100)][SerializeField] private int _waveCount = 0;
+        [SerializeField] private GameObject[] _enemies;
+        [SerializeField] private GameObject[] _powerups;
 
         void Start()
         {

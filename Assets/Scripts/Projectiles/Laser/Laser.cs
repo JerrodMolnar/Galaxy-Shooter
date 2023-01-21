@@ -6,9 +6,9 @@ namespace ProjectileType
 
     public class Laser : MonoBehaviour
     {
-        [SerializeField] private float _moveSpeed = 8.0f;
         private bool _isPlayerLaser = false;
-        [SerializeField] private int _damageAmount = 5;
+        [Range(0, 100)] [SerializeField] private int _damageAmount = 5;
+        [Range(0, 25f)] [SerializeField] private float _moveSpeed = 8.0f;
 
         private void Update()
         {

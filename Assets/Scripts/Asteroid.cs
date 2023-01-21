@@ -4,11 +4,11 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     private float _rotationSpeed = 25.0f;
-    private SpawnManager.SpawnManager _spawnManager;
     private Animator _animator;
-    private PolygonCollider2D _collider;
-    [SerializeField] private AudioClip _explosionClip;
     private AudioSource _explosionSource;
+    private PolygonCollider2D _collider;
+    private SpawnManager.SpawnManager _spawnManager;
+    [SerializeField] private AudioClip _explosionClip;
 
     // Start is called before the first frame update
     void Start()
