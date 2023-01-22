@@ -12,12 +12,19 @@ public class TripleShotLaserTrigger : MonoBehaviour
         }
         if (collision.CompareTag("Player") && !playerShot)
         {
-            collision.GetComponent<Health.Health>().DamageTaken(5, playerShot);
+            collision.GetComponent<Health.Health>().DamageTaken(10, playerShot);
             gameObject.SetActive(false);
         }
         else if (collision.CompareTag("Projectile"))
         {
-            collision.gameObject.SetActive(false);
+            if (collision.gameObject.TryGetComponent<ProjectileType.Mine>(out ProjectileType.Mine mine))
+            {
+                mine.BlowUpSequence();
+            }
+            else
+            {
+                collision.gameObject.SetActive(false);
+            }
             gameObject.SetActive(false);
         }        
     }

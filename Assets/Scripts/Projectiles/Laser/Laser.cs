@@ -48,27 +48,34 @@ namespace ProjectileType
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (other.gameObject.activeSelf)
+            if (collision.gameObject.activeSelf)
             {
-                if (other.CompareTag("Enemy") && _isPlayerLaser)
+                if (collision.CompareTag("Enemy") && _isPlayerLaser)
                 {                    
-                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, true);
+                    collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, true);
                 }
-                else if (other.CompareTag("Player"))
+                else if (collision.CompareTag("Player"))
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2, false);
+                    collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2, false);
                 }
-                else if (other.CompareTag("Enemy"))
+                else if (collision.CompareTag("Enemy"))
                 {
-                    other.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, false);
+                    collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, false);
                 }
                 gameObject.SetActive(false);
             }
-            if (other.tag == "Projectile")
+            if (collision.tag == "Projectile")
             {
-                other.gameObject.SetActive(false);
+                if (collision.gameObject.TryGetComponent<Mine>(out Mine mine))
+                {
+                    mine.BlowUpSequence();
+                }
+                else
+                {
+                    collision.gameObject.SetActive(false);
+                }
                 gameObject.SetActive(false);
             }
         }

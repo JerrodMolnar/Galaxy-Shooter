@@ -2376,6 +2376,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1488485872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1488485873}
+  - component: {fileID: 1488485874}
+  m_Layer: 0
+  m_Name: Mine Pool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1488485873
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488485872}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1848121860}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1488485874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488485872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4798a8c10af14a43b0ce2869ca56d51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _minePrefab: {fileID: 7884560972013289633, guid: af60f2b8bda8a45489391dbfb8b0bf20, type: 3}
 --- !u!1 &1520703492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2734,6 +2779,7 @@ Transform:
   - {fileID: 1173653686}
   - {fileID: 878388885}
   - {fileID: 322044571}
+  - {fileID: 1488485873}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3055,8 +3101,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1997555726}
-  - component: {fileID: 1997555731}
   - component: {fileID: 1997555730}
+  - component: {fileID: 1997555731}
   - component: {fileID: 1997555732}
   - component: {fileID: 1997555727}
   - component: {fileID: 1997555728}
@@ -3118,6 +3164,7 @@ MonoBehaviour:
   _maxHealth: 100
   _lives: 3
   _maxLives: 5
+  _flashTime: 0.1
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
   _hurtClip: {fileID: 8300000, guid: d44e6995d450c5e4a81ac7ba4da5ebf1, type: 3}
   _shieldPrefab: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
@@ -3133,7 +3180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6cd9fc740a2f64d990ce06197c56f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTripleShotActive: 1
+  _isTripleShotActive: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
   _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}

@@ -30,6 +30,7 @@ namespace Health
         [SerializeField] private int _maxHealth = 100;
         [Range(0, 20f)] [SerializeField] private int _lives = 3;
         [Range(0, 20f)] [SerializeField] private int _maxLives = 5;
+        [Range(0, 1f)][SerializeField] private float _flashTime = 0.1f;
         [SerializeField] private AudioClip _explosionClip;
         [SerializeField] private AudioClip _hurtClip;
         [SerializeField] private GameObject _shieldPrefab;
@@ -166,7 +167,7 @@ namespace Health
                         _gameCanvasManager.UpdateHealth(_health);
                     }
 
-                    StartCoroutine(ColorFlasher(0.5f));
+                    StartCoroutine(ColorFlasher(_flashTime));
                     _health -= damageAmount; 
 
                     if (isFromPlayer)

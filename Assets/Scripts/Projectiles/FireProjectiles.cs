@@ -14,12 +14,15 @@ namespace ProjectileFire
         private int _enemyType;
         private float _tripleShotCoolDown = -1;
         private float _tripleShotCoolDownWait = 8f;
+        private float _mineWait = 5f;
+        private bool _isMineLaid = false;
         private bool _isPlayerShot = false;
         private bool _tractorBeamActive = false;
         private AudioSource _audioSource;
         private GameCanvasManager _gameCanvas;
         private GameObject _tractorBeam;
         private LaserPool _laserPool;
+        private MinePool _minePool;
         private MissilePool _missilePool;
         private TripleShotPool _tripleShotPool;
         private Vector3 _laserShootPosition;
@@ -41,6 +44,12 @@ namespace ProjectileFire
             if (_tripleShotPool == null)
             {
                 Debug.LogError("Triple shot pool not found on FireProjectiles on " + name);
+            }
+
+            _minePool = GameObject.Find("Mine Pool").GetComponent<MinePool>();
+            if (_minePool == null)
+            {
+                Debug.LogError("Mine pool not found on FireProjectiles on " + name);
             }
 
             _missilePool = GameObject.Find("Missile Pool").GetComponent<MissilePool>();
@@ -205,6 +214,18 @@ namespace ProjectileFire
                 new Vector3(transform.position.x - 3.55f, transform.position.y - 2f, 0),
                 new Vector3(transform.position.x - 4.1f, transform.position.y - 2f, 0)
             };
+
+            if (!_isMineLaid)
+            {
+                _minePool.LayMine(transform.position);
+                _isMineLaid = true;
+                IEnumerator MineCoolDown()
+                {
+                    yield return new WaitForSeconds(_mineWait);
+                    _isMineLaid = false;
+                }
+                StartCoroutine(MineCoolDown());
+            }
 
             switch (randomLaserFire)
             {

@@ -495,6 +495,7 @@ namespace SpawnManager
                 _lifeStealerPowerupPool.Add(powerup);
             }
         }
+
         private void SpawnExtraLifePowerup()
         {
             if (_extraLifeRareCount > 1)

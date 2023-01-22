@@ -79,12 +79,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: bff8207aeac34aa40a9e5bb38d5f8ee5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3a2a00d22bd94874ba7d69147c4ab347, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 5.12, y: 5.12}
+  m_Size: {x: 15.98, y: 8.99}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -100,7 +100,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -108,7 +108,7 @@ PolygonCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 15.98, y: 8.99}
-    newSize: {x: 5.12, y: 5.12}
+    newSize: {x: 15.98, y: 8.99}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -408,7 +408,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTripleShotActive: 0
-  _isMissileEnabled: 0
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
   _outOfAmmoClip: {fileID: 8300000, guid: cf1ea845e9eace845af5051ff7295470, type: 3}
   _missileClip: {fileID: 8300000, guid: e17a1f3660bc68f4398c64d340ca92ea, type: 3}
@@ -427,6 +426,8 @@ MonoBehaviour:
   _laserWaitTimeMin: 0.25
   _laserWaitTimeMax: 1.5
   _moveSpeed: 3
+  _speedMultiplier: 1.5
+  _canShoot: 1
   CurrentEnemyType: 3
 --- !u!114 &530951429178851875
 MonoBehaviour:
@@ -440,12 +441,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d6c9dbfbabbce1438e756d2f424f608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hitsOnShield: 0
-  _hurtClip: {fileID: 8300000, guid: 7029b51f2511ab744b5a67a727ab0116, type: 3}
   _maxHealth: 100
   _lives: 1
   _maxLives: 1
+  _flashTime: 0.1
   _explosionClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
+  _hurtClip: {fileID: 8300000, guid: 7029b51f2511ab744b5a67a727ab0116, type: 3}
   _shieldPrefab: {fileID: 6462143679871300982, guid: 66aca777adacb34459ca664f9ac6a335, type: 3}
 --- !u!95 &607799391
 Animator:
