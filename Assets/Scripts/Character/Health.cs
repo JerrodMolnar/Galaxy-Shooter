@@ -19,6 +19,7 @@ namespace Health
         private float _nextHit = -1f;
         private const float _REAPPEAR_WAIT_TIME = 2f;
         private const float _HITWAIT = 1f;
+        private bool _isPlayer = false;
         private GameObject _shieldsVisualizer;
         private GameCanvasManager _gameCanvasManager;
         private Animator _animator;
@@ -49,8 +50,9 @@ namespace Health
                 Debug.LogError("Animator not found on Health Script on " + name);
             }
 
-            if (tag == "Player")
+            if (CompareTag("Player"))
             {
+                _isPlayer = true;
                 _gameCanvasManager.UpdateHealth(_health);
                 _gameCanvasManager.UpdateLives(_lives);
                 _gameCanvasManager.UpdateScore(_score);
@@ -104,7 +106,7 @@ namespace Health
             Enemy enemy = GetComponent<Enemy>();
             if (enemy == null)
             {
-                if (tag == "Enemy")
+                if (!_isPlayer)
                 {
                     Debug.LogError("Enemy script not found on Health script on " + name);
                 }
@@ -137,7 +139,7 @@ namespace Health
         {
             if (Input.GetKeyDown(KeyCode.Alpha0))
             {
-                if (CompareTag("Enemy"))
+                if (!_isPlayer)
                 {
                     TakeLife();
                 }
@@ -160,7 +162,7 @@ namespace Health
                 }
                 else
                 {
-                    if (CompareTag("Player"))
+                    if (_isPlayer)
                     {
                         _shaker.EnableShake();
                         EngineDamage(false);
@@ -264,7 +266,7 @@ namespace Health
             if (_lives < _maxLives)
             {
                 _lives++;
-                if (tag == "Player")
+                if (_isPlayer)
                 {
                     _gameCanvasManager.UpdateLives(_lives);
                 }
@@ -275,7 +277,7 @@ namespace Health
         {
             _lives -= 1;
 
-            if (CompareTag("Player"))
+            if (_isPlayer)
             {
                 GetComponent<Player>().enabled = false;
                 _gameCanvasManager.UpdateHealth(_health);
@@ -300,7 +302,7 @@ namespace Health
             }
             else
             {
-                if (CompareTag("Player"))
+                if (_isPlayer)
                 {
                     _gameCanvasManager.UpdateHealth(_health);
                     _gameCanvasManager.UpdateLives(_lives);
@@ -397,7 +399,7 @@ namespace Health
                 _health += healAmount;
             }
 
-            if (tag == "Player")
+            if (_isPlayer)
             {
                 _gameCanvasManager.UpdateHealth(_health);
                 EngineDamage(true);
@@ -413,7 +415,7 @@ namespace Health
         {
 
             yield return new WaitForSeconds(_REAPPEAR_WAIT_TIME);
-            if (tag == "Player")
+            if (_isPlayer)
             {
                 transform.position = new Vector3(0, -2.5f, 0);
                 _animator.SetTrigger("IsReappear");

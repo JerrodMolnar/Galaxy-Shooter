@@ -1607,7 +1607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ddfc349d4492f4eba6501ab5ae93bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waveCount: 3
+  _waveCount: 0
   _enemies:
   - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
   - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
