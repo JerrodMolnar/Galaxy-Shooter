@@ -6,6 +6,7 @@ namespace ProjectileType
 
     public class Laser : MonoBehaviour
     {
+        private bool _isBehindPlayer = false;
         private bool _isPlayerLaser = false;
         [Range(0, 100)] [SerializeField] private int _damageAmount = 5;
         [Range(0, 25f)] [SerializeField] private float _moveSpeed = 8.0f;
@@ -15,14 +16,24 @@ namespace ProjectileType
             LaserMovement();
         }
 
-        public void SetShooter(bool isPlayerLaser)
+        public void SetShooter(bool isPlayerLaser, bool isBehindPlayer, bool isFromTieFighter)
         {
             _isPlayerLaser = isPlayerLaser;
+            _isBehindPlayer = isBehindPlayer;
+            if (isFromTieFighter)
+            {
+                transform.LookAt(GameObject.FindGameObjectWithTag("Player").transform.position);
+                transform.eulerAngles = new Vector3(0, 0, -transform.eulerAngles.x);
+            }
+            else
+            {
+                transform.eulerAngles = Vector3.zero;
+            }
         }
 
         private void LaserMovement()
         {
-            if (_isPlayerLaser)
+            if (_isBehindPlayer || _isPlayerLaser)
             {
                 if (transform.position.y > Helper.GetYUpperScreenBounds() + 2.5f)
                 {
@@ -46,6 +57,11 @@ namespace ProjectileType
                     transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
                 }
             }
+
+            if (transform.position.x > Helper.GetXPositionBounds() || transform.position.x < -Helper.GetXPositionBounds())
+            {
+                gameObject.SetActive(false);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -53,7 +69,7 @@ namespace ProjectileType
             if (collision.gameObject.activeSelf)
             {
                 if (collision.CompareTag("Enemy") && _isPlayerLaser)
-                {                    
+                {
                     collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, true);
                 }
                 else if (collision.CompareTag("Player"))

@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     private float _movementWait = 3f;
     private float _originalMoveSpeed;
     private float _randomXTranslate;
+    private float _yTranslate;
     private float _nextFire = -1;
     private float _alienAmplitude = 1f;
     private float _alienFrequency = 0.5f;
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
     {
         Regular,
         RandomEnemy,
+        TieFighter,
         Alien,
         RedFighter
     };
@@ -43,6 +45,7 @@ public class Enemy : MonoBehaviour
         {
             transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
             _randomXTranslate = Random.Range(-1f, 1f);
+            _yTranslate = Random.Range(0f, 1f);
         }
 
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
@@ -109,6 +112,29 @@ public class Enemy : MonoBehaviour
                     {
                         _changeDirection = false;
                         StartCoroutine(RandomMove());
+                    }
+                    break;
+                }
+
+            case EnemyTypes.TieFighter:
+                {
+                    move = new Vector3(_randomXTranslate, _yTranslate, 0);
+                    transform.Translate(move * _moveSpeed * Time.deltaTime);
+                    if (transform.position.x >= Helper.GetXPositionBounds())
+                    {
+                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                    }
+                    if (transform.position.x <= -(Helper.GetXPositionBounds()))
+                    {
+                        _randomXTranslate = Random.Range(0.01f, 1f);
+                    }
+                    if (transform.position.y < Helper.GetYLowerBounds() - 2)
+                    {
+                        _yTranslate *= -1;
+                    }
+                    if (transform.position.y > Helper.GetYUpperScreenBounds() + 2)
+                    {
+                        _yTranslate *= -1;
                     }
                     break;
                 }

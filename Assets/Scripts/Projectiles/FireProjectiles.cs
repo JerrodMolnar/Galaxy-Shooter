@@ -24,6 +24,7 @@ namespace ProjectileFire
         private LaserPool _laserPool;
         private MinePool _minePool;
         private MissilePool _missilePool;
+        private Player _player;
         private TripleShotPool _tripleShotPool;
         private Vector3 _laserShootPosition;
         private bool _isMissileEnabled = false;
@@ -81,6 +82,11 @@ namespace ProjectileFire
             }
             else
             {
+
+                if (GameObject.FindGameObjectWithTag("Player").TryGetComponent(out Player player))
+                {
+                    _player = player;
+                }
                 _enemyType = GetComponent<Enemy>().GetEnemyType();
                 _isPlayerShot = false;
             }
@@ -105,7 +111,7 @@ namespace ProjectileFire
         public void ShootProjectile()
         {
 
-            if (_enemyType != 2 || _enemyType != 3)
+            if (_enemyType != 3 || _enemyType != 4)
             {
                 if (_isTripleShotActive)
                 {
@@ -123,7 +129,7 @@ namespace ProjectileFire
                 {
                     FireLaser();
                 }
-            }   
+            }
             else
             {
                 FireLaser();
@@ -175,7 +181,7 @@ namespace ProjectileFire
                 }
             }
             else
-            {                
+            {
                 switch (_enemyType)
                 {
                     case 0:
@@ -187,6 +193,19 @@ namespace ProjectileFire
                         _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
                         break;
                     case 2:
+                        if (_player.transform.position.y < transform.position.y)
+                        {
+                            _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1.1f, 0);
+                            _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, false, true);
+                        }
+                        else
+                        {
+                            _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.1f, 0);
+                            _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, true, true);
+                        }
+                        break;
+
+                    case 3:
                         if (!_tractorBeamActive)
                         {
                             _tractorBeam.SetActive(true);
@@ -194,7 +213,7 @@ namespace ProjectileFire
                             StartCoroutine(DisableTractorBeam());
                         }
                         break;
-                    case 3:
+                    case 4:
                         RedFighterShot();
                         break;
                 }
@@ -235,14 +254,14 @@ namespace ProjectileFire
                         _laserPool.ShootLaserFromPool(_isPlayerShot, vector3s[1]);
                         break;
                     }
-                    case 2 or 3:
+                case 2 or 3:
                     {
 
                         _laserPool.ShootLaserFromPool(_isPlayerShot, vector3s[2]);
                         _laserPool.ShootLaserFromPool(_isPlayerShot, vector3s[3]);
                         break;
                     }
-                    case 4 or 5:
+                case 4 or 5:
                     {
                         _laserPool.ShootLaserFromPool(_isPlayerShot, vector3s[4]);
                         _laserPool.ShootLaserFromPool(_isPlayerShot, vector3s[5]);

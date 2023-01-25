@@ -7,6 +7,7 @@ namespace ProjectilePool
     {
         [SerializeField] private GameObject _laserPrefab;
         private List<GameObject> _laserList = new List<GameObject>();
+        private GameObject _laserSelected;
 
         void Start()
         {
@@ -18,27 +19,34 @@ namespace ProjectilePool
 
         public void ShootLaserFromPool(bool isPlayerLaser, Vector3 shotPosition)
         {
+            ShootLaserFromPool(isPlayerLaser, shotPosition, false, false);
+        }
+
+        public void ShootLaserFromPool(bool isPlayerLaser, Vector3 shotPosition, bool isBehindPlayer, bool isFromTieFighter)
+        {
             if (_laserPrefab != null)
             {
                 bool isNoActiveLaser = true;
 
-                foreach (GameObject itemInPool in _laserList)
+                for (int i = 0; i < _laserList.Count; i++)
                 {
-                    if (itemInPool.activeSelf == false)
+                    if (_laserList[i].activeSelf == false)
                     {
-                        itemInPool.SetActive(true);
-                        itemInPool.GetComponent<ProjectileType.Laser>().SetShooter(isPlayerLaser);
-                        itemInPool.transform.position = shotPosition;
+                        _laserList[i].SetActive(true);
+                        _laserList[i].transform.position = shotPosition;
+                        _laserSelected = _laserList[i];
                         isNoActiveLaser = false;
                         break;
                     }
                 }
+
                 if (isNoActiveLaser)
                 {
-                    GameObject newProjectile = Instantiate(_laserPrefab, shotPosition, Quaternion.identity, transform);
-                    newProjectile.GetComponent<ProjectileType.Laser>().SetShooter(isPlayerLaser);
-                    _laserList.Add(newProjectile);
+                    _laserSelected = Instantiate(_laserPrefab, shotPosition, Quaternion.identity, transform);
+                    _laserList.Add(_laserSelected);
                 }
+                ProjectileType.Laser laser = _laserSelected.GetComponent<ProjectileType.Laser>();
+                laser.SetShooter(isPlayerLaser, isBehindPlayer, isFromTieFighter);
             }
         }
     }
