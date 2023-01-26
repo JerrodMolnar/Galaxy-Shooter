@@ -2,7 +2,6 @@ using GameCanvas;
 using ProjectileFire;
 using System.Collections;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.Rendering;
 using UnityEngine;
 using Utility;
 using Color = UnityEngine.Color;
@@ -29,8 +28,8 @@ namespace Health
         private Shake _shaker;
         private SpawnManager.SpawnManager _spawnManager;
         [SerializeField] private int _maxHealth = 100;
-        [Range(0, 20f)] [SerializeField] private int _lives = 3;
-        [Range(0, 20f)] [SerializeField] private int _maxLives = 5;
+        [Range(0, 20f)][SerializeField] private int _lives = 3;
+        [Range(0, 20f)][SerializeField] private int _maxLives = 5;
         [Range(0, 1f)][SerializeField] private float _flashTime = 0.1f;
         [SerializeField] private AudioClip _explosionClip;
         [SerializeField] private AudioClip _hurtClip;
@@ -59,7 +58,7 @@ namespace Health
                 _shieldsVisualizer = gameObject.transform.GetChild(0).gameObject;
                 if (_shieldsVisualizer == null)
                 {
-                    Debug.LogError("Shield visualizer not found on Health script on " + tag.ToString());
+                    Debug.LogError("Shield visualizer not found on Health script on " + name);
                 }
 
                 _leftEngineFire = transform.GetChild(2).gameObject;
@@ -162,15 +161,15 @@ namespace Health
                 }
                 else
                 {
+                    StartCoroutine(ColorFlasher(_flashTime));
+                    _health -= damageAmount;
+
                     if (_isPlayer)
                     {
                         _shaker.EnableShake();
                         EngineDamage(false);
                         _gameCanvasManager.UpdateHealth(_health);
                     }
-
-                    StartCoroutine(ColorFlasher(_flashTime));
-                    _health -= damageAmount; 
 
                     if (isFromPlayer)
                     {
@@ -346,18 +345,28 @@ namespace Health
                 {
                     case 0:
                         _shieldsVisualizer = Instantiate(_shieldPrefab, transform.position, Quaternion.identity, transform);
-                        _shieldsVisualizer.transform.localScale = new Vector3(3.5f, 3, 0);
+                        _shieldsVisualizer.transform.localScale = new Vector3(3.5f, 3f, 0);
                         break;
                     case 1:
                         _shieldsVisualizer = Instantiate(_shieldPrefab, transform.position, Quaternion.identity, transform);
-                        _shieldsVisualizer.transform.localScale = new Vector3(1f, 1, 0);
+                        _shieldsVisualizer.transform.localScale = new Vector3(1f, 1f, 0);
                         break;
                     case 2:
-                        _shieldsVisualizer = Instantiate(_shieldPrefab, new Vector3(transform.position.x - 0.25f, 
-                            transform.position.y + 0.5f, 0), Quaternion.identity, transform);
-                        _shieldsVisualizer.transform.localScale = new Vector3(6f, 2, 0);
+                        _shieldsVisualizer = Instantiate(_shieldPrefab, new Vector3(transform.position.x,
+                            transform.position.y, 0), Quaternion.identity, transform);
+                        _shieldsVisualizer.transform.localScale = new Vector3(4.2f, 2.5f, 0);
                         break;
                     case 3:
+                        _shieldsVisualizer = Instantiate(_shieldPrefab, new Vector3(transform.position.x - 0.25f,
+                            transform.position.y + 0.5f, 0), Quaternion.identity, transform);
+                        _shieldsVisualizer.transform.localScale = new Vector3(6f, 2f, 0);
+                        break;
+                    case 4:
+                        _shieldsVisualizer = Instantiate(_shieldPrefab, new Vector3(transform.position.x + 0.75f,
+                            transform.position.y, 0), Quaternion.identity, transform);
+                        _shieldsVisualizer.transform.localScale = new Vector3(1f, 1f, 0);
+                        break;
+                    case 5:
                         _shieldsVisualizer = Instantiate(_shieldPrefab, transform.position, Quaternion.identity, transform);
                         _shieldsVisualizer.transform.localScale = new Vector3(5f, 3.25f, 0);
                         break;
@@ -370,7 +379,7 @@ namespace Health
         }
 
         private void HitShield()
-        {            
+        {
             switch (_hitsOnShield)
             {
                 case 3:
@@ -425,9 +434,10 @@ namespace Health
                 _health = _maxHealth;
                 _gameCanvasManager.UpdateHealth(_health);
                 _gameCanvasManager.UpdateLives(_lives);
-                _hitsOnShield = 2;
+                _hitsOnShield = 1;
                 HitShield();
                 yield return new WaitForSeconds(1f);
+                _hitsOnShield = 0;
                 HitShield();
                 _fireNumber = 0;
                 _leftEngineFire.SetActive(false);

@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetAxis("Thrusters") > 0)
+        if (Input.GetAxis("Thrusters") > 0 && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
             ActivateThrusters();
         }
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(Helper.GetXPositionBounds() + 2f, transform.position.y, 0);
         }
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, Helper.GetYLowerBounds(), 1), 0);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, Helper.GetYLowerBounds(), 2), 0);
     }
 
     public void SpeedPowerup()

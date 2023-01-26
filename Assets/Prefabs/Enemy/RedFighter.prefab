@@ -428,7 +428,7 @@ MonoBehaviour:
   _moveSpeed: 3
   _speedMultiplier: 1.5
   _canShoot: 1
-  CurrentEnemyType: 3
+  CurrentEnemyType: 4
 --- !u!114 &530951429178851875
 MonoBehaviour:
   m_ObjectHideFlags: 0

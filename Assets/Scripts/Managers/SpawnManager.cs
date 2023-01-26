@@ -23,7 +23,9 @@ namespace SpawnManager
         private List<GameObject> _shieldPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyRandomPool = new List<GameObject>();
         private List<GameObject> _enemyAlienPool = new List<GameObject>();
+        private List<GameObject> _enemyDroidPool = new List<GameObject>();
         private List<GameObject> _enemyRedFighterPool = new List<GameObject>();
+        private List<GameObject> _enemyTieFighterPool = new List<GameObject>();
         private List<GameObject> _lifeStealerPowerupPool = new List<GameObject>();
         private List<GameObject> _enemyRegularPool = new List<GameObject>();
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
@@ -105,6 +107,7 @@ namespace SpawnManager
 
             if (Input.GetKeyDown(KeyCode.M))
             {
+                _randomEnemy = 5;
                 SpawnBossEnemy();
             }
         }
@@ -119,6 +122,13 @@ namespace SpawnManager
                 StartCoroutine(SpawnEnemies());
                 StartCoroutine(SpawnPowerups());
             }
+        }
+
+        public void StopSpawn()
+        {
+            _canSpawn = false;
+            StopCoroutine(SpawnEnemies());
+            StopCoroutine(SpawnPowerups());
         }
 
         private int RandomEnemy()
@@ -188,16 +198,27 @@ namespace SpawnManager
                     SpawnRandomEnemy();
                     _enemySpawnCount++;
                 }
-                else if (_randomEnemy == 2)
+                else if (_randomEnemy == 2 && _waveCount >= 3)
                 {
-                    SpawnAlienEnemy();
+                    SpawnTieFighter();
                     _enemySpawnCount += 2;
                 }
-                else if (_waveCount > 4 && _waveCount % 5 == 0 && _randomEnemy == 3 && canSpawnBoss)
+                else if (_randomEnemy == 3 && _waveCount >= 4)
+                {
+                    SpawnAlienEnemy();
+                    _enemySpawnCount += 3;
+                }
+                else if (_randomEnemy == 4 && _waveCount >= 4)
+                {
+                    SpawnDroidEnemy();
+                    _enemySpawnCount += 2;
+                }
+                else if (_waveCount >= 5 && _waveCount % 5 == 0 && _randomEnemy == 4 && canSpawnBoss)
                 {
                     _enemySpawnCount += 5;
                     canSpawnBoss = SpawnBossEnemy();
                 }
+
                 if (_MAX_ENEMIES_PER_WAVE * _waveCount <= _enemySpawnCount)
                 {
                     canSpawnEnemies = false;
@@ -270,6 +291,29 @@ namespace SpawnManager
             _spawnWait = Random.Range(1f, 5f);
         }
 
+        private void SpawnTieFighter()
+        {
+            bool isActiveEnemy = true;
+
+            foreach (GameObject itemInPool in _enemyTieFighterPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.SetActive(true);
+                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    isActiveEnemy = false;
+                    break;
+                }
+            }
+            if (isActiveEnemy)
+            {
+                GameObject newEnemy = Instantiate(_enemies[_randomEnemy], _enemyParent.transform);
+                _enemyTieFighterPool.Add(newEnemy);
+            }
+            _spawnWait = Random.Range(1f, 5f);
+        }
+
         private void SpawnAlienEnemy()
         {
             bool isActiveEnemy = true;
@@ -293,6 +337,29 @@ namespace SpawnManager
             _spawnWait = Random.Range(1f, 5f);
         }
 
+        private void SpawnDroidEnemy()
+        {
+            bool isActiveEnemy = true;
+
+            foreach (GameObject itemInPool in _enemyDroidPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.SetActive(true);
+                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    isActiveEnemy = false;
+                    break;
+                }
+            }
+            if (isActiveEnemy)
+            {
+                GameObject newEnemy = Instantiate(_enemies[_randomEnemy], _enemyParent.transform);
+                _enemyDroidPool.Add(newEnemy);
+            }
+            _spawnWait = Random.Range(1f, 5f);
+        }
+    
         private bool SpawnBossEnemy()
         {
             bool isActiveEnemy = true;
@@ -313,7 +380,7 @@ namespace SpawnManager
                 GameObject newEnemy = Instantiate(_enemies[_randomEnemy], _enemyParent.transform);
                 _enemyRedFighterPool.Add(newEnemy);
             }
-            _shaker.EnableShake(3f, 3f, 1.5f);
+            _shaker.EnableShake(2f, 2f, 1.5f);
             _spawnWait = Random.Range(1f, 5f);
             return false;
         }

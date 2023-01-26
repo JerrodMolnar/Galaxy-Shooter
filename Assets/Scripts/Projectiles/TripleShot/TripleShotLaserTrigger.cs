@@ -21,7 +21,7 @@ public class TripleShotLaserTrigger : MonoBehaviour
             {
                 mine.BlowUpSequence();
             }
-            else
+            else if (collision.gameObject.name != "Missile(Clone)")
             {
                 collision.gameObject.SetActive(false);
             }

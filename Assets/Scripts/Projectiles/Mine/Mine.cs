@@ -55,7 +55,7 @@ namespace ProjectileType
                 enemyType = enemy.GetEnemyType();
             }
 
-            if (enemyType != 3)
+            if (enemyType != 5)
             {
                 if (!_blowingUp)
                 {

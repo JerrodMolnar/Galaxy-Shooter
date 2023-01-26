@@ -1607,11 +1607,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ddfc349d4492f4eba6501ab5ae93bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _waveCount: 0
+  _waveCount: 3
   _enemies:
   - {fileID: 1181681802453169286, guid: 7b17b41f62740514ca566c8b35e10b82, type: 3}
   - {fileID: 858816468978005798, guid: 16c739f90120a454185ad012ca709c64, type: 3}
+  - {fileID: 6006141006288239765, guid: d62a5bbf5ffc02c499a7e266dd749a0a, type: 3}
   - {fileID: 252246562409824032, guid: dc8ad99579f521b439784ff82c6ada5f, type: 3}
+  - {fileID: 3284970248724153638, guid: ae3349834dd71aa4da95a4f4ca4b0fb8, type: 3}
   - {fileID: 530951429178851873, guid: 3e6380715f1ec2d47bc33e5f744df373, type: 3}
   _powerups:
   - {fileID: 732848994795500337, guid: a724c47fa2e379f44a55fdbd19b005c6, type: 3}
@@ -1622,7 +1624,7 @@ MonoBehaviour:
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 4658790684078569200, guid: 2fd76609d7a9043408e2faeef2867923, type: 3}
-  _enemyWeights: 580200002c010000c800000064000000
+  _enemyWeights: 6b030000ca020000220200007b0100003901000064000000
   _powerupWeights: 20030000bc02000058020000f4010000900100002c010000c800000064000000
 --- !u!1 &975127556
 GameObject:
@@ -3125,7 +3127,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997555722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2.25, z: 0}
+  m_LocalPosition: {x: 0, y: 0.94, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3606,7 +3608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3834949582982345984, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3834949582982345987, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
       propertyPath: _explosionClip

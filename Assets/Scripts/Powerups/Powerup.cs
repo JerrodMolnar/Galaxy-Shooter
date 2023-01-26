@@ -104,7 +104,7 @@ namespace Powerup
                         gameObject.SetActive(false);
                         break;
                     case _powerupID.LifeSteal:
-                        if ((collision.CompareTag("Enemy") && collision.GetComponent<Enemy>().GetEnemyType() != 3) || 
+                        if ((collision.CompareTag("Enemy") && collision.GetComponent<Enemy>().GetEnemyType() != 5) || 
                             collision.CompareTag("Player"))
                         {
                             collision.GetComponent<Health.Health>().TakeLife();
@@ -121,7 +121,7 @@ namespace Powerup
                 }
                 AudioSource.PlayClipAtPoint(_powerupClip, transform.position);
             }
-            else
+            else if (collision.CompareTag("Projectile"))
             {
                 collision.gameObject.SetActive(false);
                 gameObject.SetActive(false);

@@ -76,11 +76,18 @@ namespace ProjectileType
             }
             else
             {
-                Vector2 direction = _player.transform.position - transform.position;
-                direction.Normalize();
-                float rotateAmount = Vector3.Cross(direction, transform.up).z;
-                rb.angularVelocity = -rotateAmount * 200f;
-                rb.velocity = transform.up * _moveSpeed;
+                if (_player.gameObject.activeInHierarchy)
+                {
+                    Vector2 direction = _player.transform.position - transform.position;
+                    direction.Normalize();
+                    float rotateAmount = Vector3.Cross(direction, transform.up).z;
+                    rb.angularVelocity = -rotateAmount * 200f;
+                    rb.velocity = transform.up * _moveSpeed;
+                }
+                else
+                {
+                    transform.Translate(Vector3.down * _moveSpeed * Time.deltaTime);
+                }
             }
         }
 

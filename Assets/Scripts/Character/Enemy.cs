@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utility;
 
@@ -13,10 +14,11 @@ public class Enemy : MonoBehaviour
     private float _alienAmplitude = 1f;
     private float _alienFrequency = 0.5f;
     private bool _changeDirection = true;
-    [Range(0, 10)] [SerializeField] private float _laserWaitTimeMin = 0.5f;
-    [Range(0, 10)] [SerializeField] private float _laserWaitTimeMax = 3f;
-    [Range(0, 10)] [SerializeField] private float _moveSpeed = 3f;
-    [Range(0, 5f)] [SerializeField] private float _speedMultiplier = 1.5f;
+    private bool _canMove = true;
+    [Range(0, 10)][SerializeField] private float _laserWaitTimeMin = 0.5f;
+    [Range(0, 10)][SerializeField] private float _laserWaitTimeMax = 3f;
+    [Range(0, 10)][SerializeField] private float _moveSpeed = 3f;
+    [Range(0, 5f)][SerializeField] private float _speedMultiplier = 1.5f;
     [SerializeField] private bool _canShoot = true;
 
     private enum EnemyTypes
@@ -25,6 +27,7 @@ public class Enemy : MonoBehaviour
         RandomEnemy,
         TieFighter,
         Alien,
+        Droid,
         RedFighter
     };
     [SerializeField] private EnemyTypes CurrentEnemyType;
@@ -45,7 +48,7 @@ public class Enemy : MonoBehaviour
         {
             transform.position = new Vector3(Random.Range(-Helper.GetXPositionBounds(), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
             _randomXTranslate = Random.Range(-1f, 1f);
-            _yTranslate = Random.Range(0f, 1f);
+            _yTranslate = Random.Range(0.1f, 1f);
         }
 
         _nextFire = Time.time + Random.Range(_laserWaitTimeMin, _laserWaitTimeMax);
@@ -62,7 +65,7 @@ public class Enemy : MonoBehaviour
     {
         Movement();
 
-        if (Time.time > _nextFire)
+        if (Time.time > _nextFire && CurrentEnemyType != EnemyTypes.Droid)
         {
             ShootLasers();
         }
@@ -79,7 +82,7 @@ public class Enemy : MonoBehaviour
                     transform.Translate(move * _moveSpeed * Time.deltaTime);
                     if (transform.position.x >= Helper.GetXPositionBounds())
                     {
-                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                        _randomXTranslate = Random.Range(-1f, -0.01f);
                     }
                     if (transform.position.x <= -(Helper.GetXPositionBounds()))
                     {
@@ -98,7 +101,7 @@ public class Enemy : MonoBehaviour
                     transform.Translate(move * _moveSpeed * Time.deltaTime);
                     if (transform.position.x >= Helper.GetXPositionBounds())
                     {
-                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                        _randomXTranslate = Random.Range(-1f, -0.01f);
                     }
                     if (transform.position.x <= -(Helper.GetXPositionBounds()))
                     {
@@ -122,7 +125,7 @@ public class Enemy : MonoBehaviour
                     transform.Translate(move * _moveSpeed * Time.deltaTime);
                     if (transform.position.x >= Helper.GetXPositionBounds())
                     {
-                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                        _randomXTranslate = Random.Range(-1f, -0.01f);
                     }
                     if (transform.position.x <= -(Helper.GetXPositionBounds()))
                     {
@@ -130,11 +133,11 @@ public class Enemy : MonoBehaviour
                     }
                     if (transform.position.y < Helper.GetYLowerBounds() - 2)
                     {
-                        _yTranslate *= -1;
+                        _yTranslate = Random.Range(0.1f, 1f);
                     }
                     if (transform.position.y > Helper.GetYUpperScreenBounds() + 2)
                     {
-                        _yTranslate *= -1;
+                        _yTranslate = Random.Range(-0.1f, -1f);
                     }
                     break;
                 }
@@ -147,7 +150,7 @@ public class Enemy : MonoBehaviour
                     transform.Translate(move * Time.deltaTime);
                     if (transform.position.x >= Helper.GetXPositionBounds() + 2.5)
                     {
-                        _randomXTranslate = Random.Range(-1f, 0.01f);
+                        _randomXTranslate = Random.Range(-1f, -0.01f);
                         transform.position = new Vector3(transform.position.x, transform.position.y - 1, 0);
                     }
                     if (transform.position.x <= -(Helper.GetXPositionBounds()) - 2.5)
@@ -159,6 +162,11 @@ public class Enemy : MonoBehaviour
                     {
                         transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
                     }
+                    else if (transform.position.y > Helper.GetYUpperScreenBounds() + 2)
+                    {
+                        transform.position = new Vector3(transform.position.x, Helper.GetYLowerBounds() - 1, 0);
+                    }
+
                     if (_changeDirection)
                     {
                         _changeDirection = false;
@@ -166,10 +174,36 @@ public class Enemy : MonoBehaviour
                     }
                     break;
                 }
+            case EnemyTypes.Droid:
+                {
+                    if (_canMove)
+                    {
+                        move = new Vector3(Random.Range(0f, 1f), _randomXTranslate, 0);
+                        transform.Translate(move * _moveSpeed * Time.deltaTime);
+                        if (transform.position.x >= Helper.GetXPositionBounds())
+                        {
+                            _randomXTranslate = Random.Range(-1f, -0.01f);
+                        }
+                        if (transform.position.x <= -(Helper.GetXPositionBounds()))
+                        {
+                            _randomXTranslate = Random.Range(0.01f, 1f);
+                        }
+                        if (transform.position.y < Helper.GetYLowerBounds() - 2)
+                        {
+                            transform.position = new Vector3(transform.position.x, Helper.GetYUpperScreenBounds() + 1, 0);
+                        }
+                        if (_changeDirection)
+                        {
+                            _changeDirection = false;
+                            StartCoroutine(PauseMovement());
+                        }
+                    }
+                    break;
+                }
 
             case EnemyTypes.RedFighter:
                 {
-                    if (transform.position.x >= 6) 
+                    if (transform.position.x >= 6)
                     {
                         transform.Translate(Vector3.left * _moveSpeed * Time.deltaTime);
                         _randomXTranslate *= -1;
@@ -211,21 +245,23 @@ public class Enemy : MonoBehaviour
         return (int)CurrentEnemyType;
     }
 
+    private IEnumerator PauseMovement()
+    {
+        float originalMoveSpeed = _moveSpeed;
+        yield return new WaitForSeconds(_movementWait);
+        _moveSpeed = 0.5f;
+        yield return new WaitForSeconds(_movementWait);
+        _moveSpeed = originalMoveSpeed;
+        _randomXTranslate = Random.Range(-1f, 1f);
+        _changeDirection = true;
+    }
+
     private IEnumerator RandomMove()
     {
         yield return new WaitForSeconds(Random.Range(0.5f, _movementWait));
         _moveSpeed = Random.Range(3f, 6f);
         _randomXTranslate = Random.Range(-1f, 1f);
         _changeDirection = true;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player") && CurrentEnemyType != EnemyTypes.Alien)
-        {
-            other.GetComponent<Health.Health>().DamageTaken(100, false);
-            this.GetComponent<Health.Health>().DamageTaken(100, true);
-        }
     }
 
     private void ShootLasers()
@@ -237,8 +273,43 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void StopMovement()
+    {
+        _canMove = false;
+    }
+
     public static int GetEnemyCount()
     {
         return _enemyCount;
+    }
+
+    public float GetEnemySpeed()
+    {
+        return _moveSpeed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && CurrentEnemyType != EnemyTypes.Alien && CurrentEnemyType != EnemyTypes.Droid)
+        {
+            collision.GetComponent<Health.Health>().DamageTaken(100, false);
+            this.GetComponent<Health.Health>().DamageTaken(100, true);
+        }
+        else if (collision.CompareTag("Enemy") && collision.name != "RedFighter(Clone)" && collision.name != "Droid Enemy(Clone)")
+        {
+            collision.GetComponent<Health.Health>().DamageTaken(5, false);
+            this.GetComponent<Health.Health>().DamageTaken(5, false);
+        }
+        else if (CurrentEnemyType == EnemyTypes.Droid)
+        {
+            if (TryGetComponent(out PolygonCollider2D polygonCollider2D) && polygonCollider2D.IsTouching(collision))
+            {
+                if (collision.CompareTag("Player"))
+                {
+                    collision.GetComponent<Health.Health>().DamageTaken(100, false);
+                    GetComponent<Health.Health>().DamageTaken(100, true);
+                }
+            }
+        }
     }
 }

@@ -19,10 +19,11 @@ namespace ProjectilePool
 
         public void ShootLaserFromPool(bool isPlayerLaser, Vector3 shotPosition)
         {
-            ShootLaserFromPool(isPlayerLaser, shotPosition, false, false);
+            ShootLaserFromPool(isPlayerLaser, shotPosition, false, false, null);
         }
 
-        public void ShootLaserFromPool(bool isPlayerLaser, Vector3 shotPosition, bool isBehindPlayer, bool isFromTieFighter)
+        public void ShootLaserFromPool(bool isPlayerLaser, Vector3 shotPosition, bool isBehindPlayer, bool isFromTieFighter, 
+            Transform playerTransform)
         {
             if (_laserPrefab != null)
             {
@@ -46,7 +47,7 @@ namespace ProjectilePool
                     _laserList.Add(_laserSelected);
                 }
                 ProjectileType.Laser laser = _laserSelected.GetComponent<ProjectileType.Laser>();
-                laser.SetShooter(isPlayerLaser, isBehindPlayer, isFromTieFighter);
+                laser.SetShooter(isPlayerLaser, isBehindPlayer, isFromTieFighter, playerTransform);
             }
         }
     }

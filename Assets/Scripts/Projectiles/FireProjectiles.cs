@@ -1,9 +1,9 @@
-using UnityEngine;
-using ProjectilePool;
-using Unity.VisualScripting;
 using GameCanvas;
+using ProjectilePool;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace ProjectileFire
 {
@@ -87,7 +87,10 @@ namespace ProjectileFire
                 {
                     _player = player;
                 }
-                _enemyType = GetComponent<Enemy>().GetEnemyType();
+                if (TryGetComponent(out Enemy enemy))
+                {
+                    _enemyType = enemy.GetEnemyType();
+                }
                 _isPlayerShot = false;
             }
 
@@ -106,12 +109,20 @@ namespace ProjectileFire
             {
                 _tractorBeamActive = false;
             }
+            if (_isTripleShotActive)
+            {
+                _isTripleShotActive = false;
+            }
+            if (_isMissileEnabled)
+            {
+                _isMissileEnabled = false;
+            }
         }
 
         public void ShootProjectile()
         {
 
-            if (_enemyType != 3 || _enemyType != 4)
+            if (_enemyType != 3 || _enemyType != 5)
             {
                 if (_isTripleShotActive)
                 {
@@ -193,18 +204,8 @@ namespace ProjectileFire
                         _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
                         break;
                     case 2:
-                        if (_player.transform.position.y < transform.position.y)
-                        {
-                            _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1.1f, 0);
-                            _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, false, true);
-                        }
-                        else
-                        {
-                            _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.1f, 0);
-                            _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, true, true);
-                        }
+                        TieFighterShot();
                         break;
-
                     case 3:
                         if (!_tractorBeamActive)
                         {
@@ -213,13 +214,36 @@ namespace ProjectileFire
                             StartCoroutine(DisableTractorBeam());
                         }
                         break;
-                    case 4:
+                    case 5:
                         RedFighterShot();
                         break;
+
                 }
 
                 _audioSource.clip = _laserSoundClip;
                 _audioSource.Play();
+            }
+        }
+
+        private void TieFighterShot()
+        {
+            if (_player != null)
+            {
+                if (_player.transform.position.y < transform.position.y)
+                {
+                    _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 1.2f, 0);
+                    _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, false, true, _player.transform);
+                }
+                else
+                {
+                    _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.2f, 0);
+                    _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition, true, true, _player.transform);
+                }
+            }
+            else
+            {
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.2f, 0);
+                _laserPool.ShootLaserFromPool(_isPlayerShot, _laserShootPosition);
             }
         }
 

@@ -8,22 +8,93 @@ namespace ProjectileType
     {
         private bool _isBehindPlayer = false;
         private bool _isPlayerLaser = false;
-        [Range(0, 100)] [SerializeField] private int _damageAmount = 5;
-        [Range(0, 25f)] [SerializeField] private float _moveSpeed = 8.0f;
+        [Range(0, 100)][SerializeField] private int _damageAmount = 5;
+        [Range(0, 25f)][SerializeField] private float _moveSpeed = 8.0f;
 
         private void Update()
         {
             LaserMovement();
         }
 
-        public void SetShooter(bool isPlayerLaser, bool isBehindPlayer, bool isFromTieFighter)
+        public void SetShooter(bool isPlayerLaser, bool isBehindPlayer, bool isFromTieFighter, Transform playerTransform)
         {
             _isPlayerLaser = isPlayerLaser;
             _isBehindPlayer = isBehindPlayer;
-            if (isFromTieFighter)
+            if (isFromTieFighter && playerTransform != null)
             {
-                transform.LookAt(GameObject.FindGameObjectWithTag("Player").transform.position);
-                transform.eulerAngles = new Vector3(0, 0, -transform.eulerAngles.x);
+                float xDifference = playerTransform.position.x - transform.position.x;
+
+                if (xDifference > 10)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -75);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 75);
+                    }
+                }
+                else if (xDifference < -10)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 75);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -75);
+                    }
+                }
+                if (xDifference > 6)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -40);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 40);
+                    }
+                }
+                else if (xDifference < -6)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 40);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -40);
+                    }
+                }
+                else if (xDifference > 3)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -20);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 20);
+                    }
+                }
+                else if (xDifference < -3)
+                {
+                    if (isBehindPlayer)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 20);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, -20);
+                    }
+                }
+                else
+                {
+                    transform.eulerAngles = Vector3.zero;
+                }
+
             }
             else
             {
@@ -71,16 +142,18 @@ namespace ProjectileType
                 if (collision.CompareTag("Enemy") && _isPlayerLaser)
                 {
                     collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, true);
+                    gameObject.SetActive(false);
                 }
                 else if (collision.CompareTag("Player"))
                 {
                     collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount * 2, false);
+                    gameObject.SetActive(false);
                 }
                 else if (collision.CompareTag("Enemy"))
                 {
                     collision.GetComponent<Health.Health>()?.DamageTaken(_damageAmount, false);
+                    gameObject.SetActive(false);
                 }
-                gameObject.SetActive(false);
             }
             if (collision.tag == "Projectile")
             {
@@ -88,11 +161,15 @@ namespace ProjectileType
                 {
                     mine.BlowUpSequence();
                 }
+                else if (collision.gameObject.name == "Missile(Clone)")
+                {
+                    return;
+                }
                 else
                 {
                     collision.gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                 }
-                gameObject.SetActive(false);
             }
         }
     }
