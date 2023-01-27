@@ -5,7 +5,6 @@ public class AvoidanceCollider : MonoBehaviour
     private Transform _droidTransform;
     private float _moveSpeed = 10f;
     private int _randomInt;
-    private Vector2 _direction;
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +28,6 @@ public class AvoidanceCollider : MonoBehaviour
     {
         if (collision.CompareTag("Projectile"))
         {
-            _direction = collision.transform.position - _droidTransform.position;
             _randomInt = Random.Range(0, 5);
         }
     }
@@ -39,7 +37,7 @@ public class AvoidanceCollider : MonoBehaviour
         if (other.CompareTag("Projectile"))
         {
             Debug.Log("Avoidance Trigger Stay & random int is " + _randomInt);
-            if (_randomInt > 1)
+            if (_randomInt > 2)
             {
                 _droidTransform.position = Vector2.MoveTowards(_droidTransform.position, -other.transform.position, 
                     _moveSpeed * Time.deltaTime);

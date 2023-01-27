@@ -18,6 +18,7 @@ namespace Powerup
             Shield,
             Ammo,
             Health,
+            HomingMissile,
             MissileShot,
             LifeSteal,
             ExtraLife
@@ -98,6 +99,9 @@ namespace Powerup
                     case _powerupID.Health:
                         collision.GetComponent<Health.Health>().DamageHealed(33);
                         gameObject.SetActive(false);
+                        break;
+                    case _powerupID.HomingMissile:
+                        collision.GetComponent<FireProjectiles>();
                         break;
                     case _powerupID.MissileShot:
                         collision.GetComponent<FireProjectiles>().MissileEnable();

@@ -1624,7 +1624,7 @@ MonoBehaviour:
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 4658790684078569200, guid: 2fd76609d7a9043408e2faeef2867923, type: 3}
-  _enemyWeights: 6b030000ca020000220200007b0100003901000064000000
+  _enemyWeights: 840300002003000058020000f40100009001000064000000
   _powerupWeights: 20030000bc02000058020000f4010000900100002c010000c800000064000000
 --- !u!1 &975127556
 GameObject:
@@ -3118,7 +3118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1997555726
 Transform:
   m_ObjectHideFlags: 0
@@ -3127,7 +3127,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997555722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.94, z: 0}
+  m_LocalPosition: {x: 0, y: -2.63, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3608,7 +3608,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3834949582982345984, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3834949582982345987, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
       propertyPath: _explosionClip
@@ -3660,6 +3660,63 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
+--- !u!1001 &4190577910143420795
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7013861184436283408, guid: c855580d5a7df3044bd62412939a6624, type: 3}
+      propertyPath: m_Name
+      value: Homing Missile Powerup
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c855580d5a7df3044bd62412939a6624, type: 3}
 --- !u!1001 &6462143680040863240
 PrefabInstance:
   m_ObjectHideFlags: 0
