@@ -1,5 +1,6 @@
 using GameCanvas;
 using ProjectilePool;
+using ProjectileType;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -15,12 +16,14 @@ namespace ProjectileFire
         private float _tripleShotCoolDown = -1;
         private float _tripleShotCoolDownWait = 8f;
         private float _mineWait = 5f;
+        private bool _isHomingMissileEnabled = false;
         private bool _isMineLaid = false;
         private bool _isPlayerShot = false;
         private bool _tractorBeamActive = false;
         private AudioSource _audioSource;
         private GameCanvasManager _gameCanvas;
         private GameObject _tractorBeam;
+        private HomingMissilePool _homingMissilePool;
         private LaserPool _laserPool;
         private MinePool _minePool;
         private MissilePool _missilePool;
@@ -57,6 +60,12 @@ namespace ProjectileFire
             if (_missilePool == null)
             {
                 Debug.LogError("Missile pool not found on FireProjectiles on " + name);
+            }
+
+            _homingMissilePool = GameObject.Find("Homing Missile Pool").GetComponent<HomingMissilePool>();
+            if (_homingMissilePool == null)
+            {
+                Debug.LogError("Homing Missile Pool not found on FireProjectiles on " + name);
             }
 
             _audioSource = GetComponent<AudioSource>();
@@ -117,6 +126,10 @@ namespace ProjectileFire
             {
                 _isMissileEnabled = false;
             }
+            if (_isHomingMissileEnabled)
+            {
+                _isHomingMissileEnabled = false;
+            }
         }
 
         public void ShootProjectile()
@@ -136,6 +149,10 @@ namespace ProjectileFire
                 {
                     FireMissile();
                 }
+                else if (_isHomingMissileEnabled)
+                {
+                    FireHomingMissile();
+                }
                 else
                 {
                     FireLaser();
@@ -151,6 +168,11 @@ namespace ProjectileFire
         {
             _isTripleShotActive = true;
             _tripleShotCoolDown = Time.time + _tripleShotCoolDownWait;
+        }
+
+        public void HomingMissileEnabled()
+        {
+            _isHomingMissileEnabled = true;
         }
 
         public void MissileEnable()
@@ -321,5 +343,24 @@ namespace ProjectileFire
             _isMissileEnabled = false;
             _missilePool.ShootMissileFromPool(_isPlayerShot, _laserShootPosition);
         }
+
+        private void FireHomingMissile()
+        {
+            if (_isPlayerShot)
+            {
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y + 1.85f, 0);
+            }
+            else
+            {
+                _laserShootPosition = new Vector3(transform.position.x, transform.position.y - 2f, 0);
+            }
+            _audioSource.clip = _missileClip;
+            _audioSource.volume = 1f;
+            _audioSource.Play();
+            _audioSource.volume = 0.1f;
+            _isHomingMissileEnabled = false;
+            _homingMissilePool.ShootMissileFromPool(_isPlayerShot, _laserShootPosition);
+        }
+
     }
 }

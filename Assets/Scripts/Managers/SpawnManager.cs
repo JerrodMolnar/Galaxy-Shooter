@@ -31,6 +31,7 @@ namespace SpawnManager
         private List<GameObject> _ammoPowerupPool = new List<GameObject>();
         private List<GameObject> _healthPowerupPool = new List<GameObject>();
         private List<GameObject> _missilePowerupPool = new List<GameObject>();
+        private List<GameObject> _homingMissilePowerupPool = new List<GameObject>();
         private GameObject _enemyParent;
         private GameObject _powerupParent;
         private GameObject _asteroid;
@@ -107,8 +108,10 @@ namespace SpawnManager
 
             if (Input.GetKeyDown(KeyCode.M))
             {
-                _randomEnemy = 5;
-                SpawnBossEnemy();
+                _randomPowerup = 6;
+                SpawnHomingMissile();
+                _randomEnemy = 0;
+                SpawnRegularEnemy();
             }
         }
 
@@ -343,11 +346,11 @@ namespace SpawnManager
 
             foreach (GameObject itemInPool in _enemyDroidPool)
             {
-                if (itemInPool.activeSelf == false)
+                if (itemInPool.activeInHierarchy == false)
                 {
-                    itemInPool.GetComponent<Enemy>().enabled = true;
+                    itemInPool.transform.GetChild(0).GetComponent<Enemy>().enabled = true;
                     itemInPool.SetActive(true);
-                    itemInPool.GetComponent<PolygonCollider2D>().enabled = true;
+                    itemInPool.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
                     isActiveEnemy = false;
                     break;
                 }
@@ -359,7 +362,7 @@ namespace SpawnManager
             }
             _spawnWait = Random.Range(1f, 5f);
         }
-    
+
         private bool SpawnBossEnemy()
         {
             bool isActiveEnemy = true;
@@ -439,9 +442,12 @@ namespace SpawnManager
                         SpawnHealthPowerup();
                         break;
                     case 6:
-                        SpawnMissilePowerup();
+                        SpawnHomingMissile();
                         break;
                     case 7:
+                        SpawnMissilePowerup();
+                        break;
+                    case 8:
                         SpawnExtraLifePowerup();
                         break;
                     default:
@@ -583,6 +589,29 @@ namespace SpawnManager
                 GameObject powerup =
                 Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _missilePowerupPool.Add(powerup);
+            }
+        }
+
+        private void SpawnHomingMissile()
+        {
+            bool noInactivePowerup = true;
+            Vector3 posToSpawn = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds() + 2.5f, 0);
+
+            foreach (GameObject itemInPool in _homingMissilePowerupPool)
+            {
+                if (itemInPool.activeSelf == false)
+                {
+                    itemInPool.SetActive(true);
+                    itemInPool.transform.position = posToSpawn;
+                    noInactivePowerup = false;
+                    break;
+                }
+            }
+            if (noInactivePowerup)
+            {
+                GameObject powerup =
+                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                _homingMissilePowerupPool.Add(powerup);
             }
         }
 

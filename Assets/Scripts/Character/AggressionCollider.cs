@@ -45,9 +45,10 @@ public class AggressionCollider : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            if (_randomInt >= 3)
+            if (_randomInt > 2)
             {
-                _droidTransform.position = Vector2.MoveTowards(_droidTransform.position, collision.transform.position, _moveSpeed * Time.deltaTime);
+                _droidTransform.position = Vector2.MoveTowards(_droidTransform.position, collision.transform.position, 
+                    _moveSpeed * Time.deltaTime);
             }
         }
     }

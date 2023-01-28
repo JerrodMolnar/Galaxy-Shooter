@@ -6,7 +6,6 @@ public class AvoidanceCollider : MonoBehaviour
     private float _moveSpeed = 10f;
     private int _randomInt;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (transform.parent.GetChild(0).TryGetComponent(out Transform droidTransform))

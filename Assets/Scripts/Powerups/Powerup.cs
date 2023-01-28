@@ -8,10 +8,10 @@ namespace Powerup
     {
         private float _moveSpeed = 1.5f;
         private GameObject _player;
-        [SerializeField] private _powerupID _currentID;
+        [SerializeField] private PowerupID _currentID;
         [SerializeField] private AudioClip _powerupClip;
 
-        private enum _powerupID
+        private enum PowerupID
         {
             TripleShot,
             Speed,
@@ -61,11 +61,11 @@ namespace Powerup
             {
                 switch (_currentID)
                 {
-                    case _powerupID.TripleShot:
+                    case PowerupID.TripleShot:
                         collision.GetComponent<FireProjectiles>().TripleShotEnable();
                         gameObject.SetActive(false);
                         break;
-                    case _powerupID.Speed:
+                    case PowerupID.Speed:
                         if (collision.CompareTag("Player"))
                         {
                             collision.GetComponent<Player>().SpeedPowerup();
@@ -76,7 +76,7 @@ namespace Powerup
                         }
                         gameObject.SetActive(false);
                         break;
-                    case _powerupID.Shield:
+                    case PowerupID.Shield:
                         int hitsOnShield;
                         if (collision.CompareTag("Player"))
                         {
@@ -89,25 +89,25 @@ namespace Powerup
                         collision.GetComponent<Health.Health>().EnableShield(hitsOnShield);
                         gameObject.SetActive(false);
                         break;
-                    case _powerupID.Ammo:
+                    case PowerupID.Ammo:
                         if (collision.CompareTag("Player"))
                         {
                             collision.GetComponent<FireProjectiles>().AmmoPickup();
                             gameObject.SetActive(false);
                         }
                         break;
-                    case _powerupID.Health:
+                    case PowerupID.Health:
                         collision.GetComponent<Health.Health>().DamageHealed(33);
                         gameObject.SetActive(false);
                         break;
-                    case _powerupID.HomingMissile:
-                        collision.GetComponent<FireProjectiles>();
+                    case PowerupID.HomingMissile:
+                        collision.GetComponent<FireProjectiles>().HomingMissileEnabled();
                         break;
-                    case _powerupID.MissileShot:
+                    case PowerupID.MissileShot:
                         collision.GetComponent<FireProjectiles>().MissileEnable();
                         gameObject.SetActive(false);
                         break;
-                    case _powerupID.LifeSteal:
+                    case PowerupID.LifeSteal:
                         if ((collision.CompareTag("Enemy") && collision.GetComponent<Enemy>().GetEnemyType() != 5) || 
                             collision.CompareTag("Player"))
                         {
@@ -115,7 +115,7 @@ namespace Powerup
                             gameObject.SetActive(false);
                         }
                         break;
-                    case _powerupID.ExtraLife:
+                    case PowerupID.ExtraLife:
                         collision.GetComponent<Health.Health>().ExtraLife();
                         gameObject.SetActive(false);
                         break;

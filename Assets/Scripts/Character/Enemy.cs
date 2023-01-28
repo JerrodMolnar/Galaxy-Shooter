@@ -306,8 +306,8 @@ public class Enemy : MonoBehaviour
             {
                 if (collision.CompareTag("Player"))
                 {
-                    collision.GetComponent<Health.Health>().DamageTaken(100, false);
-                    GetComponent<Health.Health>().DamageTaken(100, true);
+                    collision.GetComponent<Health.Health>().DamageTaken(50, false);
+                    GetComponent<Health.Health>().DamageTaken(50, true);
                 }
             }
         }

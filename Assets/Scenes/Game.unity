@@ -1622,10 +1622,11 @@ MonoBehaviour:
   - {fileID: 2694640153111207537, guid: 0e46263fb891af44cbcd8037c4356052, type: 3}
   - {fileID: 3859948482376026160, guid: cbc30f9f17f8e934792685010d270e42, type: 3}
   - {fileID: 3244966860860564095, guid: b867710703187834e84f7bc2e39f50f6, type: 3}
+  - {fileID: 7013861184436283408, guid: c855580d5a7df3044bd62412939a6624, type: 3}
   - {fileID: 6589278619297295501, guid: 3428047d9b965f043973c8aba278e478, type: 3}
   - {fileID: 4658790684078569200, guid: 2fd76609d7a9043408e2faeef2867923, type: 3}
   _enemyWeights: 840300002003000058020000f40100009001000064000000
-  _powerupWeights: 20030000bc02000058020000f4010000900100002c010000c800000064000000
+  _powerupWeights: 8403000020030000bc02000058020000f4010000900100002c010000c800000064000000
 --- !u!1 &975127556
 GameObject:
   m_ObjectHideFlags: 0
@@ -2183,6 +2184,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173829138}
   m_CullTransparentMesh: 1
+--- !u!1 &1200290214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1200290215}
+  - component: {fileID: 1200290216}
+  m_Layer: 0
+  m_Name: Homing Missile Pool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1200290215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200290214}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1848121860}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1200290216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200290214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0bdc3641d657f44bbbfab481696522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _homingMissilePrefab: {fileID: 3639757034324097644, guid: 9c7ae7bd6cea9624f94cc2ffc50e4dcc, type: 3}
 --- !u!1 &1234083238
 GameObject:
   m_ObjectHideFlags: 0
@@ -2784,6 +2830,7 @@ Transform:
   - {fileID: 878388885}
   - {fileID: 322044571}
   - {fileID: 1488485873}
+  - {fileID: 1200290215}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3118,7 +3165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1997555726
 Transform:
   m_ObjectHideFlags: 0
@@ -3660,63 +3707,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae3c6b959ed791d4b873ef0fc0feb2bc, type: 3}
---- !u!1001 &4190577910143420795
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_RootOrder
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138941104045118456, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7013861184436283408, guid: c855580d5a7df3044bd62412939a6624, type: 3}
-      propertyPath: m_Name
-      value: Homing Missile Powerup
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c855580d5a7df3044bd62412939a6624, type: 3}
 --- !u!1001 &6462143680040863240
 PrefabInstance:
   m_ObjectHideFlags: 0

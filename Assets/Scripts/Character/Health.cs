@@ -285,6 +285,12 @@ namespace Health
                 _rightEngineFire.SetActive(false);
                 _animator.SetTrigger("IsDead");
             }
+            else if (_enemyType == 4)
+            {
+                transform.parent.GetChild(1).gameObject.SetActive(false);
+                transform.parent.GetChild(2).gameObject.SetActive(false);
+                GetComponent<Enemy>().enabled = false;
+            }
             else
             {
                 GetComponent<Enemy>().enabled = false;
@@ -313,6 +319,11 @@ namespace Health
                         if (enemy.activeInHierarchy == true)
                         {
                             enemy.GetComponent<Enemy>().enabled = false;
+                            if (enemy.name == "Droid Enemy(Clone)")
+                            {
+                                enemy.transform.parent.GetChild(1).gameObject.SetActive(false);
+                                enemy.transform.parent.GetChild(2).gameObject.SetActive(false);
+                            }
                             enemy.GetComponent<Animator>().SetTrigger("IsDead");
                             _audioSource.Play();
                         }
@@ -447,6 +458,11 @@ namespace Health
             else
             {
                 transform.position = new Vector3(Random.Range(-(Helper.GetXPositionBounds()), Helper.GetXPositionBounds()), Helper.GetYUpperScreenBounds(), 0);
+                if (name == "Droid Enemy(Clone)")
+                {
+                    transform.parent.GetChild(1).gameObject.SetActive(true);
+                    transform.parent.GetChild(2).gameObject.SetActive(true);
+                }
                 GetComponent<SpriteRenderer>().enabled = true;
                 GetComponent<PolygonCollider2D>().enabled = true;
                 GetComponent<Enemy>().enabled = true;

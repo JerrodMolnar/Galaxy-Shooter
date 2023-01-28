@@ -16,6 +16,11 @@ namespace ProjectileType
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
+            if (rb == null )
+            {
+                Debug.LogError("RigidBody not found on Missile Script on " + name);
+            }
+
             _player = GameObject.FindGameObjectWithTag("Player");
             if (_player == null )
             {
