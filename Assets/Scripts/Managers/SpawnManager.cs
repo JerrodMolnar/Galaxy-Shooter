@@ -475,7 +475,7 @@ namespace SpawnManager
             }
             if (noInactivePowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _healthPowerupPool.Add(powerup);
             }
         }
@@ -498,7 +498,7 @@ namespace SpawnManager
             if (noInactivePowerup)
             {
                 GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _tripleShotPowerupsPool.Add(powerup);
             }
         }
@@ -520,7 +520,7 @@ namespace SpawnManager
             }
             if (noInactivePowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _speedPowerupsPool.Add(powerup);
             }
         }
@@ -542,7 +542,7 @@ namespace SpawnManager
             }
             if (noInactivePowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _shieldPowerupPool.Add(powerup);
             }
         }
@@ -564,7 +564,7 @@ namespace SpawnManager
             }
             if (noInactivePowerup)
             {
-                GameObject powerup = Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                GameObject powerup = Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _ammoPowerupPool.Add(powerup);
             }
         }
@@ -587,7 +587,7 @@ namespace SpawnManager
             if (noInactivePowerup)
             {
                 GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _missilePowerupPool.Add(powerup);
             }
         }
@@ -608,9 +608,8 @@ namespace SpawnManager
                 }
             }
             if (noInactivePowerup)
-            {
-                GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+            {                
+                GameObject powerup = Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _homingMissilePowerupPool.Add(powerup);
             }
         }
@@ -633,7 +632,7 @@ namespace SpawnManager
             if (noInactivePowerup)
             {
                 GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _lifeStealerPowerupPool.Add(powerup);
             }
         }
@@ -656,7 +655,7 @@ namespace SpawnManager
             if (noInactivePowerup)
             {
                 GameObject powerup =
-                Instantiate(_powerups[_lastPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
+                Instantiate(_powerups[_randomPowerup], posToSpawn, Quaternion.identity, _powerupParent.transform);
                 _lifeStealerPowerupPool.Add(powerup);
             }
         }

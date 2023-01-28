@@ -102,6 +102,7 @@ namespace Powerup
                         break;
                     case PowerupID.HomingMissile:
                         collision.GetComponent<FireProjectiles>().HomingMissileEnabled();
+                        gameObject.SetActive(false);
                         break;
                     case PowerupID.MissileShot:
                         collision.GetComponent<FireProjectiles>().MissileEnable();

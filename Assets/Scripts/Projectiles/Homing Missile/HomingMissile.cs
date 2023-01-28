@@ -5,7 +5,10 @@ namespace ProjectileType
 {
     public class HomingMissile : MonoBehaviour
     {
-        [Range(0, 10f)][SerializeField] private float _moveSpeed = 5.0f;
+        [Range(0, 10f)]
+        [SerializeField] private float _moveSpeed = 5.0f;
+        [Range(0, 500f)]
+        [SerializeField] private float _rotationSpeed = 200f;
         private bool _isPlayerHomingMissile = false;
         private GameObject _enemyFound;
         private GameObject _player;
@@ -30,12 +33,13 @@ namespace ProjectileType
             if (_isPlayerHomingMissile )
             {
                 transform.eulerAngles = Vector3.forward * 90;
+                _enemyFound = CheckForEnemy();
             }
             else
             {
                 transform.eulerAngles = Vector3.forward * -90;
             }
-            _enemyFound = CheckForEnemy();
+            
         }
 
         private void MissileMovement()
@@ -45,7 +49,7 @@ namespace ProjectileType
                 if (_enemyFound != null && _enemyFound.GetComponent<Enemy>().isActiveAndEnabled)
                 {
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, GetAngle(_enemyFound.transform.position),
-                        200f * Time.deltaTime);
+                        _rotationSpeed * Time.deltaTime);
                     transform.position = Vector2.MoveTowards(transform.position, _enemyFound.transform.position, _moveSpeed * Time.deltaTime);
                 }
                 else if (_enemyFound == null)
@@ -64,7 +68,7 @@ namespace ProjectileType
                 if (_player.gameObject.activeInHierarchy)
                 {
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, GetAngle(_player.transform.position),
-                        200f * Time.deltaTime);
+                        _rotationSpeed * Time.deltaTime);
                     transform.position = Vector2.MoveTowards(transform.position, _player.transform.position,
                         _moveSpeed * Time.deltaTime);
                 }
