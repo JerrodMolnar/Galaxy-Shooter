@@ -35,7 +35,6 @@ public class AvoidanceCollider : MonoBehaviour
     {
         if (other.CompareTag("Projectile"))
         {
-            Debug.Log("Avoidance Trigger Stay & random int is " + _randomInt);
             if (_randomInt > 2)
             {
                 _droidTransform.position = Vector2.MoveTowards(_droidTransform.position, -other.transform.position, 

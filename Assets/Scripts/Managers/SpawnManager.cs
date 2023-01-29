@@ -95,23 +95,11 @@ namespace SpawnManager
         }
 
         private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                _canSpawn = true;
-                StartCoroutine(SpawnPowerups());
-            }
-            else if (Input.GetKeyDown(KeyCode.L))
-            {
-                _canSpawn = false;
-            }
-
+        {            
             if (Input.GetKeyDown(KeyCode.M))
-            {
-                _randomPowerup = 6;
-                SpawnHomingMissile();
-                _randomEnemy = 0;
-                SpawnRegularEnemy();
+            {                
+                _randomEnemy = 5;
+                SpawnBossEnemy();
             }
         }
 
@@ -130,8 +118,6 @@ namespace SpawnManager
         public void StopSpawn()
         {
             _canSpawn = false;
-            StopCoroutine(SpawnEnemies());
-            StopCoroutine(SpawnPowerups());
         }
 
         private int RandomEnemy()
@@ -216,7 +202,7 @@ namespace SpawnManager
                     SpawnDroidEnemy();
                     _enemySpawnCount += 2;
                 }
-                else if (_waveCount >= 5 && _waveCount % 5 == 0 && _randomEnemy == 4 && canSpawnBoss)
+                else if (_waveCount >= 5 && _randomEnemy == 5 && canSpawnBoss)
                 {
                     _enemySpawnCount += 5;
                     canSpawnBoss = SpawnBossEnemy();
@@ -244,6 +230,10 @@ namespace SpawnManager
                         _asteroid.SetActive(true);
                     }
                     StartCoroutine(WaitForNoEnemies());
+                }
+                if (!_canSpawn)
+                {
+                    canSpawnEnemies = false;
                 }
             }
         }
