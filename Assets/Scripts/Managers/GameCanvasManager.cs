@@ -9,56 +9,49 @@ namespace GameCanvas
     public class GameCanvasManager : MonoBehaviour
     {
         [SerializeField] private Sprite[] _livesSprites;
-        private Text _ammoText;
-        private Text _gameOverText;
-        private Text _healthText;
-        private Text _livesText;
-        private Text _scoreText;
+        [SerializeField] private Text _ammoText;
+        [SerializeField] private Text _gameOverText;
+        [SerializeField] private Text _healthText;
+        [SerializeField] private Text _livesText;
+        [SerializeField] private Text _scoreText;
         private bool _isGameOver = false;
-        private GameManager _gameManager;
-        private GameObject _escapeMenu;
-        private Slider _thrustBar;
-        private Image _livesImage;
+        [SerializeField] private GameManager _gameManager;
+        [SerializeField] private GameObject _escapeMenu;
+        [SerializeField] private Slider _thrustBar;
+        [SerializeField] private Image _livesImage;
 
         void Start()
         {
-            _healthText = transform.GetChild(0).GetComponent<Text>();
             if (_healthText == null)
             {
                 Debug.LogError("Health text not found on " + name);
             }
 
-            _livesText = transform.GetChild(1).GetComponent<Text>();
             if (_livesText == null)
             {
                 Debug.LogError("Lives text not found on " + name);
             }
 
-            _scoreText = transform.GetChild(2).GetComponent<Text>();
             if (_scoreText == null)
             {
                 Debug.LogError("Score text not found on " + name);
             }
 
-            _livesImage = transform.GetChild(3).GetComponent<Image>();
             if (_livesImage == null)
             {
                 Debug.LogError("Lives image not found on " + name);
             }
 
-            _gameOverText = transform.GetChild(4).GetComponent<Text>();
             if (_gameOverText == null)
             {
                 Debug.LogError("Game Over text not found on " + name);
             }
 
-            _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
             if (_gameManager == null)
             {
                 Debug.LogError("Game Manager not found on GameCanvasManager Script on " + name);
             }
 
-            _escapeMenu = transform.GetChild(5).gameObject;
             if (_escapeMenu == null)
             {
                 Debug.LogError("Escape Menu not found on GameCanvasManager Script on " + name);
@@ -68,24 +61,14 @@ namespace GameCanvas
                 _escapeMenu.SetActive(false);
             }
 
-            _thrustBar = transform.GetChild(6).gameObject.GetComponent<Slider>();
             if (_thrustBar == null)
             {
                 Debug.LogError("Thrust Bar not found on GameCanvasManager Script on " + name);
             }
 
-            _ammoText = transform.GetChild(7).GetComponent<Text>();
             if (_ammoText == null)
             {
                 Debug.LogError("Ammo Text not found on GameCanvasManager Script on " + name);
-            }
-        }
-
-        public void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                PauseMenu();
             }
         }
 
@@ -146,7 +129,7 @@ namespace GameCanvas
             _gameOverText.gameObject.SetActive(true);
         }
 
-        private void PauseMenu()
+        public void PauseMenu()
         {
             if (!_escapeMenu.activeSelf)
             {

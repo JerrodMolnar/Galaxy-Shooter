@@ -843,6 +843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e70ee6d96976c4c829a4098096ffc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameCanvasManager: {fileID: 1590463281}
 --- !u!4 &664599608
 Transform:
   m_ObjectHideFlags: 0
@@ -2681,6 +2682,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 80fba5ece7697c44eacc036539c1b552, type: 3}
   - {fileID: 21300000, guid: 482c8e4c0346b704aa5f1760c3c989d5, type: 3}
   - {fileID: 21300000, guid: 9fe6f40efddf0b64fb68a3382b14a4db, type: 3}
+  _ammoText: {fileID: 975127558}
+  _gameOverText: {fileID: 598001830}
+  _healthText: {fileID: 1131333083}
+  _livesText: {fileID: 727787634}
+  _scoreText: {fileID: 604323798}
+  _gameManager: {fileID: 664599607}
+  _escapeMenu: {fileID: 1691161075}
+  _thrustBar: {fileID: 1920629339}
+  _livesImage: {fileID: 1967425546}
 --- !u!1 &1691161075
 GameObject:
   m_ObjectHideFlags: 0
